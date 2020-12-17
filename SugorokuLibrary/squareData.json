@@ -1,0 +1,57 @@
+[
+  {
+    "index": 0,
+    "eventType": "none"
+  },
+  {
+    "index": 1,
+    "eventType": "next",
+    "count": 2,
+    "$comment": "「○マス進む」は、eventTypeにnext, countに進むマスの数を"
+  },
+  {
+    "index": 2,
+    "eventType": "none",
+    "$comment": "「なし」はeventTypeにnoneを、indexは1つずつ増やしてください"
+  },
+  {
+    "$comment": "3~5など、初めて出たイベントタイプじゃないコマは内容を省略します。index, eventTypeなど書き足してください"
+  },
+  {},
+  {},
+  {
+    "index": 6,
+    "eventType": "goStart",
+    "$comment": "スタートに戻る"
+  },
+  {
+    "index": 7,
+    "eventType": "diceAgain",
+    "$comment": "もう一回ふれる"
+  },
+  {},
+  {},
+  {
+    "index": 10,
+    "eventType": "wait",
+    "$comment": "1回休み もし方針変更でn回休みにしたい場合はcountを追加し休む回数を数値で書いてください"
+  },
+  {},
+  {
+    "index": 12,
+    "eventType": "prev",
+    "count": 2,
+    "$comment": "`count`マス戻る"
+  },
+  {
+    "$comment": "13~16も同様に作ってください"
+  },
+  {
+    "index": 17,
+    "eventType": "prevDice",
+    "$comment": "すごろくで出たマス分戻る"
+  },
+  {
+    "$comment": "上記の通りに、18番以降もマス情報を追加してください。$commentは行ごと消してくれると助かります"
+  }
+]
