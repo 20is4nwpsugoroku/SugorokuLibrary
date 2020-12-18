@@ -38,7 +38,7 @@ namespace SugorokuLibrary
 			{
 				var square = new Square {Index = s["index"].GetInt32()};
 
-				SquareEvent e = s["eventType"].GetString() switch
+				ISquareEvent e = s["eventType"].GetString() switch
 				{
 					"none" => new NoneEvent(),
 					"prev" => new PrevEvent {BackCount = s["count"].GetInt32()},

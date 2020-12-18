@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public interface SquareEvent
+    public interface ISquareEvent
     {
         public void Event();
     }

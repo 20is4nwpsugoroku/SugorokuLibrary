@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class NoneEvent : SquareEvent
+    public class NoneEvent : ISquareEvent
     {
         public void Event()
         {

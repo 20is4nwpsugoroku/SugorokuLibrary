@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class DiceAgainEvent : SquareEvent
+    public class DiceAgainEvent : ISquareEvent
     {
         public void Event()
         {

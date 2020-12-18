@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class PrevDiceEvent : SquareEvent
+    public class PrevDiceEvent : ISquareEvent
     {
         public void Event()
         {

@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class GoStartEvent : SquareEvent
+    public class GoStartEvent : ISquareEvent
     {
         public void Event()
         {

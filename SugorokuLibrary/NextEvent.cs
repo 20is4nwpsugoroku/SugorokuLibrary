@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class NextEvent : SquareEvent
+    public class NextEvent : ISquareEvent
     {
         public int NextCount { get; set; }
 

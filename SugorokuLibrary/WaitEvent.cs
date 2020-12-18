@@ -1,6 +1,6 @@
 namespace SugorokuLibrary
 {
-    public class WaitEvent : SquareEvent
+    public class WaitEvent : ISquareEvent
     {
         public void Event()
         {
