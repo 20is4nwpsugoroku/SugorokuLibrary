@@ -8,7 +8,6 @@ namespace SugorokuLibrary
 	{
 		public int PlayerID { get; set; }
 		public string ActionType { get; set; }
-		public int Legnth { get; set; }
-
+		public int Length { get; set; }
 	}
 }
