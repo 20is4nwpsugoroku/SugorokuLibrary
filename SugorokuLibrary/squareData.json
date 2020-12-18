@@ -15,9 +15,6 @@
     "$comment": "「なし」はeventTypeにnoneを、indexは1つずつ増やしてください"
   },
   {
-    "$comment": "3~5など、初めて出たイベントタイプじゃないコマは内容を省略します。index, eventTypeなど書き足してください"
-  },
-  {
     "index": 6,
     "eventType": "goStart",
     "$comment": "スタートに戻る"
@@ -37,9 +34,6 @@
     "eventType": "prev",
     "count": 2,
     "$comment": "`count`マス戻る"
-  },
-  {
-    "$comment": "13~16も同様に作ってください"
   },
   {
     "index": 17,

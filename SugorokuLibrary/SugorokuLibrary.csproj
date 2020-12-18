@@ -8,4 +8,9 @@
       <PackageReference Include="System.Text.Json" Version="5.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="squareData.json" />
+      <EmbeddedResource Include="squareData.json" />
+    </ItemGroup>
+
 </Project>
