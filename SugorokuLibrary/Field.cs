@@ -16,9 +16,9 @@ namespace SugorokuLibrary
 		}
 
 		public Square[] Squares { get; }
-		public Player[] Players { get; set; }
+		public Player[]? Players { get; set; }
 
-		private Square[] ParseSquares()
+		private static Square[] ParseSquares()
 		{
 			var asm = Assembly.GetExecutingAssembly();
 			using var stream = asm.GetManifestResourceStream("SugorokuLibrary.squareData.json");
@@ -34,7 +34,7 @@ namespace SugorokuLibrary
 
 			var squares = JsonSerializer.Deserialize<Dictionary<string, JsonElement>[]>(jsonString, options);
 
-			return squares?.Select(s =>
+			return squares!.Select(s =>
 			{
 				var square = new Square {Index = s["index"].GetInt32()};
 
