@@ -1,9 +1,12 @@
+using Newtonsoft.Json;
+
 namespace SugorokuLibrary.ClientToServer
 {
-	public class GetMatchInfoMessage : IClientMessage
+	[JsonConverter(typeof(GetMatchInfoConverter))]
+	public class GetMatchInfoMessage : ClientMessage
 	{
-		public string MethodType => "getMatchInfo";
-		public string MatchKey { get; }
+		[JsonProperty("methodType")] public string MethodType => "getMatchInfo";
+		[JsonProperty("matchKey")] public string MatchKey { get; }
 
 		public GetMatchInfoMessage(string matchKey)
 		{

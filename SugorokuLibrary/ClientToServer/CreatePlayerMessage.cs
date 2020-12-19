@@ -1,10 +1,15 @@
+using Newtonsoft.Json;
+
 namespace SugorokuLibrary.ClientToServer
 {
-	public class CreatePlayerMessage : IClientMessage
+	[JsonConverter(typeof(CreatePlayerConverter))]
+	public class CreatePlayerMessage : ClientMessage
 	{
-		public string MethodType => "createPlayer";
-		public string PlayerName { get; }
-		public string MatchKey { get; }
+		[JsonProperty("methodType")] public string MethodType => "createPlayer";
+
+		[JsonProperty("playerName")] public string PlayerName { get; }
+
+		[JsonProperty("matchKey")] public string MatchKey { get; }
 
 		public CreatePlayerMessage(string playerName, string matchKey)
 		{

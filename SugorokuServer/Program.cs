@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace SugorokuServer
 {
-	class Program
+	public class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			// Write Server Port
 			var serverSocket = CreateTcpServerSocket.CreateServerSocket(9500);

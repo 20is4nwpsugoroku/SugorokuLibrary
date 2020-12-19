@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuLibrary", "Sugoroku
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuServer", "SugorokuServer\SugorokuServer.csproj", "{E1694BD7-DDBA-45B5-A992-32949F1CF354}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuServer.Tests", "SugorokuServer.Tests\SugorokuServer.Tests.csproj", "{93C19B13-EB1E-44F2-BE3C-D275108FD61E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{E1694BD7-DDBA-45B5-A992-32949F1CF354}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1694BD7-DDBA-45B5-A992-32949F1CF354}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1694BD7-DDBA-45B5-A992-32949F1CF354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

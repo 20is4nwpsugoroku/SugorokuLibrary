@@ -1,14 +1,17 @@
+using Newtonsoft.Json;
+
 namespace SugorokuLibrary.ClientToServer
 {
-	public class CloseCreateMessage : IClientMessage
+	[JsonConverter(typeof(CloseCreateConverter))]
+	public class CloseCreateMessage : ClientMessage
 	{
-		public string MethodType => "closeCreate";
-		
-		public string FieldKey { get; }
+		[JsonProperty("methodType")] public string MethodType => "closeCreate";
 
-		public CloseCreateMessage(string fieldKey)
+		[JsonProperty("matchKey")] public string MatchKey { get; }
+
+		public CloseCreateMessage(string matchKey)
 		{
-			FieldKey = fieldKey;
+			MatchKey = matchKey;
 		}
 	}
 }
