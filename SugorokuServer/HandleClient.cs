@@ -62,6 +62,7 @@ namespace SugorokuServer
 			{
 				"createPlayer" => CreatePlayer((CreatePlayerMessage) message), // playerを作成する
 				"closeCreate" => CloseCreate((CloseCreateMessage) message), // ユーザー作成メソッドを作る
+				"getMatchInfo" => GetMatchInfo((GetMatchInfoMessage) message),
 				_ => throw new NotImplementedException() // default armの動作は未定
 			};
 
@@ -137,6 +138,27 @@ namespace SugorokuServer
 
 			_matches[message.FieldKey].CreatePlayerClosed = true;
 			return (true, JsonSerializer.Serialize(_matches[message.FieldKey], _options));
+		}
+
+		private (bool, string) GetMatchInfo(GetMatchInfoMessage message)
+		{
+			if (!_matches.ContainsKey(message.MatchKey))
+			{
+				return (false, JsonSerializer.Serialize(new Dictionary<string, string>
+				{
+					{"message", "This match key's match is not created"}
+				}, _options));
+			}
+
+			if (_matches[message.MatchKey].CreatePlayerClosed)
+			{
+				return (false, JsonSerializer.Serialize(new Dictionary<string, string>
+				{
+					{"message", "This match is already closed"}
+				}, _options));
+			}
+
+			return (true, JsonSerializer.Serialize(_matches[message.MatchKey]));
 		}
 
 		/// <summary>
