@@ -16,7 +16,6 @@ namespace SugorokuLibrary
 		}
 
 		public Square[] Squares { get; }
-		public Player[]? Players { get; set; }
 
 		private static Square[] ParseSquares()
 		{
