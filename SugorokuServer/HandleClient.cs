@@ -136,6 +136,9 @@ namespace SugorokuServer
 			}
 
 			_matches[message.MatchKey].CreatePlayerClosed = true;
+			_matches[message.MatchKey].StartAtUnixTime = DateTime.Now.ToTimeStamp();
+			_matches[message.MatchKey].Turn = 0;
+			_matches[message.MatchKey].NextPlayerID = _matches[message.MatchKey].PlayerIDs[0];
 			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 
