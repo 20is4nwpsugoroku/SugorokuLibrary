@@ -21,13 +21,29 @@ namespace SugorokuServer
 				msg += Encoding.UTF8.GetString(buf);
 			}
 
-			return msg;
+			return msg.TrimEnd('\0');
 		}
 
+		/// <summary>
+		/// bodyのサイズを送信バッファの先頭に付与する
+		/// </summary>
+		/// <param name="bodyMessage"></param>
+		/// <returns></returns>
+		private static string MakeHeader(string bodyMessage)
+		{
+			return $"{bodyMessage.Length}\n{bodyMessage}";
+		}
+
+		/// <summary>
+		/// 受信するバッファのサイズをヘッダから取得する
+		/// サイズ = ヘッダに付与されているbodyのサイズ + ヘッダのサイズ + 1(改行コード)
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <returns></returns>
 		private static int GetBufSize(string msg)
 		{
 			var sizeStr = msg.Split("\n")[0];
-			return int.Parse(sizeStr);
+			return int.Parse(sizeStr) + sizeStr.Length + 1;
 		}
 	}
 }
