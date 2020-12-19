@@ -108,7 +108,7 @@ namespace SugorokuServer
 			{
 				MatchKey = message.MatchKey,
 				IsHost = false,
-				PlayerID = _matches[message.MatchKey].PlayerIDs!.Count,
+				PlayerID = ++_playerCount,
 				PlayerName = message.PlayerName,
 				Position = 0
 			};
