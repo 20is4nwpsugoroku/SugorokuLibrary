@@ -1,4 +1,4 @@
-namespace SugorokuLibrary
+namespace SugorokuLibrary.SquareEvents
 {
     public interface ISquareEvent
     {

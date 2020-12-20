@@ -1,4 +1,6 @@
-﻿namespace SugorokuLibrary
+﻿using SugorokuLibrary.SquareEvents;
+
+namespace SugorokuLibrary
 {
     public class Square
     {
