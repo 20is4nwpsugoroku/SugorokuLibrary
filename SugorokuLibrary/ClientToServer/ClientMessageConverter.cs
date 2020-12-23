@@ -19,6 +19,7 @@ namespace SugorokuLibrary.ClientToServer
 				"closeCreate" => new CloseCreateConverter(),
 				"createPlayer" => new CreatePlayerConverter(),
 				"getMatchInfo" => new GetMatchInfoConverter(),
+				"getAllMatches" => new GetAllMatchesConverter(),
 				_ => throw new ArgumentException()
 			};
 			var newReader = jObject.CreateReader();
