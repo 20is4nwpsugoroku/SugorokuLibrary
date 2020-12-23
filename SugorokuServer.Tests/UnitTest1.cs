@@ -17,7 +17,7 @@ namespace SugorokuServer.Tests
 			ContractResolver = new CamelCasePropertyNamesContractResolver()
 		};
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void Setup()
 		{
 			_handleClient = new HandleClient();
@@ -65,6 +65,26 @@ namespace SugorokuServer.Tests
 		public void タイムスタンプからDateTimeへの変換をチェックするの(long timeStamp, DateTime exp)
 		{
 			Assert.AreEqual(exp, timeStamp.ToDateTime());
+		}
+
+		[Test]
+		public void 作ったマッチが保持されてるか確認するテスト()
+		{
+			var create1 = (string) ((object[])_testCases[0])[0];
+			_handleClient.MakeSendMessage(create1);
+			var request = JsonConvert.SerializeObject(new GetAllMatchesMessage());
+			var response = _handleClient.MakeSendMessage(request);
+
+			var (_, _, body) = HeaderProtocol.ParseHeader(response);
+			Console.WriteLine(body);
+			
+			var create2 = (string) ((object[])_testCases[1])[0];
+			_handleClient.MakeSendMessage(create2);
+			request = JsonConvert.SerializeObject(new GetAllMatchesMessage());
+			response = _handleClient.MakeSendMessage(request);
+
+			(_, _, body) = HeaderProtocol.ParseHeader(response);
+			Console.WriteLine(body);
 		}
 
 		[TestCaseSource(nameof(_testCases))]
