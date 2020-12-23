@@ -6,38 +6,126 @@
   {
     "index": 1,
     "eventType": "next",
-    "count": 2,
-    "$comment": "「○マス進む」は、eventTypeにnext, countに進むマスの数を"
+    "count": 2
   },
   {
     "index": 2,
-    "eventType": "none",
-    "$comment": "「なし」はeventTypeにnoneを、indexは1つずつ増やしてください"
+    "eventType": "none"
+  },
+  {
+    "index": 3,
+    "eventType": "none"
+  },
+  {  
+    "index": 4,
+    "eventType": "none"
+  },
+  {
+    "index": 5,
+    "eventType": "next",
+    "count": 3
   },
   {
     "index": 6,
-    "eventType": "goStart",
-    "$comment": "スタートに戻る"
+    "eventType": "goStart"
   },
   {
     "index": 7,
-    "eventType": "diceAgain",
-    "$comment": "もう一回ふれる"
+    "eventType": "diceAgain"
+  },
+  {
+    "index": 8,
+    "eventType": "none"
+  },
+  {
+    "index": 9,
+    "eventType": "none"
   },
   {
     "index": 10,
-    "eventType": "wait",
-    "$comment": "1回休み もし方針変更でn回休みにしたい場合はcountを追加し休む回数を数値で書いてください"
+    "eventType": "wait"
+  },
+  {
+    "index": 11,
+    "eventType": "none"
   },
   {
     "index": 12,
     "eventType": "prev",
-    "count": 2,
-    "$comment": "`count`マス戻る"
+    "count": 2
+  },
+   {
+    "index": 13,
+    "eventType": "none"
+  },
+   {
+    "index": 14,
+    "eventType": "none"
+  },
+   {
+    "index": 15,
+    "eventType": "next",
+    "count": 3
+  },
+   {
+    "index": 16,
+    "eventType": "none"
   },
   {
     "index": 17,
-    "eventType": "prevDice",
-    "$comment": "すごろくで出たマス分戻る"
+    "eventType": "prevDice"
+  },
+  {
+    "index": 18,
+    "eventType": "none"
+  },
+  {
+    "index": 19,
+    "eventType": "wait"
+  },
+  {
+    "index": 20,
+    "eventType": "none"
+  },
+  {
+    "index": 21,
+    "eventType": "diceAgain"
+  },
+  {
+    "index": 22,
+    "eventType": "none"
+  },
+  {
+    "index": 23,
+    "eventType": "none"
+  },
+  {
+    "index": 24,
+    "eventType": "prev",
+    "count": 4
+  },
+  {
+    "index": 25,
+    "eventType": "wait"
+  },
+  {
+    "index": 26,
+    "eventType": "prevDice"
+  },
+  {
+    "index": 27,
+    "eventType": "none"
+  },
+  {
+    "index": 28,
+    "eventType": "diceAgain"
+  },
+  {
+    "index": 29,
+    "eventType": "goStart"
+  },
+  {
+    "index": 30,
+    "eventType": "none"
   }
 ]
