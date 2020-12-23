@@ -1,6 +1,6 @@
 using System;
 
-namespace SugorokuServer
+namespace SugorokuLibrary.Protocol
 {
 	public static class DateTimeExtension
 	{
