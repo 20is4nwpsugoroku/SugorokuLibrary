@@ -2,40 +2,47 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using SugorokuLibrary.SquareEvents;
 
 namespace SugorokuLibrary
 {
 	public class Field
 	{
-		public Square[] Squares { get; set; }
-		public Player[] Players { get; set; }
-
-		private Square[] ParseSquares()
+		public Field()
 		{
-			using var reader = new StreamReader("squareData.json", Encoding.UTF8);
+			Squares = ParseSquares();
+		}
+
+		public Square[] Squares { get; }
+
+		private static Square[] ParseSquares()
+		{
+			var asm = Assembly.GetExecutingAssembly();
+			using var stream = asm.GetManifestResourceStream("SugorokuLibrary.squareData.json");
+			using var reader = new StreamReader(stream!);
+
 			var jsonString = reader.ReadToEnd();
-			
+
 			var options = new JsonSerializerOptions
 			{
 				Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
 				PropertyNameCaseInsensitive = true
 			};
 
-			var squares = JsonSerializer.Deserialize<Dictionary<string, object>[]>(jsonString, options);
+			var squares = JsonSerializer.Deserialize<Dictionary<string, JsonElement>[]>(jsonString, options);
 
-			return squares.Select(s =>
+			return squares!.Select(s =>
 			{
-				var square = new Square();
-				square.Index = (int) s["index"];
+				var square = new Square {Index = s["index"].GetInt32()};
 
-				SquareEvent e = (string) s["eventType"] switch
+				ISquareEvent e = s["eventType"].GetString() switch
 				{
 					"none" => new NoneEvent(),
-					"prev" => new PrevEvent {BackCount = (int) s["count"]},
-					"next" => new NextEvent {NextCount = (int) s["count"]},
+					"prev" => new PrevEvent {BackCount = s["count"].GetInt32()},
+					"next" => new NextEvent {NextCount = s["count"].GetInt32()},
 					"prevDice" => new PrevDiceEvent(),
 					"wait" => new WaitEvent(),
 					"goStart" => new GoStartEvent(),

@@ -13,7 +13,7 @@ namespace SugorokuLibrary
 		public int PlayerID { get; set; }
 
 		///<value>プレイヤーが移動する距離</value>
-		public int Legnth { get; set; }
+		public int Length { get; set; }
 
 	}
 }

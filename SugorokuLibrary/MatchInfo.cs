@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SugorokuLibrary
 {
 	/// <summary>
 	/// 試合情報のメタ情報のクラス
 	/// </summary>
-	class MatchInfo
+	public class MatchInfo
 	{
 		///<value>試合を識別するID</value>
-		public int MatchID { get; set; }
+		public string MatchKey { get; set; }
 
 		///<value>プレイヤーIDの配列</value>
-		public int[] PlayerIDs { get; set; }
+		public List<int> PlayerIDs { get; set; }
+		
+		///<value>ホストのプレイヤーID</value>
+		public int HostPlayerID { get; set; }
+		
+		///<value>ユーザー追加を終了しているか</value>
+		public bool CreatePlayerClosed { get; set; }
 
 		///<value>現在のターン数</value>
 		public int Turn { get; set; }

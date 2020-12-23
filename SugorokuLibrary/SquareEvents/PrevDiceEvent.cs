@@ -1,6 +1,6 @@
-namespace SugorokuLibrary
+namespace SugorokuLibrary.SquareEvents
 {
-    public class WaitEvent : SquareEvent
+    public class PrevDiceEvent : ISquareEvent
     {
         public void Event()
         {

@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="squareData.json" />
-      <EmbeddedResource Include="squareData.json" />
+      <ProjectReference Include="..\SugorokuLibrary\SugorokuLibrary.csproj" />
     </ItemGroup>
 
     <ItemGroup>

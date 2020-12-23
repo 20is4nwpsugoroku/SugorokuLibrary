@@ -1,9 +1,7 @@
-namespace SugorokuLibrary
+namespace SugorokuLibrary.SquareEvents
 {
-    public class NextEvent : SquareEvent
+    public class WaitEvent : ISquareEvent
     {
-        public int NextCount { get; set; }
-
         public void Event()
         {
             throw new System.NotImplementedException();
