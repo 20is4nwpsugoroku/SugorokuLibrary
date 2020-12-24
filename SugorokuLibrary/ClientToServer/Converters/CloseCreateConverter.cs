@@ -2,33 +2,31 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SugorokuLibrary.ClientToServer
+namespace SugorokuLibrary.ClientToServer.Converters
 {
-	public class CreatePlayerConverter : JsonConverter
+	public class CloseCreateConverter : JsonConverter
 	{
 		public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
 		{
-			var createPlayer = (CreatePlayerMessage) value!;
+			var closeCreate = (CloseCreateMessage) value!;
 			
 			writer.WriteStartObject();
 			writer.WritePropertyName("methodType");
-			writer.WriteValue(createPlayer.MethodType);
-			writer.WritePropertyName("playerName");
-			writer.WriteValue(createPlayer.PlayerName);
+			writer.WriteValue(closeCreate.MethodType);
 			writer.WritePropertyName("matchKey");
-			writer.WriteValue(createPlayer.MatchKey);
+			writer.WriteValue(closeCreate.MatchKey);
 			writer.WriteEndObject();
 		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
 		{
 			JObject jObject = JObject.Load(reader);
-			return new CreatePlayerMessage((string) jObject["playerName"]!, (string) jObject["matchKey"]!);
+			return new CloseCreateMessage((string) jObject["matchKey"]!);
 		}
 
 		public override bool CanConvert(Type objectType)
 		{
-			return objectType == typeof(CreatePlayerMessage);
+			return objectType == typeof(CloseCreateMessage);
 		}
 	}
 }

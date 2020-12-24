@@ -48,9 +48,7 @@ namespace SugorokuServer
 			var sentAllBytes = clientSocket.Send(Encoding.UTF8.GetBytes(message));
 			while (sentAllBytes >= message.Length)
 			{
-				sentAllBytes +=
-					clientSocket.Send(
-						Encoding.UTF8.GetBytes(string.Concat(Encoding.UTF8.GetBytes(message[sentAllBytes..]))));
+				sentAllBytes += clientSocket.Send(Encoding.UTF8.GetBytes(message[sentAllBytes..]));
 			}
 		}
 
@@ -62,6 +60,7 @@ namespace SugorokuServer
 				CreatePlayerMessage cr => CreatePlayer(cr),
 				CloseCreateMessage cl => CloseCreate(cl),
 				GetMatchInfoMessage gm => GetMatchInfo(gm),
+				GetAllMatchesMessage _ => GetAllMatches(),
 				_ => throw new NotImplementedException()
 			};
 
@@ -161,6 +160,11 @@ namespace SugorokuServer
 			}
 
 			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
+		}
+
+		private (bool, string) GetAllMatches()
+		{
+			return (true, JsonConvert.SerializeObject(_matches, _settings));
 		}
 	}
 }

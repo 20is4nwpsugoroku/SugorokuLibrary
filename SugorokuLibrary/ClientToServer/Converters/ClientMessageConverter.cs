@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SugorokuLibrary.ClientToServer
+namespace SugorokuLibrary.ClientToServer.Converters
 {
 	public class ClientMessageConverter : JsonConverter
 	{
@@ -19,6 +19,7 @@ namespace SugorokuLibrary.ClientToServer
 				"closeCreate" => new CloseCreateConverter(),
 				"createPlayer" => new CreatePlayerConverter(),
 				"getMatchInfo" => new GetMatchInfoConverter(),
+				"getAllMatches" => new GetAllMatchesConverter(),
 				_ => throw new ArgumentException()
 			};
 			var newReader = jObject.CreateReader();
