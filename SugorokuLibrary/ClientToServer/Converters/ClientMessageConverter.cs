@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SugorokuLibrary.ClientToServer
+namespace SugorokuLibrary.ClientToServer.Converters
 {
 	public class ClientMessageConverter : JsonConverter
 	{

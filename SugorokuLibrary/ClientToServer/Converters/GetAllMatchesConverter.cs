@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace SugorokuLibrary.ClientToServer
+namespace SugorokuLibrary.ClientToServer.Converters
 {
 	public class GetAllMatchesConverter : JsonConverter
 	{
