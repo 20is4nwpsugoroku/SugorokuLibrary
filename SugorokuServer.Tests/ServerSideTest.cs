@@ -8,7 +8,7 @@ using SugorokuLibrary.Protocol;
 
 namespace SugorokuServer.Tests
 {
-	public class Tests
+	public class ServerSideTest
 	{
 		private HandleClient _handleClient;
 
