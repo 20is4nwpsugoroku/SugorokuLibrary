@@ -5,6 +5,9 @@ using SugorokuLibrary.Match;
 
 namespace SugorokuLibrary.Match
 {
+	/// <summary>
+	/// 一つの試合を管理するクラス
+	/// </summary>
 	public class MatchCore
 	{
 		/// <value> 試合のメタ情報 </value>
@@ -45,7 +48,7 @@ namespace SugorokuLibrary.Match
 
 
 		/// <summary>
-		/// 
+		/// 引数のプレイヤーの行動を試合に反映する
 		/// </summary>
 		/// <param name="playerAction">プレイヤーの行動</param>
 		public void ReflectAciton(PlayerAction playerAction)
@@ -60,7 +63,8 @@ namespace SugorokuLibrary.Match
 				return; // 行動できるプレイヤーではないのでリターン
 			}
 
-			if (playerAction.Length <= 0 || playerAction.Length >= 7)
+			if (playerAction.Length < Constants.ActionMinLength 
+				|| playerAction.Length > Constants.ActionMaxLength)
 			{
 				playerAction.Length = Rand.Next(1, 7); // Lengthが不正な場合、さいころをふる
 			}
@@ -118,9 +122,6 @@ namespace SugorokuLibrary.Match
 		{
 
 		}
-
-
-
 
 	}
 }
