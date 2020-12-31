@@ -8,15 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DxLibDLL;
+using SugorokuClient.Scene;
 
 
 namespace SugorokuClient
 {
 	public partial class Form1 : Form
 	{
-		// 画像を左右に動かす処理のための変数を初期化
-		int X = 0, XAdd = 8;
-
 		public Form1()
 		{
 			InitializeComponent();
@@ -29,6 +27,11 @@ namespace SugorokuClient
 			DX.DxLib_Init();
 			// 描画先を裏画面に変更
 			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
+			DX.SetMainWindowText("○×ゲーム");
+			SceneManager.Initialize();
+			IScene title = new Title();
+			SceneManager.AddScene("title", title);
+			SceneManager.ChangeScene("title");
 		}
 
 		//ループする関数
@@ -37,15 +40,7 @@ namespace SugorokuClient
 			// 画面をクリア
 			DX.ClearDrawScreen();
 			// 画像を描画する座標を更新
-			X += XAdd;
-			if (X < 0 || X > 640 - 32)
-			{
-				XAdd = -XAdd;
-			}
-			// 四角を描画
-			DX.DrawBox(X, 32 * 5, X + 32, 32 * 6, DX.GetColor(255, 255, 255), 1);
-			// 裏画面の内容を表画面に反映する
-			DX.ScreenFlip();
+			SceneManager.Update();
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)

@@ -1,10 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuLibrary", "SugorokuLibrary\SugorokuLibrary.csproj", "{40035E56-CDAD-4ACD-8994-24719ACB3980}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SugorokuLibrary", "SugorokuLibrary\SugorokuLibrary.csproj", "{40035E56-CDAD-4ACD-8994-24719ACB3980}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuServer", "SugorokuServer\SugorokuServer.csproj", "{E1694BD7-DDBA-45B5-A992-32949F1CF354}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SugorokuServer", "SugorokuServer\SugorokuServer.csproj", "{E1694BD7-DDBA-45B5-A992-32949F1CF354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuServer.Tests", "SugorokuServer.Tests\SugorokuServer.Tests.csproj", "{93C19B13-EB1E-44F2-BE3C-D275108FD61E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SugorokuServer.Tests", "SugorokuServer.Tests\SugorokuServer.Tests.csproj", "{93C19B13-EB1E-44F2-BE3C-D275108FD61E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{44F2CCEC-001E-4E4B-88B5-5946E9924A57}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuClient", "SugorokuClient\SugorokuClient.csproj", "{67ECB2F1-0361-45B7-806E-7C4EC7952888}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +34,15 @@ Global
 		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93C19B13-EB1E-44F2-BE3C-D275108FD61E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67ECB2F1-0361-45B7-806E-7C4EC7952888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67ECB2F1-0361-45B7-806E-7C4EC7952888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67ECB2F1-0361-45B7-806E-7C4EC7952888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67ECB2F1-0361-45B7-806E-7C4EC7952888}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EDDADB4-A645-4E87-AB91-3FEC77AA4222}
 	EndGlobalSection
 EndGlobal
