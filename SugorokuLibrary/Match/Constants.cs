@@ -10,7 +10,7 @@ namespace SugorokuLibrary.Match
 		public const int ActionMaxLength = 6;
 		public const int StartPosition = 0;
 		public const int GoalPosition = 30;
-
+		public const int InvalidPlayerID = -1;
 
 	}
 }
