@@ -21,7 +21,7 @@ namespace SugorokuClient
 
 			Form1 form = new Form1();
 			form.Show();
-			while (DX.ProcessMessage() != -1 && form.Created) //Application.Run‚µ‚È‚¢‚Å©•ª‚Åƒ‹[ƒv‚ğì‚é
+			while (DX.ProcessMessage() != -1 && form.Created) //Application.Runã—ãªã„ã§è‡ªåˆ†ã§ãƒ«ãƒ¼ãƒ—ã‚’ä½œã‚‹
 			{
 				form.MainLoop();
 				Application.DoEvents();
