@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
+using SugorokuLibrary.Match;
 using SugorokuLibrary.Protocol;
 
 namespace SugorokuServer
@@ -14,6 +15,7 @@ namespace SugorokuServer
 	{
 		private const int RecvBufSize = 1024;
 		private readonly Dictionary<string, MatchInfo> _matches = new Dictionary<string, MatchInfo>();
+		private readonly Dictionary<string, MatchCore> _startedMatch = new Dictionary<string, MatchCore>();
 		private int _playerCount;
 
 		private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
@@ -61,10 +63,37 @@ namespace SugorokuServer
 				CloseCreateMessage cl => CloseCreate(cl),
 				GetMatchInfoMessage gm => GetMatchInfo(gm),
 				GetAllMatchesMessage _ => GetAllMatches(),
+				DiceMessage dm => ThrowDice(dm),
 				_ => throw new NotImplementedException()
 			};
 
 			return HeaderProtocol.MakeHeader(sendMessage, methodSuccess);
+		}
+
+		private (bool, string) ThrowDice(DiceMessage diceMessage)
+		{
+			var matchInfo = _startedMatch[diceMessage.MatchId];
+			if (matchInfo.ActionSchedule.Peek() != diceMessage.PlayerId)
+			{
+				return (false, "まだあなたのターンではありません");
+			}
+
+			var dice = Dice();
+			var action = new PlayerAction
+			{
+				PlayerID = diceMessage.PlayerId,
+				Length = dice
+			};
+			matchInfo.ReflectAction(action);
+			_startedMatch[diceMessage.MatchId] = matchInfo;
+
+			return (true, $"{dice}");
+		}
+
+		private static int Dice()
+		{
+			var random = new Random();
+			return random.Next(1, 7);
 		}
 
 		private Player CreateMatch(CreatePlayerMessage message)
@@ -81,7 +110,7 @@ namespace SugorokuServer
 			var match = new MatchInfo
 			{
 				HostPlayerID = _playerCount,
-				PlayerIDs = new List<int> {_playerCount},
+				Players = new List<Player> {hostPlayerData},
 				MatchKey = message.MatchKey,
 			};
 			_matches.Add(message.MatchKey, match);
@@ -112,7 +141,7 @@ namespace SugorokuServer
 				Position = 0
 			};
 
-			_matches[message.MatchKey].PlayerIDs.Add(playerData.PlayerID);
+			_matches[message.MatchKey].Players.Add(playerData);
 			return (true, JsonConvert.SerializeObject(playerData, _settings));
 		}
 
@@ -134,10 +163,12 @@ namespace SugorokuServer
 				}, _settings));
 			}
 
-			_matches[message.MatchKey].CreatePlayerClosed = true;
-			_matches[message.MatchKey].StartAtUnixTime = DateTime.Now.ToTimeStamp();
-			_matches[message.MatchKey].Turn = 0;
-			_matches[message.MatchKey].NextPlayerID = _matches[message.MatchKey].PlayerIDs[0];
+			var match = _matches[message.MatchKey];
+
+			match.CreatePlayerClosed = true;
+			match.StartAtUnixTime = DateTime.Now.ToTimeStamp();
+			match.Turn = 0;
+			_startedMatch.Add(message.MatchKey, new MatchCore(match));
 			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 
