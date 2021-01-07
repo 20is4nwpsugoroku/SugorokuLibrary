@@ -37,10 +37,11 @@ namespace SugorokuClient
 		//ループする関数
 		public void MainLoop()
 		{
-			// 画面をクリア
-			DX.ClearDrawScreen();
-			// 画像を描画する座標を更新
-			SceneManager.Update();
+			if (SceneManager.Update() == -1)
+			{
+				DX.DxLib_End();
+				this.Close();
+			}
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)

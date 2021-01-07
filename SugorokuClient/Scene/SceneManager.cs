@@ -36,7 +36,7 @@ namespace SugorokuClient.Scene
 		/// <summary>
 		/// 現在のシーンの更新と描画処理を行う
 		/// </summary>
-		public static void Update()
+		public static int Update()
 		{
 			FpsAdjuster.WaitNextFrame();
 			InputManager.UpdateInput();
@@ -46,7 +46,7 @@ namespace SugorokuClient.Scene
 				DX.ClearDrawScreen();
 				CurrentScene.Draw();
 			}
-
+			return DX.ProcessMessage();
 		}
 
 
