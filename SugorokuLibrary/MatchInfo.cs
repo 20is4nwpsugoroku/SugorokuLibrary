@@ -11,8 +11,8 @@ namespace SugorokuLibrary
 		public string MatchKey { get; set; }
 
 		///<value>プレイヤーIDの配列</value>
-		public List<int> PlayerIDs { get; set; }
-		
+		public List<Player> Players { get; set; }
+
 		///<value>ホストのプレイヤーID</value>
 		public int HostPlayerID { get; set; }
 		

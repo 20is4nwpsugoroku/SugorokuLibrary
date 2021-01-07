@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using SugorokuLibrary.Match;
-using SugorokuLibrary.Protocol;
+using System.Linq;
 
 namespace SugorokuLibrary.Match
 {
@@ -21,7 +19,7 @@ namespace SugorokuLibrary.Match
 		public Dictionary<int, Player> Players { get; set; }
 
 		/// <value> 行動の順番をPlayerIDの並びで格納する(3順分くらい) </value>
-		private Queue<int> ActionSchedule { get; set; }
+		public Queue<int> ActionSchedule { get; set; }
 
 		/// <value> 順位を格納する </value>
 		public Queue<int> Ranking { get; private set; }
@@ -49,11 +47,17 @@ namespace SugorokuLibrary.Match
 		/// 規定のフィールドでMatchCoreを利用する場合のコンストラクタ
 		/// </summary>
 		/// <param name="matchInfo">事前に準備した試合情報</param>
-		/// <param name="players">プレイヤー情報の配列</param
+		/// <param name="players">プレイヤー情報の配列</param>
 		public MatchCore(MatchInfo matchInfo, Player[] players) : this()
 		{
 			MatchInfo = matchInfo;
 			ResetPlayerInfo(players);
+		}
+
+		public MatchCore(MatchInfo matchInfo) : this()
+		{
+			MatchInfo = matchInfo;
+			ResetPlayerInfo(matchInfo.Players);
 		}
 
 		#endregion
@@ -75,7 +79,7 @@ namespace SugorokuLibrary.Match
 		/// 引数のプレイヤーの行動を試合に反映する
 		/// </summary>
 		/// <param name="playerAction">プレイヤーの行動</param>
-		public void ReflectAciton(PlayerAction playerAction)
+		public void ReflectAction(PlayerAction playerAction)
 		{
 			// エラー処理関連
 			if (playerAction.PlayerID != MatchInfo.NextPlayerID 
@@ -163,9 +167,9 @@ namespace SugorokuLibrary.Match
 		/// プレイヤーに関連する情報を初期化する
 		/// </summary>
 		/// <param name="players"></param>
-		private void ResetPlayerInfo(Player[] players)
+		private void ResetPlayerInfo(IReadOnlyList<Player> players)
 		{
-			if (players.Length == 0)
+			if (!players.Any())
 			{
 				throw new ArgumentNullException();
 			}
@@ -179,12 +183,12 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		/// <param name="schedule">PlayerIDの並びで行動の順番を格納するキュー</param>
 		/// <param name="players">Player情報の配列、この配列の順番が行動の順番となる</param>
-		private void ResetActionSchedule(Queue<int> schedule, Player[] players)
+		private static void ResetActionSchedule(Queue<int> schedule, IReadOnlyList<Player> players)
 		{
 			schedule.Clear();
-			for (var i = 0; i < players.Length * 3; i++)
+			for (var i = 0; i < players.Count * 3; i++)
 			{
-				schedule.Enqueue(players[i % players.Length].PlayerID);
+				schedule.Enqueue(players[i % players.Count].PlayerID);
 			}
 		}
 
@@ -193,7 +197,7 @@ namespace SugorokuLibrary.Match
 		/// DictionaryのPlayersを初期化する
 		/// </summary>
 		/// <param name="players"></param>
-		private void ResetPlayersDictionary(Player[] players)
+		private void ResetPlayersDictionary(IEnumerable<Player> players)
 		{
 			Players.Clear();
 			foreach (var player in players)
