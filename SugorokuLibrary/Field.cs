@@ -11,12 +11,7 @@ namespace SugorokuLibrary
 {
 	public class Field
 	{
-		public Field()
-		{
-			Squares = ParseSquares();
-		}
-
-		public Square[] Squares { get; }
+		public static Square[] Squares => ParseSquares();
 
 		private static Square[] ParseSquares()
 		{

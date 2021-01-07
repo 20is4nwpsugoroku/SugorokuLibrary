@@ -53,7 +53,7 @@ namespace SugorokuServer.Tests
 		public void CheckSquares([Range(0, 30)] int count)
 		{
 			var expEvent = FieldTestCases[count];
-			var target = _field.Squares[count];
+			var target = Field.Squares[count];
 			Assert.AreEqual(count, target.Index);
 			Assert.IsInstanceOf(expEvent.GetType(), target.Event);
 			switch (target.Event)
