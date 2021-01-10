@@ -14,5 +14,11 @@ namespace SugorokuLibrary.ClientToServer
 		{
 			MatchKey = matchKey;
 		}
+
+		public override bool Equals(object? obj)
+		{
+			if (!(obj is CloseCreateMessage cl)) return false;
+			return cl.MatchKey == MatchKey;
+		}
 	}
 }

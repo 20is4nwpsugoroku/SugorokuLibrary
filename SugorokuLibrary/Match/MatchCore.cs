@@ -13,13 +13,13 @@ namespace SugorokuLibrary.Match
 		public MatchInfo MatchInfo { get; set; }
 
 		/// <value> すごろくのマスの情報 </value>
-		public Field Field { get; set; }
+		public Field Field { get; }
 
 		/// <value> プレイヤー情報、プレイヤーIDをKeyとするPlayerクラスの辞書</value>
-		public Dictionary<int, Player> Players { get; set; }
+		public Dictionary<int, Player> Players { get; }
 
 		/// <value> 行動の順番をPlayerIDの並びで格納する(3順分くらい) </value>
-		public Queue<int> ActionSchedule { get; set; }
+		public ListQueue<int> ActionSchedule { get; }
 
 		/// <value> 順位を格納する </value>
 		public Queue<int> Ranking { get; private set; }
@@ -38,7 +38,7 @@ namespace SugorokuLibrary.Match
 			MatchInfo = new MatchInfo();
 			Field = new Field();
 			Players = new Dictionary<int, Player>();
-			ActionSchedule = new Queue<int>();
+			ActionSchedule = new ListQueue<int>();
 			Ranking = new Queue<int>();
 			Rand = new Random();
 		}
@@ -48,7 +48,7 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		/// <param name="matchInfo">事前に準備した試合情報</param>
 		/// <param name="players">プレイヤー情報の配列</param>
-		public MatchCore(MatchInfo matchInfo, Player[] players) : this()
+		public MatchCore(MatchInfo matchInfo, IReadOnlyList<Player> players) : this()
 		{
 			MatchInfo = matchInfo;
 			ResetPlayerInfo(players);
@@ -102,7 +102,8 @@ namespace SugorokuLibrary.Match
 			}
 
 			// イベントの実行
-			Field.Squares[nextPos].Event.Event();
+			Players[playerAction.PlayerID].Position = nextPos;
+			Field.Squares[nextPos].Event.Event(this, MatchInfo.NextPlayerID);
 
 			// 次のターンに進める
 			if (ActionSchedule.Count != 0)
@@ -138,21 +139,14 @@ namespace SugorokuLibrary.Match
 		private void Goal(int playerID)
 		{
 			// キューから行動の順番を予定を消す処理
-			var new_schedule = new Queue<int>();
-			foreach (var element in ActionSchedule)
-			{
-				if (element == playerID) continue;
-				new_schedule.Enqueue(element);
-			}
-			ActionSchedule.Clear();
-			ActionSchedule = new_schedule;
+			ActionSchedule.RemoveAll(p => p == playerID);
 
 			// プレイヤーの位置をゴール位置に合わせる
 			Players[playerID].Position = Constants.GoalPosition;
 			Ranking.Enqueue(playerID);
 			
 			// 全プレイヤーがゴールしたので、終了処理に移る
-			if (new_schedule.Count == 0)
+			if (ActionSchedule.Count == 0)
 			{
 				End();
 			}
@@ -183,7 +177,7 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		/// <param name="schedule">PlayerIDの並びで行動の順番を格納するキュー</param>
 		/// <param name="players">Player情報の配列、この配列の順番が行動の順番となる</param>
-		private static void ResetActionSchedule(Queue<int> schedule, IReadOnlyList<Player> players)
+		private static void ResetActionSchedule(ListQueue<int> schedule, IReadOnlyList<Player> players)
 		{
 			schedule.Clear();
 			for (var i = 0; i < players.Count * 3; i++)
