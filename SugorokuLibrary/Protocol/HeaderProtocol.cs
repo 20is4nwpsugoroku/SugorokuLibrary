@@ -26,7 +26,7 @@ namespace SugorokuLibrary.Protocol
 			var lines = msg.Split("\n");
 			var headerSplit = lines[0].Split(',');
 			var (sizeStr, functionSuccess, bodyLines) = (headerSplit[0], headerSplit[1], string.Concat(lines.Skip(1)));
-			return (int.Parse(sizeStr) + sizeStr.Length + 1, functionSuccess == "OK", bodyLines);
+			return (int.Parse(sizeStr), functionSuccess == "OK", bodyLines);
 		}
 	}
 }

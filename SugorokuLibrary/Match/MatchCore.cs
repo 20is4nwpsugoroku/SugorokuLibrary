@@ -13,13 +13,13 @@ namespace SugorokuLibrary.Match
 		public MatchInfo MatchInfo { get; set; }
 
 		/// <value> すごろくのマスの情報 </value>
-		public Field Field { get; set; }
+		public Field Field { get; }
 
 		/// <value> プレイヤー情報、プレイヤーIDをKeyとするPlayerクラスの辞書</value>
-		public Dictionary<int, Player> Players { get; set; }
+		public Dictionary<int, Player> Players { get; }
 
 		/// <value> 行動の順番をPlayerIDの並びで格納する(3順分くらい) </value>
-		public ListQueue<int> ActionSchedule { get; set; }
+		public ListQueue<int> ActionSchedule { get; }
 
 		/// <value> 順位を格納する </value>
 		public Queue<int> Ranking { get; private set; }
@@ -48,7 +48,7 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		/// <param name="matchInfo">事前に準備した試合情報</param>
 		/// <param name="players">プレイヤー情報の配列</param>
-		public MatchCore(MatchInfo matchInfo, Player[] players) : this()
+		public MatchCore(MatchInfo matchInfo, IReadOnlyList<Player> players) : this()
 		{
 			MatchInfo = matchInfo;
 			ResetPlayerInfo(players);
@@ -102,6 +102,7 @@ namespace SugorokuLibrary.Match
 			}
 
 			// イベントの実行
+			Players[playerAction.PlayerID].Position = nextPos;
 			Field.Squares[nextPos].Event.Event(this, MatchInfo.NextPlayerID);
 
 			// 次のターンに進める
