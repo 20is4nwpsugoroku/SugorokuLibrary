@@ -1,10 +1,12 @@
+using SugorokuLibrary.Match;
+
 namespace SugorokuLibrary.SquareEvents
 {
     public class DiceAgainEvent : ISquareEvent
     {
-        public void Event()
+        public void Event(MatchCore matchCore, int playerId)
         {
-            throw new System.NotImplementedException();
+            matchCore.ActionSchedule.Insert(0, playerId);
         }
     }
 }
