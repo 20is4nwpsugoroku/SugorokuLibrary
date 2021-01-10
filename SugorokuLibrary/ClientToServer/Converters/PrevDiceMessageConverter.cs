@@ -11,8 +11,10 @@ namespace SugorokuLibrary.ClientToServer.Converters
             var diceMessage = (PrevDiceMessage) value!;
 
             writer.WriteStartObject();
-            writer.WritePropertyName("matchId");
-            writer.WriteValue(diceMessage.MatchId);
+            writer.WritePropertyName("methodType");
+            writer.WriteValue(diceMessage.MethodType);
+            writer.WritePropertyName("matchKey");
+            writer.WriteValue(diceMessage.MatchKey);
             writer.WritePropertyName("playerId");
             writer.WriteValue(diceMessage.PlayerId);
             writer.WritePropertyName("nowPosition");
@@ -24,7 +26,7 @@ namespace SugorokuLibrary.ClientToServer.Converters
             JsonSerializer serializer)
         {
             JObject jObject = JObject.Load(reader);
-            return new PrevDiceMessage((string) jObject["matchId"]!, (int) jObject["playerId"]!,
+            return new PrevDiceMessage((string) jObject["matchKey"]!, (int) jObject["playerId"]!,
                 (int) jObject["nowPosition"]!);
         }
 

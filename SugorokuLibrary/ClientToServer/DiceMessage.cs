@@ -7,15 +7,21 @@ namespace SugorokuLibrary.ClientToServer
 	public class DiceMessage : ClientMessage
 	{
 		[JsonProperty("methodType")] public string MethodType => "dice";
-		[JsonProperty("matchId")] public string MatchId { get; }
+		[JsonProperty("matchKey")] public string MatchKey { get; }
 		[JsonProperty("playerId")] public int PlayerId { get; }
 		[JsonProperty("nowPosition")] public int NowPosition { get; }
 
-		public DiceMessage(string matchId, int playerId, int nowPosition)
+		public DiceMessage(string matchKey, int playerId, int nowPosition)
 		{
-			MatchId = matchId;
+			MatchKey = matchKey;
 			PlayerId = playerId;
 			NowPosition = nowPosition;
+		}
+
+		public override bool Equals(object? obj)
+		{
+			if (!(obj is DiceMessage di)) return false;
+			return di.MatchKey == MatchKey && di.PlayerId == PlayerId && di.NowPosition == NowPosition;
 		}
 	}
 }

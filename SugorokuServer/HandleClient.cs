@@ -72,7 +72,7 @@ namespace SugorokuServer
 
 		private (bool, string) ThrowDice(DiceMessage diceMessage)
 		{
-			var matchInfo = _startedMatch[diceMessage.MatchId];
+			var matchInfo = _startedMatch[diceMessage.MatchKey];
 			if (matchInfo.ActionSchedule.Peek() != diceMessage.PlayerId)
 			{
 				return (false, "まだあなたのターンではありません");
@@ -85,7 +85,7 @@ namespace SugorokuServer
 				Length = dice
 			};
 			matchInfo.ReflectAction(action);
-			_startedMatch[diceMessage.MatchId] = matchInfo;
+			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
 			return (true, $"{dice}");
 		}
