@@ -87,7 +87,7 @@ namespace SugorokuServer
 			matchInfo.ReflectAction(action);
 			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
-			return (true, $"{dice}");
+			return (true, $"{dice} {matchInfo.Players[diceMessage.PlayerId].Position}");
 		}
 
 		private static int Dice()
@@ -169,6 +169,7 @@ namespace SugorokuServer
 			match.StartAtUnixTime = DateTime.Now.ToTimeStamp();
 			match.Turn = 0;
 			_startedMatch.Add(message.MatchKey, new MatchCore(match));
+			_startedMatch[message.MatchKey].Start();
 			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 
