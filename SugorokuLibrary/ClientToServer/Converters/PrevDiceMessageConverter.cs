@@ -17,8 +17,6 @@ namespace SugorokuLibrary.ClientToServer.Converters
             writer.WriteValue(diceMessage.MatchKey);
             writer.WritePropertyName("playerId");
             writer.WriteValue(diceMessage.PlayerId);
-            writer.WritePropertyName("nowPosition");
-            writer.WriteValue(diceMessage.NowPosition);
             writer.WriteEndObject();
         }
 
@@ -26,8 +24,7 @@ namespace SugorokuLibrary.ClientToServer.Converters
             JsonSerializer serializer)
         {
             JObject jObject = JObject.Load(reader);
-            return new PrevDiceMessage((string) jObject["matchKey"]!, (int) jObject["playerId"]!,
-                (int) jObject["nowPosition"]!);
+            return new PrevDiceMessage((string) jObject["matchKey"]!, (int) jObject["playerId"]!);
         }
 
         public override bool CanConvert(Type objectType)

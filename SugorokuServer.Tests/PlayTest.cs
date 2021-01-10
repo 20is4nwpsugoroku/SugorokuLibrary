@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SugorokuLibrary.ClientToServer;
+using SugorokuLibrary.Protocol;
 
 namespace SugorokuServer.Tests
 {
@@ -18,37 +19,58 @@ namespace SugorokuServer.Tests
         {
             new object[]
             {
-                JsonConvert.SerializeObject(new CreatePlayerMessage("ばぬし", "1")),
+                JsonConvert.SerializeObject(new CreatePlayerMessage("ばぬし", "aaa")),
                 true
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new CreatePlayerMessage("ねこ", "1")),
+                JsonConvert.SerializeObject(new CreatePlayerMessage("ねこ", "aaa")),
                 true
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new CloseCreateMessage("1")),
+                JsonConvert.SerializeObject(new CloseCreateMessage("aaa")),
                 true
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new CreatePlayerMessage("いぬ", "1")),
+                JsonConvert.SerializeObject(new CreatePlayerMessage("いぬ", "aaa")),
                 false
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new DiceMessage("1", 1, 0)),
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 1)),
                 true
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new DiceMessage("1", 1, 0)),
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 1)),
                 false
             },
             new object[]
             {
-                JsonConvert.SerializeObject(new DiceMessage("1", 2, 0)),
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 2)),
+                true
+            },
+            new object[]
+            {
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 1)),
+                true
+            },
+            new object[]
+            {
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 2)),
+                true
+            },
+            
+            new object[]
+            {
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 1)),
+                true
+            },
+            new object[]
+            {
+                JsonConvert.SerializeObject(new DiceMessage("aaa", 2)),
                 true
             }
         };
@@ -58,7 +80,7 @@ namespace SugorokuServer.Tests
         {
             var sendingMsg = _handleClient.MakeSendMessage(receivedMsg);
             Console.WriteLine(sendingMsg);
-            var (bufSize, isTrueMessage, msg) = SugorokuLibrary.Protocol.HeaderProtocol.ParseHeader(sendingMsg);
+            var (bufSize, isTrueMessage, msg) = HeaderProtocol.ParseHeader(sendingMsg);
             Assert.AreEqual(bufSize, msg.Length);
             Assert.AreEqual(exp, isTrueMessage);
         }

@@ -81,17 +81,17 @@ namespace SugorokuServer.Tests
 			new object[]
 			{
 				"{\"methodType\":\"dice\",\"playerId\":0,\"nowPosition\":3,\"matchKey\":\"abc\"}",
-				new DiceMessage("abc", 0, 3)
+				new DiceMessage("abc", 0)
 			},
 			new object[]
 			{
 				"{\"methodType\":\"prevDice\",\"playerId\":0,\"nowPosition\":7,\"matchKey\":\"abc\"}",
-				new PrevDiceMessage("abc", 0, 7)
+				new PrevDiceMessage("abc", 0)
 			}
 		};
 
 		[TestCaseSource(nameof(JsonParseTestCases))]
-		public void JsonテキストからCSharpクラスにコンバートできるかテスト(string jsonText, ClientMessage exp)
+		public void JsonテキストからCsharpクラスにコンバートできるかテスト(string jsonText, ClientMessage exp)
 		{
 			var parsed = JsonConvert.DeserializeObject<ClientMessage>(jsonText);
 			Assert.AreEqual(exp, parsed);
