@@ -30,7 +30,7 @@ namespace SugorokuLibrary.ClientToServer.Converters
 
 		public override bool CanConvert(Type objectType)
 		{
-			return objectType == typeof(GetAllMatchesMessage);
+			return objectType == typeof(DiceMessage);
 		}
 	}
 }
