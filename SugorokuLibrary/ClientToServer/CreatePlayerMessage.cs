@@ -17,5 +17,11 @@ namespace SugorokuLibrary.ClientToServer
 			PlayerName = playerName;
 			MatchKey = matchKey;
 		}
+
+		public override bool Equals(object? obj)
+		{
+			if (!(obj is CreatePlayerMessage cr)) return false;
+			return cr.MatchKey == MatchKey && cr.PlayerName == PlayerName;
+		}
 	}
 }

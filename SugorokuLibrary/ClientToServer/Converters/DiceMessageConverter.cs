@@ -11,12 +11,12 @@ namespace SugorokuLibrary.ClientToServer.Converters
 			var diceMessage = (DiceMessage) value!;
 
 			writer.WriteStartObject();
-			writer.WritePropertyName("matchId");
-			writer.WriteValue(diceMessage.MatchId);
+			writer.WritePropertyName("methodType");
+			writer.WriteValue(diceMessage.MethodType);
+			writer.WritePropertyName("matchKey");
+			writer.WriteValue(diceMessage.MatchKey);
 			writer.WritePropertyName("playerId");
 			writer.WriteValue(diceMessage.PlayerId);
-			writer.WritePropertyName("nowPosition");
-			writer.WriteValue(diceMessage.NowPosition);
 			writer.WriteEndObject();
 		}
 
@@ -24,13 +24,12 @@ namespace SugorokuLibrary.ClientToServer.Converters
 			JsonSerializer serializer)
 		{
 			JObject jObject = JObject.Load(reader);
-			return new DiceMessage((string) jObject["matchId"]!, (int) jObject["playerId"]!,
-				(int) jObject["nowPosition"]!);
+			return new DiceMessage((string) jObject["matchKey"]!, (int) jObject["playerId"]!);
 		}
 
 		public override bool CanConvert(Type objectType)
 		{
-			return objectType == typeof(GetAllMatchesMessage);
+			return objectType == typeof(DiceMessage);
 		}
 	}
 }

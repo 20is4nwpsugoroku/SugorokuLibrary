@@ -72,7 +72,7 @@ namespace SugorokuServer
 
 		private (bool, string) ThrowDice(DiceMessage diceMessage)
 		{
-			var matchInfo = _startedMatch[diceMessage.MatchId];
+			var matchInfo = _startedMatch[diceMessage.MatchKey];
 			if (matchInfo.ActionSchedule.Peek() != diceMessage.PlayerId)
 			{
 				return (false, "まだあなたのターンではありません");
@@ -85,9 +85,10 @@ namespace SugorokuServer
 				Length = dice
 			};
 			matchInfo.ReflectAction(action);
-			_startedMatch[diceMessage.MatchId] = matchInfo;
+			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
-			return (true, $"{dice}");
+			var pos = matchInfo.Players[diceMessage.PlayerId].Position;
+			return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
 		}
 
 		private static int Dice()
@@ -169,6 +170,7 @@ namespace SugorokuServer
 			match.StartAtUnixTime = DateTime.Now.ToTimeStamp();
 			match.Turn = 0;
 			_startedMatch.Add(message.MatchKey, new MatchCore(match));
+			_startedMatch[message.MatchKey].Start();
 			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 

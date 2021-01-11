@@ -1,10 +1,17 @@
+using SugorokuLibrary.Match;
+
 namespace SugorokuLibrary.SquareEvents
 {
     public class WaitEvent : ISquareEvent
     {
-        public void Event()
+        public void Event(MatchCore matchCore, int playerId)
         {
-            throw new System.NotImplementedException();
+            matchCore.ActionSchedule.Remove(playerId);
+        }
+
+        public override string ToString()
+        {
+            return "Wait";
         }
     }
 }
