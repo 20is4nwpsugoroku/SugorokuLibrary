@@ -10,5 +10,10 @@ namespace SugorokuLibrary.SquareEvents
         {
             matchCore.Players[playerId].Position -= BackCount;
         }
+
+        public override string ToString()
+        {
+            return $"Prev {BackCount}";
+        }
     }
 }

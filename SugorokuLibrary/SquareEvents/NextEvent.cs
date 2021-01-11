@@ -9,5 +9,10 @@ namespace SugorokuLibrary.SquareEvents
         {
             matchCore.Players[playerId].Position += NextCount;
         }
+
+        public override string ToString()
+        {
+            return $"Next {NextCount}";
+        }
     }
 }

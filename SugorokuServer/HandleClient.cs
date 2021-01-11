@@ -87,7 +87,8 @@ namespace SugorokuServer
 			matchInfo.ReflectAction(action);
 			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
-			return (true, $"{dice} {matchInfo.Players[diceMessage.PlayerId].Position}");
+			var pos = matchInfo.Players[diceMessage.PlayerId].Position;
+			return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
 		}
 
 		private static int Dice()
