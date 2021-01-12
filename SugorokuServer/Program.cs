@@ -13,13 +13,13 @@ namespace SugorokuServer
 			var client = new HandleClient();
 			while (true)
 			{
-				Task.Run(() => Connection(serverSocket, client));
+				var clientSocket = AcceptTcpConnection.CreateClientSocket(serverSocket);
+				Task.Run(() => Connection(clientSocket, client));
 			}
 		}
 
-		private static void Connection(Socket serverSocket, HandleClient handleClient)
+		private static void Connection(Socket clientSocket, HandleClient handleClient)
 		{
-			var clientSocket = AcceptTcpConnection.CreateClientSocket(serverSocket);
 			var recvMsg = HandleClient.ReceiveMessage(clientSocket);
 			var sendMsg = handleClient.MakeSendMessage(recvMsg);
 
