@@ -32,15 +32,8 @@ namespace SugorokuServer
 		{
 			var buf = new byte[RecvBufSize];
 			var recvSize = clientSocket.Receive(buf, RecvBufSize, SocketFlags.None);
-			var msg = Encoding.UTF8.GetString(buf);
+			var msg = Encoding.UTF8.GetString(buf).TrimEnd('\0');
 			var (msgSize, _, body) = HeaderProtocol.ParseHeader(msg);
-
-			while (recvSize >= msgSize)
-			{
-				buf = new byte[RecvBufSize];
-				recvSize += clientSocket.Receive(buf);
-				msg += Encoding.UTF8.GetString(buf);
-			}
 
 			return body;
 		}
@@ -48,7 +41,7 @@ namespace SugorokuServer
 		public static void SendMessage(Socket clientSocket, string message)
 		{
 			var sentAllBytes = clientSocket.Send(Encoding.UTF8.GetBytes(message));
-			while (sentAllBytes >= message.Length)
+			while (sentAllBytes < message.Length)
 			{
 				sentAllBytes += clientSocket.Send(Encoding.UTF8.GetBytes(message[sentAllBytes..]));
 			}

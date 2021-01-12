@@ -23,7 +23,7 @@ namespace SugorokuServer.Tests
 			_handleClient = new HandleClient();
 		}
 
-		private static object[] _testCases =
+		private static readonly object[] TestCases =
 		{
 			new object[]
 			{
@@ -70,7 +70,7 @@ namespace SugorokuServer.Tests
 		[Test]
 		public void 作ったマッチが保持されてるか確認するテスト()
 		{
-			var create1 = (string) ((object[])_testCases[0])[0];
+			var create1 = (string) ((object[])TestCases[0])[0];
 			_handleClient.MakeSendMessage(create1);
 			var request = JsonConvert.SerializeObject(new GetAllMatchesMessage());
 			var response = _handleClient.MakeSendMessage(request);
@@ -78,24 +78,13 @@ namespace SugorokuServer.Tests
 			var (_, _, body) = HeaderProtocol.ParseHeader(response);
 			Console.WriteLine(body);
 			
-			var create2 = (string) ((object[])_testCases[1])[0];
+			var create2 = (string) ((object[])TestCases[1])[0];
 			_handleClient.MakeSendMessage(create2);
 			request = JsonConvert.SerializeObject(new GetAllMatchesMessage());
 			response = _handleClient.MakeSendMessage(request);
 
 			(_, _, body) = HeaderProtocol.ParseHeader(response);
 			Console.WriteLine(body);
-		}
-
-		[TestCaseSource(nameof(_testCases))]
-		public void CreatePlayerTest(string inputMsg, Player exp)
-		{
-			var respondMessage = _handleClient.MakeSendMessage(inputMsg);
-			var (_, _, body) = HeaderProtocol.ParseHeader(respondMessage);
-
-			var deserialized = JsonConvert.DeserializeObject<Player>(body, Settings);
-
-			Assert.AreEqual(exp, deserialized);
 		}
 	}
 }
