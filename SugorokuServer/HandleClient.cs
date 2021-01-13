@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SugorokuLibrary;
@@ -30,21 +29,13 @@ namespace SugorokuServer
 		/// <returns>受信したメッセージのbody</returns>
 		public static string ReceiveMessage(Socket clientSocket)
 		{
-			var buf = new byte[RecvBufSize];
-			var recvSize = clientSocket.Receive(buf, RecvBufSize, SocketFlags.None);
-			var msg = Encoding.UTF8.GetString(buf).TrimEnd('\0');
-			var (msgSize, _, body) = HeaderProtocol.ParseHeader(msg);
-
+			var (_, _, body) = Connection.Receive(clientSocket);
 			return body;
 		}
 
 		public static void SendMessage(Socket clientSocket, string message)
 		{
-			var sentAllBytes = clientSocket.Send(Encoding.UTF8.GetBytes(message));
-			while (sentAllBytes < message.Length)
-			{
-				sentAllBytes += clientSocket.Send(Encoding.UTF8.GetBytes(message[sentAllBytes..]));
-			}
+			Connection.Send(message, clientSocket);
 		}
 
 		public string MakeSendMessage(string receivedMessage)

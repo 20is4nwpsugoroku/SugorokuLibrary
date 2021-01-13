@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 
 namespace SugorokuLibrary.Protocol
 {
@@ -13,7 +14,7 @@ namespace SugorokuLibrary.Protocol
 		/// <returns></returns>
 		public static string MakeHeader(string bodyMessage, bool methodSuccess)
 		{
-			var bodyLength = bodyMessage.Length;
+			var bodyLength = Encoding.UTF8.GetByteCount(bodyMessage);
 			var headerLength = bodyLength.ToString().Length + (methodSuccess ? 4 : 6);
 			return $"{headerLength + bodyLength},{(methodSuccess ? "OK" : "FAIL")}\n{bodyMessage}";
 		}
