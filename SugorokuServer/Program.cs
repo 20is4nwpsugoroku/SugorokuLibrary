@@ -24,6 +24,7 @@ namespace SugorokuServer
 			var sendMsg = handleClient.MakeSendMessage(recvMsg);
 
 			HandleClient.SendMessage(clientSocket, sendMsg);
+			clientSocket.Close();
 		}
 	}
 }
