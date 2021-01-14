@@ -6,14 +6,14 @@ namespace SugorokuLibrary.Protocol
 {
 	public static class Connection
 	{
-		private const int MaxSize = 20;
+		private const int MaxSize = 1024;
 
 		public static (int, bool, string) Receive(Socket partnerSocket)
 		{
 			var buf = new byte[2048];
 			var receivedSize = partnerSocket.Receive(buf, 0, MaxSize, SocketFlags.None);
 			var headerBytes = buf.TakeWhile(b => b != '\n').ToList();
-			var (bodySize, result) = HeaderProtocol.AnalyzeHeader(Encoding.UTF8.GetString(headerBytes.ToArray()));
+			var (bodySize, _) = HeaderProtocol.AnalyzeHeader(Encoding.UTF8.GetString(headerBytes.ToArray()));
 
 			while (receivedSize < bodySize)
 			{

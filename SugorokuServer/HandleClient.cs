@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SugorokuLibrary;
@@ -12,7 +11,6 @@ namespace SugorokuServer
 {
 	public class HandleClient
 	{
-		private const int RecvBufSize = 1024;
 		private readonly Dictionary<string, MatchInfo> _matches = new Dictionary<string, MatchInfo>();
 		private readonly Dictionary<string, MatchCore> _startedMatch = new Dictionary<string, MatchCore>();
 		private int _playerCount;
@@ -21,22 +19,6 @@ namespace SugorokuServer
 		{
 			ContractResolver = new CamelCasePropertyNamesContractResolver()
 		};
-
-		/// <summary>
-		/// クライアント側ソケットからのSendを受信し受け取ったテキストのbodyを返す
-		/// </summary>
-		/// <param name="clientSocket">クライアント側ソケット</param>
-		/// <returns>受信したメッセージのbody</returns>
-		public static string ReceiveMessage(Socket clientSocket)
-		{
-			var (_, _, body) = Connection.Receive(clientSocket);
-			return body;
-		}
-
-		public static void SendMessage(Socket clientSocket, string message)
-		{
-			Connection.Send(message, clientSocket);
-		}
 
 		public string MakeSendMessage(string receivedMessage)
 		{

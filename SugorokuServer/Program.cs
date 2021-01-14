@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Threading.Tasks;
+using SugorokuLibrary.Protocol;
 
 namespace SugorokuServer
 {
@@ -14,16 +15,16 @@ namespace SugorokuServer
 			while (true)
 			{
 				var clientSocket = AcceptTcpConnection.CreateClientSocket(serverSocket);
-				Task.Run(() => Connection(clientSocket, client));
+				Task.Run(() => Communication(clientSocket, client));
 			}
 		}
 
-		private static void Connection(Socket clientSocket, HandleClient handleClient)
+		private static void Communication(Socket clientSocket, HandleClient handleClient)
 		{
-			var recvMsg = HandleClient.ReceiveMessage(clientSocket);
+			var (_, _, recvMsg) = Connection.Receive(clientSocket);
 			var sendMsg = handleClient.MakeSendMessage(recvMsg);
 
-			HandleClient.SendMessage(clientSocket, sendMsg);
+			Connection.Send(sendMsg, clientSocket);
 			clientSocket.Close();
 		}
 	}
