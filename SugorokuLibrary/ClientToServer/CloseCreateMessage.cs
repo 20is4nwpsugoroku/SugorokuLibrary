@@ -20,5 +20,10 @@ namespace SugorokuLibrary.ClientToServer
 			if (!(obj is CloseCreateMessage cl)) return false;
 			return cl.MatchKey == MatchKey;
 		}
+
+		public override int GetHashCode()
+		{
+			return MatchKey.GetHashCode();
+		}
 	}
 }

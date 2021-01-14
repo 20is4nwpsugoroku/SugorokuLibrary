@@ -6,6 +6,7 @@ using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
 using SugorokuLibrary.Match;
 using SugorokuLibrary.Protocol;
+using SugorokuLibrary.ServerToClient;
 
 namespace SugorokuServer
 {
@@ -94,10 +95,8 @@ namespace SugorokuServer
 			// 以下、送られたFieldKeyのフィールドがすでに存在するとき
 			// フィールドのユーザ新規作成が終了してる（ゲームが始まってる）とき、エラーを返す
 			if (_matches[message.MatchKey].CreatePlayerClosed)
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This field's create player is already closed"}
-				}, _settings));
+				return (false,
+					JsonConvert.SerializeObject(new FailedMessage("This field's create player is already closed")));
 
 			var playerData = new Player
 			{
@@ -144,21 +143,12 @@ namespace SugorokuServer
 		{
 			if (!_matches.ContainsKey(message.MatchKey))
 			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This match key's match is not created"}
-				}, _settings));
+				return (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not created")));
 			}
 
-			if (_matches[message.MatchKey].CreatePlayerClosed)
-			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This match is already closed"}
-				}, _settings));
-			}
-
-			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
+			return _matches[message.MatchKey].CreatePlayerClosed
+				? (false, JsonConvert.SerializeObject(new FailedMessage("This match is already closed")))
+				: (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 
 		private (bool, string) GetAllMatches()
