@@ -17,6 +17,7 @@ namespace SugorokuLibrary.ServerToClient.Converters
             JsonConverter converter = (string) jObject["methodType"]! switch
             {
                 "failed" => new FailedMessageConverter(),
+                "diceResult" => new DiceResultMessageConverter(),
                 _ => throw new ArgumentException()
             };
             var newReader = jObject.CreateReader();
