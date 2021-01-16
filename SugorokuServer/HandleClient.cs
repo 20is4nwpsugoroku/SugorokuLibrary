@@ -55,7 +55,9 @@ namespace SugorokuServer
 			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
 			var pos = matchInfo.Players[diceMessage.PlayerId].Position;
-			return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
+			// return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
+			return (true,
+				JsonConvert.SerializeObject(new DiceResultMessage(dice, Field.Squares[pos].Event.ToString()!, pos)));
 		}
 
 		private static int Dice()

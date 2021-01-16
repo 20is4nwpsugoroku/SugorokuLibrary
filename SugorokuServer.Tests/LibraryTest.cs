@@ -82,11 +82,6 @@ namespace SugorokuServer.Tests
 			{
 				"{\"methodType\":\"dice\",\"playerId\":0,\"nowPosition\":3,\"matchKey\":\"abc\"}",
 				new DiceMessage("abc", 0)
-			},
-			new object[]
-			{
-				"{\"methodType\":\"prevDice\",\"playerId\":0,\"nowPosition\":7,\"matchKey\":\"abc\"}",
-				new PrevDiceMessage("abc", 0)
 			}
 		};
 
