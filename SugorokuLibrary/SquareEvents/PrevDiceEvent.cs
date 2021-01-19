@@ -8,5 +8,10 @@ namespace SugorokuLibrary.SquareEvents
         {
             matchCore.ActionSchedule.Insert(0, playerId);
         }
+
+        public override string ToString()
+        {
+            return "PrevDice";
+        }
     }
 }

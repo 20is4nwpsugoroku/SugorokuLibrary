@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
 using SugorokuLibrary.Match;
 using SugorokuLibrary.Protocol;
+using SugorokuLibrary.ServerToClient;
 
 namespace SugorokuServer
 {
 	public class HandleClient
 	{
-		private const int RecvBufSize = 1024;
 		private readonly Dictionary<string, MatchInfo> _matches = new Dictionary<string, MatchInfo>();
 		private readonly Dictionary<string, MatchCore> _startedMatch = new Dictionary<string, MatchCore>();
 		private int _playerCount;
@@ -22,37 +20,6 @@ namespace SugorokuServer
 		{
 			ContractResolver = new CamelCasePropertyNamesContractResolver()
 		};
-
-		/// <summary>
-		/// クライアント側ソケットからのSendを受信し受け取ったテキストのbodyを返す
-		/// </summary>
-		/// <param name="clientSocket">クライアント側ソケット</param>
-		/// <returns>受信したメッセージのbody</returns>
-		public static string ReceiveMessage(Socket clientSocket)
-		{
-			var buf = new byte[RecvBufSize];
-			var recvSize = clientSocket.Receive(buf, RecvBufSize, SocketFlags.None);
-			var msg = Encoding.UTF8.GetString(buf);
-			var (msgSize, _, body) = HeaderProtocol.ParseHeader(msg);
-
-			while (recvSize >= msgSize)
-			{
-				buf = new byte[RecvBufSize];
-				recvSize += clientSocket.Receive(buf);
-				msg += Encoding.UTF8.GetString(buf);
-			}
-
-			return body;
-		}
-
-		public static void SendMessage(Socket clientSocket, string message)
-		{
-			var sentAllBytes = clientSocket.Send(Encoding.UTF8.GetBytes(message));
-			while (sentAllBytes >= message.Length)
-			{
-				sentAllBytes += clientSocket.Send(Encoding.UTF8.GetBytes(message[sentAllBytes..]));
-			}
-		}
 
 		public string MakeSendMessage(string receivedMessage)
 		{
@@ -87,7 +54,10 @@ namespace SugorokuServer
 			matchInfo.ReflectAction(action);
 			_startedMatch[diceMessage.MatchKey] = matchInfo;
 
-			return (true, $"{dice} {matchInfo.Players[diceMessage.PlayerId].Position}");
+			var pos = matchInfo.Players[diceMessage.PlayerId].Position;
+			// return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
+			return (true,
+				JsonConvert.SerializeObject(new DiceResultMessage(dice, Field.Squares[pos].Event.ToString()!, pos)));
 		}
 
 		private static int Dice()
@@ -127,10 +97,8 @@ namespace SugorokuServer
 			// 以下、送られたFieldKeyのフィールドがすでに存在するとき
 			// フィールドのユーザ新規作成が終了してる（ゲームが始まってる）とき、エラーを返す
 			if (_matches[message.MatchKey].CreatePlayerClosed)
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This field's create player is already closed"}
-				}, _settings));
+				return (false,
+					JsonConvert.SerializeObject(new FailedMessage("This field's create player is already closed")));
 
 			var playerData = new Player
 			{
@@ -177,21 +145,12 @@ namespace SugorokuServer
 		{
 			if (!_matches.ContainsKey(message.MatchKey))
 			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This match key's match is not created"}
-				}, _settings));
+				return (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not created")));
 			}
 
-			if (_matches[message.MatchKey].CreatePlayerClosed)
-			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This match is already closed"}
-				}, _settings));
-			}
-
-			return (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
+			return _matches[message.MatchKey].CreatePlayerClosed
+				? (false, JsonConvert.SerializeObject(new FailedMessage("This match is already closed")))
+				: (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
 		}
 
 		private (bool, string) GetAllMatches()

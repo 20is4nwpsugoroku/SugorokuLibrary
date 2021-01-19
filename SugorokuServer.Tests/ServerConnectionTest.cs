@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Net.Sockets;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SugorokuLibrary.ClientToServer;
@@ -6,19 +7,29 @@ using SugorokuLibrary.Protocol;
 
 namespace SugorokuServer.Tests
 {
-    public class PlayTest
+    public class ServerConnectionTest
     {
-        private HandleClient _handleClient;
+        private Socket _socket;
+
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _handleClient = new HandleClient();
+            // Program.Main(new string[] { });
         }
 
-        // サーバーに送る通信要求のbody文字列はClientToServerにあるクラスのインスタンスを作成し
-        // それをSerializeObject()すると作成できます。
-        // 作成できたbodyをLibrary/Protocol/HeaderProtocol.MakeHeader(body, true)で投げて
-        // 返った文字列を送信してください。
+        [SetUp]
+        public void SetUp()
+        {
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _socket.Connect("127.0.0.1", 9500);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _socket.Close();
+        }
+
         private static object[] _sugorokuPlayTestCase =
         {
             // CreatePlayerMessage は2引数に取る文字列(MatchKey)で開かれている部屋があればそこに参加、
@@ -37,7 +48,6 @@ namespace SugorokuServer.Tests
                 true
             },
             // aaaという部屋の新規のプレイヤーの参加を締め切ります。
-            // (TODO このメッセージを送ったのが「ばぬし」かどうかの判定はまだ書いていません)
             new object[]
             {
                 JsonConvert.SerializeObject(new CloseCreateMessage("aaa")),
@@ -78,7 +88,6 @@ namespace SugorokuServer.Tests
                 JsonConvert.SerializeObject(new DiceMessage("aaa", 2)),
                 true
             },
-            
             new object[]
             {
                 JsonConvert.SerializeObject(new DiceMessage("aaa", 1)),
@@ -92,13 +101,11 @@ namespace SugorokuServer.Tests
         };
 
         [TestCaseSource(nameof(_sugorokuPlayTestCase))]
-        public void GamePlayingTest(string receivedMsg, bool exp)
+        public void ああああ(string input, bool exp)
         {
-            var sendingMsg = _handleClient.MakeSendMessage(receivedMsg);
-            Console.WriteLine(sendingMsg);
-            var (bufSize, isTrueMessage, msg) = HeaderProtocol.ParseHeader(sendingMsg);
-            Assert.AreEqual(bufSize, msg.Length);
-            Assert.AreEqual(exp, isTrueMessage);
+            var withHeader = HeaderProtocol.MakeHeader(input, true);
+            var (s, r, m) = Connection.SendAndRecvMessage(withHeader, _socket);
+            Console.WriteLine($"{s} {r} {m}");
         }
     }
 }

@@ -8,5 +8,10 @@ namespace SugorokuLibrary.SquareEvents
         {
             matchCore.ActionSchedule.Remove(playerId);
         }
+
+        public override string ToString()
+        {
+            return "Wait";
+        }
     }
 }

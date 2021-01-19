@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Text;
 
 namespace SugorokuLibrary.Protocol
 {
@@ -12,7 +14,9 @@ namespace SugorokuLibrary.Protocol
 		/// <returns></returns>
 		public static string MakeHeader(string bodyMessage, bool methodSuccess)
 		{
-			return $"{bodyMessage.Length},{(methodSuccess ? "OK" : "FAIL")}\n{bodyMessage}";
+			var bodyLength = Encoding.UTF8.GetByteCount(bodyMessage);
+			var headerLength = bodyLength.ToString().Length + (methodSuccess ? 4 : 6);
+			return $"{headerLength + bodyLength},{(methodSuccess ? "OK" : "FAIL")}\n{bodyMessage}";
 		}
 
 		/// <summary>
@@ -26,7 +30,15 @@ namespace SugorokuLibrary.Protocol
 			var lines = msg.Split("\n");
 			var headerSplit = lines[0].Split(',');
 			var (sizeStr, functionSuccess, bodyLines) = (headerSplit[0], headerSplit[1], string.Concat(lines.Skip(1)));
-			return (int.Parse(sizeStr), functionSuccess == "OK", bodyLines);
+			return (int.Parse(sizeStr) + lines[0].Length + 1, functionSuccess == "OK", bodyLines);
+		}
+
+		public static (int, bool) AnalyzeHeader(string header)
+		{
+			var headerSplit = header.Split(',');
+
+			Console.WriteLine($"Parsing Size: {headerSplit[0]}");
+			return (int.Parse(headerSplit[0]), headerSplit[1] == "OK");
 		}
 	}
 }

@@ -7,5 +7,10 @@ namespace SugorokuLibrary.SquareEvents
         public void Event(MatchCore matchCore, int playerId)
         {
         }
+
+        public override string ToString()
+        {
+            return "None";
+        }
     }
 }

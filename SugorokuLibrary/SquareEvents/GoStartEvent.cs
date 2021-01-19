@@ -8,5 +8,10 @@ namespace SugorokuLibrary.SquareEvents
         {
             matchCore.Players[playerId].Position = 0;
         }
+
+        public override string ToString()
+        {
+            return "GoStart";
+        }
     }
 }
