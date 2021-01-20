@@ -11,11 +11,11 @@ namespace SugorokuServer
 			// Write Server Port
 			var serverSocket = CreateTcpServerSocket.CreateServerSocket(9500);
 
-			var client = new HandleClient();
+			var handler = new HandleClient();
 			while (true)
 			{
 				var clientSocket = AcceptTcpConnection.CreateClientSocket(serverSocket);
-				Task.Run(() => Communication(clientSocket, client));
+				Task.Run(() => Communication(clientSocket, handler));
 			}
 		}
 
