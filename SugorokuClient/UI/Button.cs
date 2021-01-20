@@ -189,7 +189,7 @@ namespace SugorokuClient.UI
 		/// ボタンが左クリックされたかどうか
 		/// </summary>
 		/// <returns>true: ボタンが左クリックされた</returns>
-		public bool Clicked()
+		public bool LeftClicked()
 		{
 			return this.MouseOver() || InputManager.MouseL_Down();
 		}
