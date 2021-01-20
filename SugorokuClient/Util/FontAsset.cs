@@ -132,10 +132,7 @@ namespace SugorokuClient.Util
 		/// </summary>
 		public static void ClearFont()
 		{
-			foreach (var i in FontStore.Values)
-			{
-				DeleteFont(i);
-			}
+			DX.InitFontToHandle();
 		}
 
 	}
