@@ -10,7 +10,9 @@ namespace SugorokuClient.Util
 	/// </summary>
 	public static class InputManager
 	{
-		/// <value> キーボード入力用のバッファー </value>
+		/// <value> 
+		/// キーボード入力用のバッファー 
+		/// </value>
 		private static byte[] KeyState { get; set; } = new byte[256];
 		
 
