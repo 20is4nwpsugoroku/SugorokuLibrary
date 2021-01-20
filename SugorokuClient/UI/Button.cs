@@ -16,22 +16,22 @@ namespace SugorokuClient.UI
 		/// <summary>
 		/// 左上のX座標
 		/// </summary>
-		private int x1;
+		public int x1 { get; private set; }
 
 		/// <summary>
 		/// 左上のY座標
 		/// </summary>
-		private int y1;
+		public int y1 { get; private set; }
 
 		/// <summary>
 		/// 右下のX座標
 		/// </summary>
-		private int x2;
+		public int x2 { get; private set; }
 
 		/// <summary>
 		/// 右下のY座標
 		/// </summary>
-		private int y2;
+		public int y2 { get; private set; }
 
 		
 		/// <summary>
@@ -55,7 +55,25 @@ namespace SugorokuClient.UI
 		/// <summary>
 		/// ボタンに内に描画されるテキストの内容
 		/// </summary>
-		private string Text { get; set; } = "";
+		public string Text { get; set; } = "";
+
+		/// <summary>
+		/// フォントのハンドル
+		/// </summary>
+		private int FontHandle { get; set; } = -1;
+
+
+		/// <summary>
+		/// フォントの描画位置のX座標
+		/// </summary>
+		private int TextPosX { get; set; } = 0;
+
+
+		/// <summary>
+		/// フォン多の描画位置のY座標
+		/// </summary>
+		private int TextPosY { get; set; } = 0;
+
 
 
 		/// <summary>
@@ -98,12 +116,22 @@ namespace SugorokuClient.UI
 		/// <param name="mainColor"></param>
 		/// <param name="text">ボタン上に描画する文字列</param>
 		/// <param name="textColor"></param>
-		public Button(int x, int y, int width, int height, uint mainColor, string text, uint textColor) : this(x, y, width, height, mainColor)
+		public Button(int x, int y, int width, int height, uint mainColor, string text, uint textColor, int fontHandle) : this(x, y, width, height, mainColor)
 		{
 			TextColor = textColor;
+			Text = text;
+			FontHandle = fontHandle;
+			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
+			var textHeight = FontAsset.GetDrawTextWidth(fontHandle, text, DX.TRUE);
+			TextPosX = x + width / 2 - textWidth / 2;
+			TextPosY = y + height / 2 - textHeight / 2;
 		}
 
 
+		/// <summary>
+		/// ボタンにマウスが重なっているかどうか
+		/// </summary>
+		/// <returns>true: ボタンがマウスに重なっている</returns>
 		public bool MouseOver()
 		{
 			var pos = InputManager.GetMousePos();
@@ -112,32 +140,55 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// マウスが重なっている場合、重ねて色を描画する
+		/// </summary>
 		public void MouseOverDraw()
 		{
+			if (!MouseOver()) return;
 			DX.SetDrawBlendMode(DX.DX_BLENDMODE_ALPHA, 100);
-			DX.DrawBox(x1, y1, x2, y2, MouseOverColor, 1);
+			DX.DrawBox(x1, y1, x2, y2, MouseOverColor, DX.TRUE);
 			DX.SetDrawBlendMode(DX.DX_BLENDMODE_NOBLEND, 0);
 		}
 
 
+		/// <summary>
+		/// マウスが重なっている場合、重ねて色を描画する。透明度設定なし
+		/// </summary>
 		public void MouseOverDrawWithoutMODESETTING()
 		{
-			DX.DrawBox(x1, y1, x2, y2, MouseOverColor, 1);
+			if (!MouseOver()) return;
+			DX.DrawBox(x1, y1, x2, y2, MouseOverColor, DX.TRUE);
 		}
 
 
+		/// <summary>
+		/// ボタンを描画する
+		/// </summary>
 		public void Draw()
 		{
-			DX.DrawBox(x1, y1, x2, y2, MainColor, 1);
+			DX.DrawBox(x1, y1, x2, y2, MainColor, DX.TRUE);
+			if (FontHandle >= 0)
+			{
+				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
+			}
+			
 		}
 
 
+		/// <summary>
+		/// ボタンの枠を描画する
+		/// </summary>
 		public void DrawFrame()
 		{
-			DX.DrawBox(x1, y1, x2, y2, MainColor, 0);
+			DX.DrawBox(x1, y1, x2, y2, MainColor, DX.FALSE);
 		}
 
 
+		/// <summary>
+		/// ボタンが左クリックされたかどうか
+		/// </summary>
+		/// <returns>true: ボタンが左クリックされた</returns>
 		public bool Clicked()
 		{
 			return this.MouseOver() || InputManager.MouseL_Down();
