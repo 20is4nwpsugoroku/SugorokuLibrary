@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DxLibDLL;
+using SugorokuClient.Util;
+using SugorokuClient.Scene;
 
 namespace SugorokuClient
 {
@@ -19,14 +21,36 @@ namespace SugorokuClient
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			Form1 form = new Form1();
-			form.Show();
-			while (DX.ProcessMessage() != -1 && form.Created) //Application.Runしないで自分でループを作る
+			//Form1 form = new Form1();
+			//form.Show();
+			// ウインドウモードで起動
+			DX.ChangeWindowMode(DX.TRUE);
+			DX.SetGraphMode(640, 480, 32);
+			DX.DxLib_Init();
+			// 描画先を裏画面に変更
+			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
+			DX.SetMainWindowText("○×ゲーム");
+			SceneManager.Initialize();
+			IScene title = new Title();
+			SceneManager.AddScene("title", title);
+			SceneManager.ChangeScene("title");
+			while (DX.ProcessMessage() != -1) //Application.Runしないで自分でループを作る
 			{
-				form.MainLoop();
-				Application.DoEvents();
+				MainLoop();
+				//Application.DoEvents();
 			}
+
+
 			//Application.Run(new Form1());
+		}
+
+		//ループする関数
+		private static void MainLoop()
+		{
+			if (SceneManager.Update() == -1)
+			{
+				DX.DxLib_End();
+			}
 		}
 	}
 }

@@ -41,6 +41,12 @@ namespace SugorokuClient.UI
 
 
 		/// <summary>
+		/// ボタンの枠の色
+		/// </summary>
+		public uint FrameColor { get; set; } = DX.GetColor(128, 128, 128);
+
+
+		/// <summary>
 		/// ボタンに半透明の色を重ねて描画する際の色
 		/// </summary>
 		public uint MouseOverColor { get; set; } = DX.GetColor(50, 50, 50);
@@ -60,19 +66,19 @@ namespace SugorokuClient.UI
 		/// <summary>
 		/// フォントのハンドル
 		/// </summary>
-		private int FontHandle { get; set; } = -1;
+		protected int FontHandle { get; set; } = -1;
 
 
 		/// <summary>
 		/// フォントの描画位置のX座標
 		/// </summary>
-		private int TextPosX { get; set; } = 0;
+		protected int TextPosX { get; set; } = 0;
 
 
 		/// <summary>
 		/// フォン多の描画位置のY座標
 		/// </summary>
-		private int TextPosY { get; set; } = 0;
+		protected int TextPosY { get; set; } = 0;
 
 
 
@@ -103,6 +109,7 @@ namespace SugorokuClient.UI
 		public Button(int x, int y, int width, int height, uint mainColor) : this(x, y, width, height)
 		{
 			MainColor = mainColor;
+			FrameColor = mainColor;
 		}
 
 
@@ -124,7 +131,7 @@ namespace SugorokuClient.UI
 			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
 			var textHeight = FontAsset.GetDrawTextWidth(fontHandle, text, DX.TRUE);
 			TextPosX = x + width / 2 - textWidth / 2;
-			TextPosY = y + height / 2 - textHeight / 2;
+			TextPosY = y + height / 2 - textHeight / 3;
 		}
 
 
@@ -191,7 +198,7 @@ namespace SugorokuClient.UI
 		/// <returns>true: ボタンが左クリックされた</returns>
 		public bool LeftClicked()
 		{
-			return this.MouseOver() || InputManager.MouseL_Down();
+			return this.MouseOver() && InputManager.MouseL_Down();
 		}
 
 	}

@@ -24,7 +24,7 @@ namespace SugorokuClient.Util
 		/// <param name="size">フォントのサイズ</param>
 		/// <param name="thick">フォントの太さ</param>
 		/// <param name="fontType">フォントのタイプ</param>
-		/// <returns></returns>
+		/// <returns>フォントの識別子</returns>
 		public static int Register(string assetName,string fontName = null, int size = -1, int thick = -1, int fontType = -1)
 		{
 			var ret = DX.CreateFontToHandle(fontName, size, thick, fontType);
@@ -37,7 +37,7 @@ namespace SugorokuClient.Util
 		/// Registerで作成したフォントを名前を指定して取得する
 		/// </summary>
 		/// <param name="assetName">作成したフォントの名前</param>
-		/// <returns></returns>
+		/// <returns>フォントの識別子</returns>
 		public static int GetFontHandle(string assetName)
 		{
 			int ret = 0;
@@ -113,17 +113,8 @@ namespace SugorokuClient.Util
 		/// <param name="assetName">作成したフォントの名前</param>
 		public static void DeleteFont(string assetName)
 		{
-			DeleteFont(GetFontHandle(assetName));
-		}
-
-
-		/// <summary>
-		/// フォントの識別子を指定してフォントを削除する関数
-		/// </summary>
-		/// <param name="fontHandle">作成したフォントの識別子</param>
-		public static void DeleteFont(int fontHandle)
-		{
-			DX.DeleteFontToHandle(fontHandle);
+			DX.DeleteFontToHandle(GetFontHandle(assetName));
+			FontStore.Remove(assetName);
 		}
 
 
@@ -133,6 +124,7 @@ namespace SugorokuClient.Util
 		public static void ClearFont()
 		{
 			DX.InitFontToHandle();
+			FontStore.Clear();
 		}
 
 	}

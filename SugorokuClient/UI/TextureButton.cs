@@ -159,7 +159,10 @@ namespace SugorokuClient.UI
 			this.x4 = x4;
 			this.y4 = y4;
 			SetVector(x1, y1, x2, y2, x3, y3, x4, y4);
-			isRect = false;
+			isRect = (x1 - x4) == 0 
+				&& (x2 - x3) == 0
+				&& (y1 - y2) == 0
+				&& (y4 - y3) == 0;
 		}
 
 
@@ -200,7 +203,7 @@ namespace SugorokuClient.UI
 
 
 		/// <summary>
-		/// マウスが重なっている場合、重ねて色を描画する
+		/// マウスが重なっている場合、少し暗めに描画する
 		/// </summary>
 		public void MouseOverDraw()
 		{

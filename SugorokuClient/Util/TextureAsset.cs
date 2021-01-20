@@ -175,17 +175,8 @@ namespace SugorokuClient.Util
 		/// <param name="assetName">作成したテクスチャの名前</param>
 		public static void DeleteTexture(string assetName)
 		{
-			DeleteTexture(GetTextureHandle(assetName));
-		}
-
-
-		/// <summary>
-		/// テクスチャの識別子を指定してテクスチャを削除する関数
-		/// </summary>
-		/// <param name="textureHandle">作成したテクスチャの識別子</param>
-		public static void DeleteTexture(int textureHandle)
-		{
-			DX.DeleteGraph(textureHandle);
+			DX.DeleteGraph(GetTextureHandle(assetName));
+			TextureStore.Remove(assetName);
 		}
 
 
@@ -195,6 +186,7 @@ namespace SugorokuClient.Util
 		public static void ClearTexture()
 		{
 			DX.InitGraph();
+			TextureStore.Clear();
 		}
 
 	}

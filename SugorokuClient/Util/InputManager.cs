@@ -61,8 +61,9 @@ namespace SugorokuClient.Util
 		/// </summary>
 		private static void MouseInputUpdate()
 		{
-			int bufX, bufY, mouseInput;
+			int bufX, bufY, mouseInput, winX, winY;
 			DX.GetMousePoint(out bufX, out bufY);
+			DX.GetWindowPosition(out winX, out winY);
 			MousePosX = bufX;
 			MousePosY = bufY;
 			mouseInput = DX.GetMouseInput();

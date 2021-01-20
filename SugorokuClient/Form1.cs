@@ -24,6 +24,7 @@ namespace SugorokuClient
 		{
 			this.ClientSize = new Size(640, 480);
 			DX.SetUserWindow(this.Handle); //DxLibの親ウインドウをこのフォームウインドウにセット
+			DX.SetGraphMode(640, 480, 32);
 			DX.DxLib_Init();
 			// 描画先を裏画面に変更
 			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
