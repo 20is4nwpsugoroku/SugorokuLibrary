@@ -52,7 +52,8 @@ namespace SugorokuClientApp
 				}
 
 				var playerData = JsonConvert.DeserializeObject<Player>(recvMsg);
-				Application.Current.Properties["playerData"] = playerData;
+				// Application.Current.Properties["playerData"] = playerData;
+				Application.Current.MainPage = new WaitOtherPlayerPage(playerData);
 			}
 			catch (Exception exception)
 			{
