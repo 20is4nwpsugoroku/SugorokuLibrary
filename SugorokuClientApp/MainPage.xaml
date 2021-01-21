@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SugorokuClientApp.MainPage">
+
+    <StackLayout>
+        <Label FontSize="Title" Text="すごろく" />
+        <Editor x:Name="ServerIpAddress" Text="127.0.0.1" Placeholder="サーバーのIPアドレス" />
+        <Editor x:Name="ServerPort" Text="9235" Placeholder="サーバーのポート番号" />
+        <Editor x:Name="PlayerNameEditor" Placeholder="プレイヤーの名前" />
+        <Editor x:Name="RoomNameEditor" Placeholder="部屋名" />
+        <Button Text="スタート" Clicked="OnStartButtonClicked"/>
+    </StackLayout>
+
+</ContentPage>
