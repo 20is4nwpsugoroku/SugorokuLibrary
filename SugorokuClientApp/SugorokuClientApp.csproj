@@ -18,4 +18,13 @@
   <ItemGroup>
     <ProjectReference Include="..\SugorokuLibrary\SugorokuLibrary.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ImageResource" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ImageResource\sugorokuField.png" />
+    <EmbeddedResource Include="ImageResource\sugorokuField.png" />
+  </ItemGroup>
 </Project>
