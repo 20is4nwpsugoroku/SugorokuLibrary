@@ -14,7 +14,6 @@ namespace SugorokuServer
 	{
 		private readonly Dictionary<string, MatchInfo> _matches = new Dictionary<string, MatchInfo>();
 		private readonly Dictionary<string, MatchCore> _startedMatch = new Dictionary<string, MatchCore>();
-		private int _playerCount;
 
 		private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
 		{
@@ -71,7 +70,7 @@ namespace SugorokuServer
 			var hostPlayerData = new Player
 			{
 				IsHost = true,
-				PlayerID = ++_playerCount,
+				PlayerID = 1,
 				PlayerName = message.PlayerName,
 				Position = 0,
 				MatchKey = message.MatchKey
@@ -79,7 +78,7 @@ namespace SugorokuServer
 
 			var match = new MatchInfo
 			{
-				HostPlayerID = _playerCount,
+				HostPlayerID = 1,
 				Players = new List<Player> {hostPlayerData},
 				MatchKey = message.MatchKey,
 			};
