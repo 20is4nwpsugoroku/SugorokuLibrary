@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Sockets;
 using Newtonsoft.Json;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
@@ -36,10 +35,13 @@ namespace SugorokuClientApp
 				return;
 			}
 
-			using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			Application.Current.Properties["serverIpAddress"] = serverIp;
+			Application.Current.Properties["serverPort"] = port;
+
+			Player playerData = null;
 			try
 			{
-				socket.Connect(serverIp, port);
+				using var socket = ConnectServer.CreateSocket(serverIp, port);
 				var createPlayerMessage = new CreatePlayerMessage(playerName, roomName);
 				var msg = JsonConvert.SerializeObject(createPlayerMessage);
 				var (_, result, recvMsg) = Connection.SendAndRecvMessage(msg, socket, true);
@@ -51,14 +53,20 @@ namespace SugorokuClientApp
 					return;
 				}
 
-				var playerData = JsonConvert.DeserializeObject<Player>(recvMsg);
+				playerData = JsonConvert.DeserializeObject<Player>(recvMsg);
 				// Application.Current.Properties["playerData"] = playerData;
-				Application.Current.MainPage = new WaitOtherPlayerPage(playerData);
 			}
 			catch (Exception exception)
 			{
 				Console.WriteLine(exception);
 				await DisplayAlert("エラー", "ソケットのConnectで例外が発生しました。やり直してください。", "OK");
+			}
+			finally
+			{
+				if (playerData != null)
+				{
+					Application.Current.MainPage = new WaitOtherPlayerPage(playerData);	
+				}
 			}
 		}
 	}
