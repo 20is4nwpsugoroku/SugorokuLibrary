@@ -17,16 +17,18 @@ namespace SugorokuClient
 		[STAThread]
 		static void Main()
 		{
-			Application.SetHighDpiMode(HighDpiMode.SystemAware);
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+			//Application.SetHighDpiMode(HighDpiMode.SystemAware);
+			//Application.EnableVisualStyles();
+			//Application.SetCompatibleTextRenderingDefault(false);
 
 			//Form1 form = new Form1();
 			//form.Show();
 			// ウインドウモードで起動
+
 			DX.ChangeWindowMode(DX.TRUE);
-			DX.SetGraphMode(640, 480, 32);
+			DX.SetGraphMode(1280, 960, 32);
 			DX.DxLib_Init();
+
 			// 描画先を裏画面に変更
 			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
 			DX.SetMainWindowText("○×ゲーム");
@@ -39,8 +41,6 @@ namespace SugorokuClient
 				MainLoop();
 				//Application.DoEvents();
 			}
-
-
 			//Application.Run(new Form1());
 		}
 

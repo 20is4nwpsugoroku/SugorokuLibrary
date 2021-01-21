@@ -45,6 +45,7 @@ namespace SugorokuClient.Scene
 			{
 				DX.ClearDrawScreen();
 				CurrentScene.Draw();
+				DX.ScreenFlip();
 			}
 			return DX.ProcessMessage();
 		}

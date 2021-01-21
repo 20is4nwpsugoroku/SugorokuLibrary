@@ -92,9 +92,9 @@ namespace SugorokuClient.UI
 		public Button(int x, int y, int width, int height)
 		{
 			this.x1 = x;
-			this.x2 = y;
-			this.x2 = width - x1;
-			this.y2 = height - y1;
+			this.y1 = y;
+			this.x2 = width + x1;
+			this.y2 = height + y1;
 		}
 
 
@@ -170,16 +170,52 @@ namespace SugorokuClient.UI
 
 
 		/// <summary>
+		/// マウスが重なっている場合、重ねて色をテキストにのみ描画する
+		/// </summary>
+		public void MouseOverDrawText()
+		{
+			if (!MouseOver()) return;
+			DX.SetDrawBlendMode(DX.DX_BLENDMODE_ALPHA, 100);
+			if (FontHandle >= 0)
+			{
+				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, MouseOverColor);
+			}
+			DX.SetDrawBlendMode(DX.DX_BLENDMODE_NOBLEND, 0);
+		}
+
+
+		/// <summary>
+		/// マウスが重なっている場合、重ねて色をテキストのみ描画する。透明度設定なし
+		/// </summary>
+		public void MouseOverDrawTextWithoutMODESETTING()
+		{
+			if (!MouseOver()) return;
+			if (FontHandle >= 0)
+			{
+				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, MouseOverColor);
+			}
+		}
+
+
+		/// <summary>
 		/// ボタンを描画する
 		/// </summary>
 		public void Draw()
 		{
 			DX.DrawBox(x1, y1, x2, y2, MainColor, DX.TRUE);
+			DrawText();
+		}
+
+
+		/// <summary>
+		/// テキストのみ描画する
+		/// </summary>
+		public void DrawText()
+		{
 			if (FontHandle >= 0)
 			{
 				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
 			}
-			
 		}
 
 

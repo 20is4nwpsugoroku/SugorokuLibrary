@@ -63,6 +63,35 @@ namespace SugorokuClient.UI
 		private int TextureHandle { get; set; }
 
 
+		/// <summary>
+		/// ボタン内に配置されるテキストの色
+		/// </summary>
+		public uint TextColor { get; set; } = DX.GetColor(30, 30, 30);
+
+
+		/// <summary>
+		/// ボタンに内に描画されるテキストの内容
+		/// </summary>
+		public string Text { get; set; } = "";
+
+		/// <summary>
+		/// フォントのハンドル
+		/// </summary>
+		private int FontHandle { get; set; } = -1;
+
+
+		/// <summary>
+		/// フォントの描画位置のX座標
+		/// </summary>
+		private int TextPosX { get; set; } = 0;
+
+
+		/// <summary>
+		/// フォン多の描画位置のY座標
+		/// </summary>
+		private int TextPosY { get; set; } = 0;
+
+
 
 		#region あたり判定用
 
@@ -137,6 +166,31 @@ namespace SugorokuClient.UI
 
 
 		/// <summary>
+		///デフォルトコンストラクタ+テクスチャの幅と高さを指定する
+		/// </summary>
+		/// <param name="textureHandle"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public TextureButton(int textureHandle, int x, int y, int width, int height, string text, uint textColor, int fontHandle) : this(textureHandle)
+		{
+			x1 = x; y1 = y;
+			x2 = x + width; y2 = y;
+			x3 = x + width; y3 = y + height;
+			x4 = x; y4 = y + height;
+			SetVector(x1, y1, x2, y2, x3, y3, x4, y4);
+			Text = text;
+			TextColor = textColor;
+			FontHandle = fontHandle;
+			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
+			var textHeight = DX.GetFontSizeToHandle(fontHandle);
+			TextPosX = x + width / 2 - textWidth / 2;
+			TextPosY = y + height / 2 - textHeight / 2;
+		}
+
+
+		/// <summary>
 		/// 画像の識別子と、角の座標を指定する
 		/// </summary>
 		/// <param name="textureHandle">画像の識別子</param>
@@ -175,8 +229,8 @@ namespace SugorokuClient.UI
 			var pos = InputManager.GetMousePos();
 			if (isRect)
 			{
-				return (pos.Item1 >= x1 && pos.Item1 <= x2
-					&& pos.Item2 >= y1 && pos.Item2 <= y2);
+				return (pos.Item1 >= x1 && pos.Item1 <= x3
+					&& pos.Item2 >= y1 && pos.Item2 <= y3);
 			}
 			else
 			{
@@ -208,7 +262,7 @@ namespace SugorokuClient.UI
 		public void MouseOverDraw()
 		{
 			if (!MouseOver()) return;
-			DX.SetDrawBright(180, 180, 180);
+			DX.SetDrawBright(100, 100, 100);
 			TextureAsset.DrawModi(TextureHandle, x1, y1, x2, y2, x3, y3, x4, y4, DX.TRUE);
 			DX.SetDrawBright(255, 255, 255);
 		}
@@ -224,12 +278,24 @@ namespace SugorokuClient.UI
 
 
 		/// <summary>
+		/// テキストのみ描画する
+		/// </summary>
+		public void DrawText()
+		{
+			if (FontHandle >= 0)
+			{
+				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
+			}
+		}
+
+
+		/// <summary>
 		/// ボタンが左クリックされたかどうか
 		/// </summary>
 		/// <returns>true: ボタンが左クリックされた</returns>
 		public bool LeftClicked()
 		{
-			return MouseOver() || InputManager.MouseL_Down();
+			return MouseOver() && InputManager.MouseL_Down();
 		}
 	}
 }

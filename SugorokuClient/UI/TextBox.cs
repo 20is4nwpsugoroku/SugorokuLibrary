@@ -19,9 +19,10 @@ namespace SugorokuClient.UI
 
 
 		public TextBox(int x, int y, int width, int height, int fontHandle) 
-			: base(x, y, width, height, DX.GetColor(255, 0, 0), "aiue", DX.GetColor(50, 50, 50), fontHandle)
+			: base(x, y, width, height, DX.GetColor(255, 255, 255), "", DX.GetColor(50, 50, 50), fontHandle)
 		{
 			TextPosX = x;
+			FrameColor = TextColor;
 		}
 
 
@@ -65,6 +66,7 @@ namespace SugorokuClient.UI
 		public void Draw()
 		{
 			base.Draw();
+			base.DrawFrame();
 			if (isInputActive)
 			{
 				DX.DrawKeyInputString(TextPosX, TextPosY, KeyInputHandle);

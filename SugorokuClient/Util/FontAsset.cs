@@ -103,7 +103,7 @@ namespace SugorokuClient.Util
 		/// <returns>描画される文字列の幅</returns>
 		public static int GetDrawTextWidth(int fontHandle, string text, int verticalFlag = DX.FALSE)
 		{
-			return DX.GetDrawStringWidthToHandle(text, text.Length, fontHandle, verticalFlag);
+			return DX.GetDrawStringWidthToHandle(text, (int)DX.strlenDx(text), fontHandle, verticalFlag);
 		}
 
 
