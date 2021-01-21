@@ -6,12 +6,14 @@ namespace SugorokuLibrary.ClientToServer
 {
 	/// <summary>
 	/// すごろくを降る要求メッセージを作成するクラスです
+	/// </summary>
+	/// <code>
 	/// var dice = new DiceMessage("部屋名", プレイヤーID);
 	/// var jsonMsg = JsonConvert.SerializeObject(dice);
 	/// var (_, result, msg) = SugorokuLibrary.Protocol.Connection.SendAndRecvMessage(jsonMsg, socket);
 	/// if (result) var diceResult = JsonConvert.DeserializeObject&lt;DiceResultMessage&gt;(msg);
 	/// else var fail = JsonConvert.DeserializeObject&lt;FailedMessage&gt;(msg);
-	/// </summary>
+	/// </code>
 	[JsonConverter(typeof(DiceMessageConverter))]
 	public class DiceMessage : ClientMessage
 	{

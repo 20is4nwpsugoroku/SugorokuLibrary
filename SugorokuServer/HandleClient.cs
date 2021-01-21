@@ -42,7 +42,7 @@ namespace SugorokuServer
 			var matchInfo = _startedMatch[diceMessage.MatchKey];
 			if (matchInfo.ActionSchedule.Peek() != diceMessage.PlayerId)
 			{
-				return (false, "まだあなたのターンではありません");
+				return (false, JsonConvert.SerializeObject(new FailedMessage("まだあなたのターンではありません")));
 			}
 
 			var dice = Dice();
@@ -98,13 +98,13 @@ namespace SugorokuServer
 			// フィールドのユーザ新規作成が終了してる（ゲームが始まってる）とき、エラーを返す
 			if (_matches[message.MatchKey].CreatePlayerClosed)
 				return (false,
-					JsonConvert.SerializeObject(new FailedMessage("This field's create player is already closed")));
+					JsonConvert.SerializeObject(new FailedMessage("すでにゲームが開始しているか、プレイヤーが定員の4名になったため参加できませんでした")));
 
 			var playerData = new Player
 			{
 				MatchKey = message.MatchKey,
 				IsHost = false,
-				PlayerID = ++_playerCount,
+				PlayerID = _matches[message.MatchKey].Players.Count + 1,
 				PlayerName = message.PlayerName,
 				Position = 0
 			};
@@ -117,18 +117,12 @@ namespace SugorokuServer
 		{
 			if (!_matches.ContainsKey(message.MatchKey))
 			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This key's field is not created"}
-				}, _settings));
+				return (false, JsonConvert.SerializeObject(new FailedMessage("This key's field is not created")));
 			}
 
 			if (_matches[message.MatchKey].CreatePlayerClosed)
 			{
-				return (false, JsonConvert.SerializeObject(new Dictionary<string, string>
-				{
-					{"message", "This key's field is already closed"}
-				}, _settings));
+				return (false, JsonConvert.SerializeObject(new FailedMessage("This key's field is already closed")));
 			}
 
 			var match = _matches[message.MatchKey];
