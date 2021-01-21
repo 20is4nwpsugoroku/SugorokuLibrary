@@ -15,9 +15,14 @@ namespace SugorokuLibrary
 
 		///<value>ホストのプレイヤーID</value>
 		public int HostPlayerID { get; set; }
-		
+
+		private bool _createPlayerClosed;
 		///<value>ユーザー追加を終了しているか</value>
-		public bool CreatePlayerClosed { get; set; }
+		public bool CreatePlayerClosed
+		{
+			get => _createPlayerClosed || Players.Count >= 4;
+			set => _createPlayerClosed = value;
+		}
 
 		///<value>現在のターン数</value>
 		public int Turn { get; set; }
