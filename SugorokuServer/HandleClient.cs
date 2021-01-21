@@ -137,14 +137,9 @@ namespace SugorokuServer
 
 		private (bool, string) GetMatchInfo(GetMatchInfoMessage message)
 		{
-			if (!_matches.ContainsKey(message.MatchKey))
-			{
-				return (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not created")));
-			}
-
-			return _matches[message.MatchKey].CreatePlayerClosed
-				? (false, JsonConvert.SerializeObject(new FailedMessage("This match is already closed")))
-				: (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings));
+			return _matches.ContainsKey(message.MatchKey)
+				? (true, JsonConvert.SerializeObject(_matches[message.MatchKey], _settings))
+				: (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not created")));
 		}
 
 		private (bool, string) GetAllMatches()
