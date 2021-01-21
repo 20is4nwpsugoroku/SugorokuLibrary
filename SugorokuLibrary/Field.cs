@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Encodings.Web;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SugorokuLibrary.SquareEvents;
 
 namespace SugorokuLibrary
@@ -21,23 +21,17 @@ namespace SugorokuLibrary
 
 			var jsonString = reader.ReadToEnd();
 
-			var options = new JsonSerializerOptions
-			{
-				Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-				PropertyNameCaseInsensitive = true
-			};
-
-			var squares = JsonSerializer.Deserialize<Dictionary<string, JsonElement>[]>(jsonString, options);
+			var squares = JsonConvert.DeserializeObject<IEnumerable<Dictionary<string, JObject>>>(jsonString);
 
 			return squares!.Select(s =>
 			{
-				var square = new Square {Index = s["index"].GetInt32()};
+				var square = new Square {Index = (int) s["index"]};
 
-				ISquareEvent e = s["eventType"].GetString() switch
+				ISquareEvent e = (string) s["eventType"]! switch
 				{
 					"none" => new NoneEvent(),
-					"prev" => new PrevEvent {BackCount = s["count"].GetInt32()},
-					"next" => new NextEvent {NextCount = s["count"].GetInt32()},
+					"prev" => new PrevEvent {BackCount = (int) s["count"]},
+					"next" => new NextEvent {NextCount = (int) s["count"]},
 					"prevDice" => new PrevDiceEvent(),
 					"wait" => new WaitEvent(),
 					"goStart" => new GoStartEvent(),
