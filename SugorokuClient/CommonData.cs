@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Net.Sockets;
 using SugorokuClient.Scene;
 
 namespace SugorokuClient
@@ -10,6 +11,9 @@ namespace SugorokuClient
 	/// </summary>
 	public static class CommonData
 	{
+
+
+		public static Socket socket;
 
 	}
 }

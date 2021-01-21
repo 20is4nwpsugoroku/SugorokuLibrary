@@ -27,6 +27,7 @@ namespace SugorokuClient.Scene
 		private TextureButton startButton { get; set; }
 		private TextureButton endButton { get; set; }
 		private TextureButton backButton { get; set; }
+		private TextureButton submitButton { get; set; }
 		private TextureButton makeRoomButton { get; set; }
 		private TextureButton joinRoomButton { get; set; }
 		private TextureButton findRoomButton { get; set; }
@@ -35,7 +36,6 @@ namespace SugorokuClient.Scene
 
 
 
-		private TextBox hostName { get; set; }
 		private TextBox roomName { get; set; }
 		private TextBox playerName { get; set; }
 		private TextBox playerNum { get; set; }
@@ -75,16 +75,19 @@ namespace SugorokuClient.Scene
 			makeRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 570, 300, 50, "部屋を作る", DX.GetColor(222, 222, 222), buttonFont);
 			joinRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 640, 300, 50, "部屋に参加する", DX.GetColor(222, 222, 222), buttonFont);
 			findRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 1040, 640, 100, 50, "探す", DX.GetColor(222, 222, 222), buttonFont);
-			hostName = new TextBox(490, 570, 500, 50, textBoxFont);
-			roomName = new TextBox(490, 640, 500, 50, textBoxFont);
-			playerName = new TextBox(490, 710, 500, 50, textBoxFont);
-			playerNum = new TextBox(490, 780, 500, 50, textBoxFont);
+			submitButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 780, 200, 50, "確定", DX.GetColor(222, 222, 222), buttonFont);
+			roomName = new TextBox(490, 570, 500, 50, textBoxFont);
+			roomName.FrameColor = DX.GetColor(50, 50, 50);
+			playerName = new TextBox(490, 640, 500, 50, textBoxFont);
+			playerName.FrameColor = DX.GetColor(50, 50, 50);
+			playerNum = new TextBox(490, 710, 500, 50, textBoxFont);
+			playerNum.FrameColor = DX.GetColor(50, 50, 50);
 
 
 
 			//button = new Button(160, 160, 200, 200, DX.GetColor(255, 0, 0), "Aue", DX.GetColor(0, 0, 255), fonthandle);
 			//textBox = new TextBox(0, 0, 160, 160, fonthandle);
-			DX.SetBackgroundColor(0, 255, 255); // 背景色を白に設定
+			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
 		}
 
 
@@ -125,7 +128,10 @@ namespace SugorokuClient.Scene
 					{
 						state = State.Start;
 					}
-					hostName.Update();
+					if (submitButton.LeftClicked())
+					{
+						state = State.Load;
+					}
 					roomName.Update();
 					playerName.Update();
 					break;
@@ -134,7 +140,10 @@ namespace SugorokuClient.Scene
 					{
 						state = State.Start;
 					}
-					hostName.Update();
+					if (submitButton.LeftClicked())
+					{
+						state = State.Load;
+					}
 					roomName.Update();
 					playerName.Update();
 					playerNum.Update();
@@ -185,21 +194,21 @@ namespace SugorokuClient.Scene
 					backButton.DrawText();
 					findRoomButton.Draw();
 					findRoomButton.DrawText();
-					hostName.Draw();
+					submitButton.Draw();
+					submitButton.DrawText();
 					roomName.Draw();
 					playerName.Draw();
-					FontAsset.Draw("button1Base", "ホスト名", hostName.x1 -250, hostName.y1 + 5, DX.GetColor(125, 125, 125));
 					FontAsset.Draw("button1Base", "部屋名", roomName.x1 - 250, roomName.y1 + 5, DX.GetColor(125, 125, 125));
 					FontAsset.Draw("button1Base", "プレイヤー名", playerName.x1 - 250, playerName.y1 + 5, DX.GetColor(125, 125, 125));
 					break;
 				case State.MakeRoom:
 					backButton.Draw();
 					backButton.DrawText();
-					hostName.Draw();
+					submitButton.Draw();
+					submitButton.DrawText();
 					roomName.Draw();
 					playerName.Draw();
 					playerNum.Draw();
-					FontAsset.Draw("button1Base", "ホスト名", hostName.x1 - 260, hostName.y1 + 5, DX.GetColor(125, 125, 125));
 					FontAsset.Draw("button1Base", "部屋名", roomName.x1 - 260, roomName.y1 + 5, DX.GetColor(125, 125, 125));
 					FontAsset.Draw("button1Base", "プレイヤー名", playerName.x1 - 260, playerName.y1 + 5, DX.GetColor(125, 125, 125));
 					FontAsset.Draw("button1Base", "人数", playerNum.x1 - 260, playerNum.y1 + 5, DX.GetColor(125, 125, 125));

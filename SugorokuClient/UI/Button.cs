@@ -129,9 +129,9 @@ namespace SugorokuClient.UI
 			Text = text;
 			FontHandle = fontHandle;
 			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
-			var textHeight = FontAsset.GetDrawTextWidth(fontHandle, text, DX.TRUE);
+			var textHeight = DX.GetFontSizeToHandle(fontHandle);
 			TextPosX = x + width / 2 - textWidth / 2;
-			TextPosY = y + height / 2 - textHeight / 3;
+			TextPosY = y + height / 2 - textHeight / 2;
 		}
 
 
@@ -224,7 +224,7 @@ namespace SugorokuClient.UI
 		/// </summary>
 		public void DrawFrame()
 		{
-			DX.DrawBox(x1, y1, x2, y2, MainColor, DX.FALSE);
+			DX.DrawBox(x1, y1, x2, y2, FrameColor, DX.FALSE);
 		}
 
 
