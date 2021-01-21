@@ -4,7 +4,8 @@ using System.Text;
 
 namespace SugorokuClient.UI
 {
-	class FindRoomWindow
+	public class FindRoomWindow
 	{
+
 	}
 }
