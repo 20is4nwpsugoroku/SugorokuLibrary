@@ -15,6 +15,7 @@ namespace SugorokuClientApp
 	{
 		private readonly Player _player;
 		private readonly PlayPageViewModel _viewModel;
+		private bool _isZooming;
 
 		public PlayPage(Player player)
 		{
@@ -22,6 +23,7 @@ namespace SugorokuClientApp
 
 			_player = player;
 			FieldImage.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.sugorokuField.png");
+			PlayerKomaIcon.Source = ImageSource.FromResource($"SugorokuClientApp.ImageResource.koma_{player.PlayerID}.png");
 
 			_viewModel = new PlayPageViewModel();
 			UpdateNowPlayerText();
@@ -53,8 +55,14 @@ namespace SugorokuClientApp
 			_viewModel.IsMyTurn = info.NextPlayerID == _player.PlayerID;
 		}
 
-		private void FieldImageZoomButtonClicked(object sender, EventArgs e)
+		private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
 		{
+			var scale = _isZooming ? -1.0 : 1.0;
+			_isZooming = !_isZooming;
+			// TODO get position
+			FieldLayout.AnchorX = PlayerKomaIcon.X + PlayerKomaIcon.Width / 2;
+			FieldLayout.AnchorY = PlayerKomaIcon.Y + PlayerKomaIcon.Height / 2;
+			await FieldLayout.RelScaleTo(scale, 1000);
 		}
 	}
 }

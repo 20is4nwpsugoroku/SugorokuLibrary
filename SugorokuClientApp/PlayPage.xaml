@@ -11,8 +11,15 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
-            <StackLayout x:Name="Field">
-                <Image x:Name="FieldImage" />
+            <StackLayout x:Name="FieldLayout">
+                <RelativeLayout>
+                    <Image x:Name="FieldImage" />
+                    <Image x:Name="PlayerKomaIcon"
+                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.10}"
+                           RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.10}"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Constant=8}"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Constant=45}" />
+                </RelativeLayout>
             </StackLayout>
             <Button Grid.Row="1" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" />
             <Grid Grid.Row="2" x:Name="PlayerGrid" x:DataType="sugorokuClientApp:PlayPageViewModel">
@@ -21,7 +28,8 @@
                     <ColumnDefinition Width="5*" />
                 </Grid.ColumnDefinitions>
                 <StackLayout>
-                    <Label Text="{Binding NowPlayer}" />
+                    <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
+                           HorizontalOptions="CenterAndExpand" />
                 </StackLayout>
                 <Button Grid.Column="1" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
             </Grid>
