@@ -1,6 +1,5 @@
 using System;
 using System.Net;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
@@ -15,6 +14,7 @@ namespace SugorokuClientApp
 	public partial class WaitOtherPlayerPage
 	{
 		private readonly Player _myPlayerInfo;
+		private bool _hostPlayersPageMoved;
 
 		public WaitOtherPlayerPage(Player myInfo)
 		{
@@ -34,10 +34,10 @@ namespace SugorokuClientApp
 
 			PlayersView.ItemsSource = new ListQueue<Player> {myInfo};
 
-			Device.StartTimer(TimeSpan.FromSeconds(5), () => PlayerInfoUpdate().Result);
+			Device.StartTimer(TimeSpan.FromSeconds(5), PlayerInfoUpdate);
 		}
 
-		private async Task<bool> PlayerInfoUpdate()
+		private bool PlayerInfoUpdate()
 		{
 			using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
 				(int) Application.Current.Properties["serverPort"]);
@@ -51,12 +51,18 @@ namespace SugorokuClientApp
 				throw new Exception($"MatchKey Error: {failed.Message}");
 			}
 
+			if (_hostPlayersPageMoved) return false;
+
 			var matchInfo = JsonConvert.DeserializeObject<MatchInfo>(msg);
 			if (matchInfo.CreatePlayerClosed)
 			{
-				await Navigation.PushAsync(new PlayPage(_myPlayerInfo));
+				Device.BeginInvokeOnMainThread(async () =>
+				{
+					await Navigation.PushAsync(new PlayPage(_myPlayerInfo));
+				});
 				return false;
 			}
+
 			PlayersView.ItemsSource = matchInfo.Players;
 			return true;
 		}
@@ -75,6 +81,7 @@ namespace SugorokuClientApp
 				throw new Exception($"CloseCreate Error: {failed.Message}");
 			}
 
+			_hostPlayersPageMoved = true;
 			await Navigation.PushAsync(new PlayPage(_myPlayerInfo));
 		}
 	}
