@@ -307,7 +307,7 @@ namespace SugorokuClient.Scene
 			if (result)
 			{
 				CommonData.Player = JsonConvert.DeserializeObject<Player>(msg);
-				SceneManager.ChangeScene("Game");
+				SceneManager.ChangeScene("game");
 			}
 			else
 			{

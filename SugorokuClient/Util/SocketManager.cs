@@ -28,7 +28,7 @@ namespace SugorokuClient.Util
 				socket.ReceiveTimeout = 1000;
 				socket.SendTimeout = 1000;
 				socket.Connect(Address, Port);
-				isConnected = true;
+				isConnected = socket.Connected;
 				return true;
 			}
 			catch(Exception e)
@@ -68,9 +68,9 @@ namespace SugorokuClient.Util
 			}
 			isReceived = false;
 			var withHeader = HeaderProtocol.MakeHeader(body, true);
-			DxLibDLL.DX.putsDx("Send" + withHeader);
+			//DxLibDLL.DX.putsDx("Send" + withHeader);
 			var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-			DxLibDLL.DX.putsDx("Send" + recvMsg);
+			//DxLibDLL.DX.putsDx("Send" + recvMsg);
 			isReceived = r;
 			return (r, recvMsg);
 		}
