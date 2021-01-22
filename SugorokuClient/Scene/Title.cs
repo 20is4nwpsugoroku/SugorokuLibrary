@@ -301,7 +301,7 @@ namespace SugorokuClient.Scene
 		private void JoinMatch(string roomName, string playerName)
 		{
 			isWaitJoin = true;
-			var cpmsg = new CreatePlayerMessage(roomName, playerName);
+			var cpmsg = new CreatePlayerMessage(playerName, roomName);
 			var json = JsonConvert.SerializeObject(cpmsg);
 			var (result, msg) = SocketManager.SendRecv(json);
 			if (result)

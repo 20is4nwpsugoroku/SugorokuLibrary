@@ -91,7 +91,7 @@ namespace SugorokuClient.UI
 				if (button.LeftClicked())
 				{
 					selectedMatch = new KeyValuePair<string, MatchInfo>(
-						button.Text, matches.GetValueOrDefault(button.Text)
+						button.Text, matches[button.Text]
 						);
 					isVisible = false;
 					isSelectedInfo = true;
@@ -127,6 +127,7 @@ namespace SugorokuClient.UI
 				foreach (var button in matchesListButtons)
 				{
 					button.Draw();
+					button.DrawText();
 				}
 			}
 		}
@@ -157,7 +158,7 @@ namespace SugorokuClient.UI
 			foreach(var match in matches)
 			{
 				matchNum++;
-				var listButtonPosY = matchNum * listButtonHeight + 50;
+				var listButtonPosY = matchNum * listButtonHeight + 50 + y;
 				if (listButtonPosY + listButtonHeight > height) break;
 
 				matchesListButtons.Add(

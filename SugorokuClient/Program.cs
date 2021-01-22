@@ -27,13 +27,13 @@ namespace SugorokuClient
 
 			DX.ChangeWindowMode(DX.TRUE);
 			DX.SetGraphMode(1280, 960, 32);
+			DX.SetDoubleStartValidFlag(DX.TRUE);
+			DX.SetMainWindowClassName("すごろくゲーム start at " + DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
+			DX.SetMainWindowText("すごろくゲーム");
 			DX.DxLib_Init();
 
 			// 描画先を裏画面に変更
-			DX.SetDoubleStartValidFlag(DX.TRUE);
-			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
-			DX.SetMainWindowText("すごろくゲーム");
-			DX.SetMainWindowClassName("すごろくゲーム start at " + DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
+			DX.SetDrawScreen(DX.DX_SCREEN_BACK);			
 			SceneManager.Initialize();
 			IScene title = new Title();
 			IScene game = new Game();
