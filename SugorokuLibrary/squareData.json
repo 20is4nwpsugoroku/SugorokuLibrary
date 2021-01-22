@@ -6,7 +6,8 @@
   {
     "index": 1,
     "eventType": "next",
-    "count": 2
+    "count": 2,
+    "message": "初任給で車を買う"
   },
   {
     "index": 2,
@@ -14,7 +15,7 @@
   },
   {
     "index": 3,
-    "eventType": "none"
+    "eventType": "none",
   },
   {  
     "index": 4,
@@ -23,15 +24,18 @@
   {
     "index": 5,
     "eventType": "next",
-    "count": 3
+    "count": 3,
+    "message": "GOTOトラベルでアメリカへ 3マス進む"
   },
   {
     "index": 6,
-    "eventType": "goStart"
+    "eventType": "goStart",
+     "message": "ステイホーム！家で過ごそう"
   },
   {
     "index": 7,
-    "eventType": "diceAgain"
+    "eventType": "diceAgain",
+     "message": "昼寝のつもりが\n次の日の朝まで寝てた"
   },
   {
     "index": 8,
@@ -43,7 +47,8 @@
   },
   {
     "index": 10,
-    "eventType": "wait"
+    "eventType": "wait",
+    "message": "リモート授業に繋がらない"
   },
   {
     "index": 11,
@@ -52,7 +57,8 @@
   {
     "index": 12,
     "eventType": "prev",
-    "count": 2
+    "count": 2,
+    "message": "腹筋を割り切れないまま海へ"
   },
    {
     "index": 13,
@@ -65,7 +71,8 @@
    {
     "index": 15,
     "eventType": "next",
-    "count": 3
+    "count": 3,
+    "message": "Blackout Tuesday\n今こそ前に進もう"
   },
    {
     "index": 16,
@@ -73,7 +80,8 @@
   },
   {
     "index": 17,
-    "eventType": "prevDice"
+    "eventType": "prevDice",
+    "message":"食欲が収まらずついに破産"
   },
   {
     "index": 18,
@@ -81,7 +89,8 @@
   },
   {
     "index": 19,
-    "eventType": "wait"
+    "eventType": "wait",
+    "message": "握手会に行くため欠席"
   },
   {
     "index": 20,
@@ -89,7 +98,8 @@
   },
   {
     "index": 21,
-    "eventType": "diceAgain"
+    "eventType": "diceAgain",
+    "message": "これが噂の無限くら寿司"
   },
   {
     "index": 22,
@@ -102,15 +112,18 @@
   {
     "index": 24,
     "eventType": "prev",
-    "count": 4
+    "count": 4,
+    "message": "ランサムウェアに感染"
   },
   {
     "index": 25,
-    "eventType": "wait"
+    "eventType": "wait",
+    "message": "ワクチン開発に時間がかかる"
   },
   {
     "index": 26,
-    "eventType": "prevDice"
+    "eventType": "prevDice",
+    "message": "届いたのはザ・ノースフォイスだった！"
   },
   {
     "index": 27,
@@ -118,14 +131,17 @@
   },
   {
     "index": 28,
-    "eventType": "diceAgain"
+    "eventType": "diceAgain",
+    "message": "１社目の内定に落ちた"
   },
   {
     "index": 29,
-    "eventType": "goStart"
+    "eventType": "goStart",
+    "message": "脱サラして焼き芋屋を開店"
   },
   {
     "index": 30,
-    "eventType": "none"
+    "eventType": "none",
+    "message": "ゴール"
   }
 ]
