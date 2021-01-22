@@ -5,33 +5,39 @@
              xmlns:sugorokuClientApp="clr-namespace:SugorokuClientApp;assembly=SugorokuClientApp"
              x:Class="SugorokuClientApp.PlayPage" NavigationPage.HasNavigationBar="false">
     <ContentPage.Content>
-        <Grid>
+        <Grid BackgroundColor="Yellow" x:DataType="sugorokuClientApp:PlayPageViewModel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
-            <StackLayout x:Name="FieldLayout">
-                <RelativeLayout>
+            <StackLayout x:Name="FieldLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <RelativeLayout VerticalOptions="CenterAndExpand">
                     <Image x:Name="FieldImage" />
                     <Image x:Name="PlayerKomaIcon"
                            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.10}"
                            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.10}"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Constant=8}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Constant=45}" />
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Constant=9}"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Constant=10}" />
                 </RelativeLayout>
             </StackLayout>
-            <Button Grid.Row="1" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" />
-            <Grid Grid.Row="2" x:Name="PlayerGrid" x:DataType="sugorokuClientApp:PlayPageViewModel">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="5*" />
-                </Grid.ColumnDefinitions>
-                <StackLayout>
-                    <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
-                           HorizontalOptions="CenterAndExpand" />
-                </StackLayout>
-                <Button Grid.Column="1" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
+            <Grid Grid.Row="1" BackgroundColor="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="3*" />
+                </Grid.RowDefinitions>
+
+                <Button Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" />
+                <Grid Grid.Row="1" x:Name="PlayerGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="5*" />
+                    </Grid.ColumnDefinitions>
+                    <StackLayout>
+                        <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
+                               HorizontalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <Button Grid.Column="1" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
+                </Grid>
             </Grid>
         </Grid>
     </ContentPage.Content>

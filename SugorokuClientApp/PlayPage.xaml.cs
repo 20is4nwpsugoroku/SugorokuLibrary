@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 using SugorokuLibrary;
@@ -16,6 +17,12 @@ namespace SugorokuClientApp
 		private readonly Player _player;
 		private readonly PlayPageViewModel _viewModel;
 		private bool _isZooming;
+
+		private static IReadOnlyDictionary<int, (double, double)> PlayerPositionToConstant =>
+			new Dictionary<int, (double, double)>
+			{
+				{0, (9, 10)}, {1, (13, 10)}, {2, (17, 10)}, {3, (21, 10)}, {4, (25, 13)}, {5, (29, 13)}, {6, (33, 13)}
+			};
 
 		public PlayPage(Player player)
 		{
@@ -53,15 +60,17 @@ namespace SugorokuClientApp
 			var info = JsonConvert.DeserializeObject<MatchInfo>(msg);
 			_viewModel.NowPlayer = info.NextPlayerID == _player.PlayerID ? "あなたのターン" : $"{info.NextPlayerID}Pのターン";
 			_viewModel.IsMyTurn = info.NextPlayerID == _player.PlayerID;
+			var (x, y) = PlayerPositionToConstant[_player.Position];
+			_viewModel.PlayerXPosition = x;
+			_viewModel.PlayerYPosition = y;
 		}
 
 		private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
 		{
 			var scale = _isZooming ? -1.0 : 1.0;
 			_isZooming = !_isZooming;
-			// TODO get position
-			FieldLayout.AnchorX = PlayerKomaIcon.X + PlayerKomaIcon.Width / 2;
-			FieldLayout.AnchorY = PlayerKomaIcon.Y + PlayerKomaIcon.Height / 2;
+			FieldLayout.AnchorX = PlayerKomaIcon.X / FieldLayout.Width;
+			FieldLayout.AnchorY = PlayerKomaIcon.Y / FieldLayout.Height;
 			await FieldLayout.RelScaleTo(scale, 1000);
 		}
 	}
