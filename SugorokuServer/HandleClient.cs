@@ -14,7 +14,6 @@ namespace SugorokuServer
 	{
 		private readonly Dictionary<string, MatchInfo> _matches = new Dictionary<string, MatchInfo>();
 		private readonly Dictionary<string, MatchCore> _startedMatch = new Dictionary<string, MatchCore>();
-		private int _playerCount;
 
 		private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
 		{
@@ -31,6 +30,7 @@ namespace SugorokuServer
 				GetMatchInfoMessage gm => GetMatchInfo(gm),
 				GetAllMatchesMessage _ => GetAllMatches(),
 				DiceMessage dm => ThrowDice(dm),
+				GetStartedMatchMessage gsm => GetStatedMatch(gsm),
 				_ => throw new NotImplementedException()
 			};
 
@@ -71,7 +71,7 @@ namespace SugorokuServer
 			var hostPlayerData = new Player
 			{
 				IsHost = true,
-				PlayerID = ++_playerCount,
+				PlayerID = 1,
 				PlayerName = message.PlayerName,
 				Position = 0,
 				MatchKey = message.MatchKey
@@ -79,7 +79,7 @@ namespace SugorokuServer
 
 			var match = new MatchInfo
 			{
-				HostPlayerID = _playerCount,
+				HostPlayerID = 1,
 				Players = new List<Player> {hostPlayerData},
 				MatchKey = message.MatchKey,
 			};
@@ -150,6 +150,13 @@ namespace SugorokuServer
 		private (bool, string) GetAllMatches()
 		{
 			return (true, JsonConvert.SerializeObject(_matches, _settings));
+		}
+
+		private (bool, string) GetStatedMatch(GetStartedMatchMessage message)
+		{
+			return _startedMatch.ContainsKey(message.MatchKey)
+				? (true, JsonConvert.SerializeObject(_startedMatch[message.MatchKey]))
+				: (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not started")));
 		}
 	}
 }
