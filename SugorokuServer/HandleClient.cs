@@ -30,6 +30,7 @@ namespace SugorokuServer
 				GetMatchInfoMessage gm => GetMatchInfo(gm),
 				GetAllMatchesMessage _ => GetAllMatches(),
 				DiceMessage dm => ThrowDice(dm),
+				GetStartedMatchMessage gsm => GetStatedMatch(gsm),
 				_ => throw new NotImplementedException()
 			};
 
@@ -149,6 +150,13 @@ namespace SugorokuServer
 		private (bool, string) GetAllMatches()
 		{
 			return (true, JsonConvert.SerializeObject(_matches, _settings));
+		}
+
+		private (bool, string) GetStatedMatch(GetStartedMatchMessage message)
+		{
+			return _startedMatch.ContainsKey(message.MatchKey)
+				? (true, JsonConvert.SerializeObject(_startedMatch[message.MatchKey]))
+				: (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not started")));
 		}
 	}
 }
