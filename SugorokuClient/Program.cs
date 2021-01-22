@@ -30,8 +30,10 @@ namespace SugorokuClient
 			DX.DxLib_Init();
 
 			// 描画先を裏画面に変更
+			DX.SetDoubleStartValidFlag(DX.TRUE);
 			DX.SetDrawScreen(DX.DX_SCREEN_BACK);
-			DX.SetMainWindowText("○×ゲーム");
+			DX.SetMainWindowText("すごろくゲーム");
+			DX.SetMainWindowClassName("すごろくゲーム start at " + DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
 			SceneManager.Initialize();
 			IScene title = new Title();
 			IScene game = new Game();
