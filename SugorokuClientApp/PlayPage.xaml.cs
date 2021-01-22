@@ -6,6 +6,7 @@ using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
 using SugorokuLibrary.Protocol;
 using SugorokuLibrary.ServerToClient;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -35,7 +36,7 @@ namespace SugorokuClientApp
 			_viewModel = new PlayPageViewModel();
 			UpdateNowPlayerText();
 			PlayerGrid.BindingContext = _viewModel;
-			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+			Device.StartTimer(TimeSpan.FromMinutes(1), () =>
 			{
 				UpdateNowPlayerText();
 				return true;
@@ -67,11 +68,13 @@ namespace SugorokuClientApp
 
 		private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
 		{
+			SizeChangeButton.IsEnabled = false;
 			var scale = _isZooming ? -1.0 : 1.0;
 			_isZooming = !_isZooming;
 			FieldLayout.AnchorX = PlayerKomaIcon.X / FieldLayout.Width;
 			FieldLayout.AnchorY = PlayerKomaIcon.Y / FieldLayout.Height;
 			await FieldLayout.RelScaleTo(scale, 1000);
+			SizeChangeButton.IsEnabled = true;
 		}
 	}
 }

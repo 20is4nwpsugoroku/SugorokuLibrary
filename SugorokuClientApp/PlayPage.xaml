@@ -5,28 +5,31 @@
              xmlns:sugorokuClientApp="clr-namespace:SugorokuClientApp;assembly=SugorokuClientApp"
              x:Class="SugorokuClientApp.PlayPage" NavigationPage.HasNavigationBar="false">
     <ContentPage.Content>
-        <Grid BackgroundColor="Yellow" x:DataType="sugorokuClientApp:PlayPageViewModel">
+        <Grid x:DataType="sugorokuClientApp:PlayPageViewModel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*" />
                 <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
-            <StackLayout x:Name="FieldLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                <RelativeLayout VerticalOptions="CenterAndExpand">
-                    <Image x:Name="FieldImage" />
-                    <Image x:Name="PlayerKomaIcon"
-                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.10}"
-                           RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.10}"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Constant=9}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Constant=10}" />
-                </RelativeLayout>
-            </StackLayout>
+            <RelativeLayout x:Name="FieldLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+                            BackgroundColor="Yellow">
+                <Image x:Name="FieldImage" BackgroundColor="White"
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1.0}"
+                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.625}"
+                       RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Factor=0}"
+                       RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Factor=0}" />
+                <Image x:Name="PlayerKomaIcon" BackgroundColor="Blue"
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.1}"
+                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.1}"
+                       RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.03}"
+                       RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Height, Factor=0.22}" />
+            </RelativeLayout>
             <Grid Grid.Row="1" BackgroundColor="White">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="3*" />
                 </Grid.RowDefinitions>
 
-                <Button Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" />
+                <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" />
                 <Grid Grid.Row="1" x:Name="PlayerGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
@@ -36,7 +39,7 @@
                         <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
                                HorizontalOptions="CenterAndExpand" />
                     </StackLayout>
-                    <Button Grid.Column="1" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
+                    <Button Grid.Column="1" x:Name="DiceButton" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
                 </Grid>
             </Grid>
         </Grid>
