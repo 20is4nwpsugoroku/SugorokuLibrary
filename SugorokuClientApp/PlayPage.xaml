@@ -11,13 +11,13 @@
                 <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
             <RelativeLayout x:Name="FieldLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
-                            BackgroundColor="Yellow">
-                <Image x:Name="FieldImage" BackgroundColor="White"
+                            BackgroundColor="Gray">
+                <Image x:Name="FieldImage"
                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1.0}"
                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.625}"
                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=X, Factor=0}"
                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Y, Factor=0}" />
-                <Image x:Name="PlayerKomaIcon" BackgroundColor="Blue"
+                <Image x:Name="PlayerKomaIcon"
                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.1}"
                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.1}"
                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.03}"
