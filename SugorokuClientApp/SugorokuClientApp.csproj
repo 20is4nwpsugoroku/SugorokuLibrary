@@ -41,7 +41,7 @@
     <None Remove="ImageResource\koma_4.png" />
     <EmbeddedResource Include="ImageResource\koma_4.png" />
     <None Remove="ImageResource\rogo.png" />
-    <EmbeddedResource Include="ImageResource\rogo.png" />
+    <EmbeddedResource Include="ImageResource\logo.png" />
     <None Remove="ImageResource\saikoro_1.png" />
     <EmbeddedResource Include="ImageResource\saikoro_1.png" />
     <None Remove="ImageResource\saikoro_2.png" />

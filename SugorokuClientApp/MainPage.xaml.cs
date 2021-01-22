@@ -14,6 +14,9 @@ namespace SugorokuClientApp
 		public MainPage()
 		{
 			InitializeComponent();
+
+			LogoImage.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.logo.png");
+			StartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.startButton.png");
 		}
 
 		private async void OnStartButtonClicked(object sender, EventArgs e)
@@ -65,7 +68,7 @@ namespace SugorokuClientApp
 			{
 				if (playerData != null)
 				{
-					Application.Current.MainPage = new WaitOtherPlayerPage(playerData);	
+					Application.Current.MainPage = new WaitOtherPlayerPage(playerData);
 				}
 			}
 		}
