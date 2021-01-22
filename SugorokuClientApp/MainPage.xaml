@@ -6,8 +6,8 @@
 
     <StackLayout VerticalOptions="CenterAndExpand">
         <Image x:Name="LogoImage" HeightRequest="150" />
-        <Entry x:Name="ServerIpAddress" Text="127.0.0.1" Placeholder="サーバーのIPアドレス" />
-        <Entry x:Name="ServerPort" Text="9235" Placeholder="サーバーのポート番号" />
+        <Entry x:Name="ServerIpAddress" Placeholder="サーバーのIPアドレス" />
+        <Entry x:Name="ServerPort" Placeholder="サーバーのポート番号" />
         <Entry x:Name="PlayerNameEditor" Placeholder="プレイヤーの名前" />
         <Entry x:Name="RoomNameEditor" Placeholder="部屋名" />
         <ImageButton x:Name="StartButton" Clicked="OnStartButtonClicked" Aspect="AspectFit"

@@ -68,7 +68,10 @@ namespace SugorokuClientApp
 			{
 				if (playerData != null)
 				{
-					await Navigation.PushAsync(new WaitOtherPlayerPage(playerData));
+					Device.BeginInvokeOnMainThread(async () =>
+					{
+						await Navigation.PushAsync(new WaitOtherPlayerPage(playerData));
+					});
 				}
 			}
 		}
