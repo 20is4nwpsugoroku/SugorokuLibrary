@@ -34,6 +34,7 @@ namespace SugorokuClient
 			DX.SetMainWindowText("○×ゲーム");
 			SceneManager.Initialize();
 			IScene title = new Title();
+			IScene game = new Game();
 			SceneManager.AddScene("title", title);
 			SceneManager.ChangeScene("title");
 			while (DX.ProcessMessage() != -1) //Application.Runしないで自分でループを作る

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Net.Sockets;
 using Newtonsoft.Json;
 using DxLibDLL;
@@ -21,6 +22,8 @@ namespace SugorokuClient.UI
 		private int listButtonHeight = 50;
 		public bool isVisible = false;
 		private bool isHaveInfo = false;
+		private bool isReloading = false;
+
 		public bool isSelectedInfo { get; private set; } = false;
 
 		private KeyValuePair<string, MatchInfo> selectedMatch;
@@ -39,20 +42,20 @@ namespace SugorokuClient.UI
 		private string closeButtonPath = "E:\\workspace\\devs\\SugorokuLibrary\\dev\\haruto8631\\SugorokuClient\\images\\Image1.png";
 
 		private Dictionary<string, MatchInfo> matches { get; set; }
-		private FailedMessage failedMessage { get; set; }
 		private List<TextureButton> matchesListButtons { get; set; }
 		private TextureButton reloadButton { get; set; }
 		private TextureButton closeButton { get; set; }
 
 
-		public FindRoomWindow()
+		private FindRoomWindow()
 		{
 			isVisible = false;
+			isHaveInfo = false;
+			isReloading = false;
 			listButtonTexture = TextureAsset.Register("FindRoomWindowList", listButtonPath);
 			reloadButtonTexture = TextureAsset.Register("FindRoomWindowReload", reloadButtonPath);
 			closeButtonTexture = TextureAsset.Register("FindRoomWindowClose", closeButtonPath);
-			CommonData.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			CommonData.socket.Connect(CommonData.address, CommonData.port);
+			SocketManager.Connect(CommonData.Address, CommonData.Port);
 		}
 
 
@@ -62,26 +65,27 @@ namespace SugorokuClient.UI
 			this.y = y;
 			this.width = (width > 130) ? width : 115;
 			this.height = (height > 110) ? height : 110;
-			reloadButton = new TextureButton(reloadButtonTexture, x + width - 110, 5, 50, 50);
-			closeButton = new TextureButton(closeButtonTexture, x + width - 55, 5, 50, 50);
+			reloadButton = new TextureButton(reloadButtonTexture, x + width - 110, y + 5, 50, 50);
+			closeButton = new TextureButton(closeButtonTexture, x + width - 55, y + 5, 50, 50);
 			textFont = FontAsset.Register("FindRoomWindowFont", size: listButtonHeight);
-			GetMatchInfo();
-			Reload();
+			matchesListButtons = new List<TextureButton>();
+			Task.Run(() => Reload());
 		}
 
 
 		public void Update()
 		{
 			if (!isVisible) return;
-			if (reloadButton.LeftClicked())
+			if (reloadButton.LeftClicked() && !isReloading)
 			{
-				Reload();
+				Task.Run(()=>Reload());
 			}
 			if (closeButton.LeftClicked())
 			{
 				isVisible = false;
 				isSelectedInfo = false;
 			}
+			if (isReloading) return;
 			foreach (var button in matchesListButtons)
 			{
 				if (button.LeftClicked())
@@ -102,16 +106,28 @@ namespace SugorokuClient.UI
 			if (!isVisible) return;
 			DX.DrawBox(x-1, y-1, x + width + 1, y + height + 1, windowBaseColor, DX.TRUE);
 			DX.DrawBox(x-1, y-1, x + width + 1, y + height + 1, windowFrameColor, DX.FALSE);
-			foreach (var button in matchesListButtons)
-			{
-				button.Draw();
-			}
-			if (isHaveInfo)
+			reloadButton.Draw();
+			closeButton.Draw();
+			if (!isHaveInfo)
 			{
 				FontAsset.Draw(textFont, "Error",
 					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error"),
-					60, DX.GetColor(255, 0, 0)
+					y + 60, DX.GetColor(255, 0, 0)
 					);
+			}
+			else if (isReloading)
+			{
+				FontAsset.Draw(textFont, "Loading",
+					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Loading"),
+					y + 60, textColor
+					);
+			}
+			else
+			{
+				foreach (var button in matchesListButtons)
+				{
+					button.Draw();
+				}
 			}
 		}
 
@@ -121,14 +137,10 @@ namespace SugorokuClient.UI
 		{
 			var getAll = new GetAllMatchesMessage();
 			var jsonMsg = JsonConvert.SerializeObject(getAll);
-			var (_, result, msg) = SugorokuLibrary.Protocol.Connection.SendAndRecvMessage(jsonMsg, CommonData.socket);
+			var (result, msg) = SocketManager.SendRecv(jsonMsg);
 			if (result)
 			{
 				matches = JsonConvert.DeserializeObject<Dictionary<string, MatchInfo>>(msg);
-			}
-			else
-			{
-				failedMessage = JsonConvert.DeserializeObject<FailedMessage>(msg);
 			}
 			isHaveInfo = result;
 			return result;
@@ -137,6 +149,8 @@ namespace SugorokuClient.UI
 
 		private void Reload()
 		{
+			isReloading = true;
+			GetMatchInfo();
 			matchesListButtons.Clear();
 			if (!isHaveInfo) return;
 			var matchNum = 0;
@@ -151,6 +165,7 @@ namespace SugorokuClient.UI
 					match.Key, textColor, textFont)
 				);
 			}
+			isReloading = false;
 		}
 
 
@@ -162,7 +177,7 @@ namespace SugorokuClient.UI
 			}
 			else
 			{
-				return new KeyValuePair<string, MatchInfo>();
+				return new KeyValuePair<string, MatchInfo>(string.Empty, new MatchInfo());
 			}
 		}
 

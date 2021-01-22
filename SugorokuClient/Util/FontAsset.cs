@@ -27,8 +27,16 @@ namespace SugorokuClient.Util
 		/// <returns>フォントの識別子</returns>
 		public static int Register(string assetName,string fontName = null, int size = -1, int thick = -1, int fontType = -1)
 		{
-			var ret = DX.CreateFontToHandle(fontName, size, thick, fontType);
-			FontStore.Add(assetName, ret);
+			int ret;
+			if (FontStore.ContainsKey(assetName))
+			{
+				ret = FontStore[assetName];
+			}
+			else
+			{
+				ret = DX.CreateFontToHandle(fontName, size, thick, fontType);
+				FontStore.Add(assetName, ret);
+			}
 			return ret;
 		}
 

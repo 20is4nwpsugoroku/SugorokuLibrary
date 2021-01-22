@@ -25,8 +25,16 @@ namespace SugorokuClient.Util
 		/// <returns></returns>
 		public static int Register(string assetName, string path)
 		{
-			var ret = DX.LoadGraph(path);
-			TextureStore.Add(assetName, ret);
+			int ret;
+			if (TextureStore.ContainsKey(assetName))
+			{
+				ret = TextureStore[assetName];
+			}
+			else
+			{
+				ret = DX.LoadGraph(path);
+				TextureStore.Add(assetName, ret);
+			}
 			return ret;
 		}
 

@@ -61,7 +61,7 @@ namespace SugorokuClient.UI
 		/// <summary>
 		/// ボタンに内に描画されるテキストの内容
 		/// </summary>
-		public string Text { get; set; } = "";
+		public string Text { get; set; } = string.Empty;
 
 		/// <summary>
 		/// フォントのハンドル
