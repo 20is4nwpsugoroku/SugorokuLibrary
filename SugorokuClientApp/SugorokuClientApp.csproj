@@ -26,5 +26,39 @@
   <ItemGroup>
     <None Remove="ImageResource\sugorokuField.png" />
     <EmbeddedResource Include="ImageResource\sugorokuField.png" />
+    <None Remove="ImageResource\endButton.png" />
+    <EmbeddedResource Include="ImageResource\endButton.png" />
+    <None Remove="ImageResource\hyoushoudai.png" />
+    <EmbeddedResource Include="ImageResource\hyoushoudai.png" />
+    <None Remove="ImageResource\king.png" />
+    <EmbeddedResource Include="ImageResource\king.png" />
+    <None Remove="ImageResource\koma_1.png" />
+    <EmbeddedResource Include="ImageResource\koma_1.png" />
+    <None Remove="ImageResource\koma_2.png" />
+    <EmbeddedResource Include="ImageResource\koma_2.png" />
+    <None Remove="ImageResource\koma_3.png" />
+    <EmbeddedResource Include="ImageResource\koma_3.png" />
+    <None Remove="ImageResource\koma_4.png" />
+    <EmbeddedResource Include="ImageResource\koma_4.png" />
+    <None Remove="ImageResource\rogo.png" />
+    <EmbeddedResource Include="ImageResource\rogo.png" />
+    <None Remove="ImageResource\saikoro_1.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_1.png" />
+    <None Remove="ImageResource\saikoro_2.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_2.png" />
+    <None Remove="ImageResource\saikoro_3.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_3.png" />
+    <None Remove="ImageResource\saikoro_4.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_4.png" />
+    <None Remove="ImageResource\saikoro_5.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_5.png" />
+    <None Remove="ImageResource\saikoro_6.png" />
+    <EmbeddedResource Include="ImageResource\saikoro_6.png" />
+    <None Remove="ImageResource\startButton.png" />
+    <EmbeddedResource Include="ImageResource\startButton.png" />
+    <None Remove="ImageResource\text_goal.png" />
+    <EmbeddedResource Include="ImageResource\text_goal.png" />
+    <None Remove="ImageResource\text_start.png" />
+    <EmbeddedResource Include="ImageResource\text_start.png" />
   </ItemGroup>
 </Project>
