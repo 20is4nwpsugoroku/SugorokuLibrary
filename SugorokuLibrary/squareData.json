@@ -15,7 +15,7 @@
   },
   {
     "index": 3,
-    "eventType": "none",
+    "eventType": "none"
   },
   {  
     "index": 4,
@@ -25,7 +25,7 @@
     "index": 5,
     "eventType": "next",
     "count": 3,
-    "message": "GOTOトラベルでアメリカへ 3マス進む"
+    "message": "GOTOトラベルでアメリカへ"
   },
   {
     "index": 6,
