@@ -53,21 +53,19 @@ namespace SugorokuClientApp
 
             if (_hostPlayersPageMoved) return false;
 
-            var matchInfo = JsonConvert.DeserializeObject<MatchInfo>(msg);
-            if (matchInfo.CreatePlayerClosed)
+            _matchInfo = JsonConvert.DeserializeObject<MatchInfo>(msg);
+            if (_matchInfo.CreatePlayerClosed)
             {
                 Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Navigation.PushAsync(new PlayPage(_myPlayerInfo));
-                });
+                    await Navigation.PushAsync(new PlayPage(_myPlayerInfo, _matchInfo)));
                 return false;
             }
 
-            PlayersView.ItemsSource = matchInfo.Players;
+            PlayersView.ItemsSource = _matchInfo.Players;
             return true;
         }
 
-        private async void GameStartButtonClicked(object sender, EventArgs e)
+        private void GameStartButtonClicked(object sender, EventArgs e)
         {
             using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
                 (int) Application.Current.Properties["serverPort"]);
@@ -82,7 +80,8 @@ namespace SugorokuClientApp
             }
 
             _hostPlayersPageMoved = true;
-            await Navigation.PushAsync(new PlayPage(_myPlayerInfo));
+            Device.BeginInvokeOnMainThread(async () =>
+                await Navigation.PushAsync(new PlayPage(_myPlayerInfo, _matchInfo)));
         }
     }
 }

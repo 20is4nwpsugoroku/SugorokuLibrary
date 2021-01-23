@@ -57,7 +57,6 @@ namespace SugorokuClientApp
                 }
 
                 playerData = JsonConvert.DeserializeObject<Player>(recvMsg);
-                // Application.Current.Properties["playerData"] = playerData;
             }
             catch (Exception exception)
             {
@@ -69,9 +68,7 @@ namespace SugorokuClientApp
                 if (playerData != null)
                 {
                     Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Navigation.PushAsync(new WaitOtherPlayerPage(playerData));
-                    });
+                        await Navigation.PushAsync(new WaitOtherPlayerPage(playerData)));
                 }
             }
         }
