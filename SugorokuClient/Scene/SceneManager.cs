@@ -11,11 +11,20 @@ namespace SugorokuClient.Scene
 	/// </summary>
 	public static class SceneManager
 	{
+		/// <summary>
+		/// シーンの一覧
+		/// </summary>
+		public enum SceneName
+		{
+			Title,
+			Game
+		}
+
 		/// <value> 現在のシーン </value>
 		private static IScene CurrentScene { get; set; }
 
 		/// <value> 使用可能なシーン </value>
-		private static Dictionary<string, IScene> Scenes { get; set; }
+		private static Dictionary<SceneName, IScene> Scenes { get; set; }
 
 		/// <value> 描画タイミングの調整をするクラス </value>
 		private static FPSAdjuster FpsAdjuster { get; set; }
@@ -27,7 +36,7 @@ namespace SugorokuClient.Scene
 		public static void Initialize()
 		{	
 			CurrentScene = null;
-			Scenes = new Dictionary<string, IScene>();
+			Scenes = new Dictionary<SceneName, IScene>();
 			Scenes.Clear();
 			FpsAdjuster = new FPSAdjuster();
 		}
@@ -55,8 +64,8 @@ namespace SugorokuClient.Scene
 		/// 指定した名前でシーンを追加する
 		/// </summary>
 		/// <param name="sceneName">シーンの名前</param>
-		/// <param name="scene">対応するシーンのインスタンス</param>
-		public static void AddScene(string sceneName, IScene sceneInstance)
+		/// <param name="sceneInstance">対応するシーンのインスタンス</param>
+		public static void AddScene(SceneName sceneName, IScene sceneInstance)
 		{
 			if (!Scenes.ContainsKey(sceneName))
 			{
@@ -69,7 +78,7 @@ namespace SugorokuClient.Scene
 		/// sceneNameで指定したシーンを削除する
 		/// </summary>
 		/// <param name="sceneName"></param>
-		public static void DeleteScene(string sceneName)
+		public static void DeleteScene(SceneName sceneName)
 		{
 			Scenes.Remove(sceneName);
 		}
@@ -79,7 +88,7 @@ namespace SugorokuClient.Scene
 		/// 指定したシーンに遷移する
 		/// </summary>
 		/// <param name="sceneName">AddSceneで指定したシーンの名前</param>
-		public static void ChangeScene(string sceneName)
+		public static void ChangeScene(SceneName sceneName)
 		{
 			CurrentScene = Scenes[sceneName];
 			CurrentScene.Init();
@@ -90,7 +99,7 @@ namespace SugorokuClient.Scene
 		/// シーンの初期化を行わずに指定したシーンに遷移する
 		/// </summary>
 		/// <param name="sceneName">AddSceneで指定したシーンの名前</param>
-		public static void ChangeSceneNoInit(string sceneName)
+		public static void ChangeSceneNoInit(SceneName sceneName)
 		{
 			CurrentScene = Scenes[sceneName];
 		}

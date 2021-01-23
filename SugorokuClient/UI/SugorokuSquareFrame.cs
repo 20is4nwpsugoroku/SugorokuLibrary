@@ -10,6 +10,7 @@ namespace SugorokuClient.UI
 {
 	public class SugorokuSquareFrame
 	{
+		private bool IsFirstClicked { get; set; }
 		private TextureButton SquareButton { get; set; }
 		private TextureFade DescriptionMessage { get; set; }
 		public Square Square { get; private set; }
@@ -23,27 +24,29 @@ namespace SugorokuClient.UI
 			GetMessageBoxTextureInfo(square.Index, CenterPos, out handle, out x, out y, out w, out h);
 			var text = GetMessageBoxText(square.Index);
 			var fontHandle = (text != string.Empty) ? FontAsset.Register("MessageBoxFont", size: 18) : -1;
-			this.DescriptionMessage = new TextureFade(handle, x, y, w, h, 5, 120, 30, fontHandle, text, DX.GetColor(50, 50, 50));
+			this.DescriptionMessage = new TextureFade(handle, x, y, w, h, 5, 30, 120, fontHandle, text, DX.GetColor(50, 50, 50));
 			this.Square = square;
+			IsFirstClicked = false;
 		}
 
 
 		public void Update()
 		{
-			if (SquareButton.LeftClicked() && !DescriptionMessage.IsVisible())
+			if (DescriptionMessage.Text == string.Empty) return;
+			if (SquareButton.LeftClicked() && DescriptionMessage.Text != string.Empty)
 			{
+				IsFirstClicked = true;
 				DescriptionMessage.Start();
 			}
-			DescriptionMessage.Update();
+			if (IsFirstClicked) DescriptionMessage.Update();
 		}
 
 
 		public void Draw()
 		{
 			SquareButton.MouseOverDraw();
-			DescriptionMessage.Draw();
+			if (IsFirstClicked) DescriptionMessage.Draw();
 		}
-
 
 
 		private static ((int, int), TextureButton) GenerateSquareButton(int index)
@@ -85,7 +88,7 @@ namespace SugorokuClient.UI
 
 				case 9:
 					button = new TextureButton(squareImageHandle, 1112, 174, 1242, 277, 1177, 330, 1112, 296);
-					centerPos = (11170, 242);
+					centerPos = (1170, 242);
 					break;
 
 				case 10:
@@ -104,7 +107,7 @@ namespace SugorokuClient.UI
 					break;
 
 				case 21:
-					button = new TextureButton(squareImageHandle, 94, 514, 155, 480, 94, 564, 33, 614);
+					button = new TextureButton(squareImageHandle, 35, 458, 94, 514, 94, 564, 33, 614);
 					centerPos = (45, 537);
 					break;
 
@@ -208,21 +211,21 @@ namespace SugorokuClient.UI
 		{
 			return index switch
 			{
-				1 => "初任給で車を買う",
-				5 => "GOTOトラベルでアメリカへ",
+				1 => "初任給で\n車を買う",
+				5 => "GOTOトラベルで\nアメリカへ",
 				6 => "ステイホーム！家で過ごそう",
 				7 => "昼寝のつもりが\n次の日の朝まで寝てた",
-				10 => "リモート授業に繋がらない",
-				12 => "腹筋を割り切れないまま海へ",
+				10 => "リモート授業に\n繋がらない",
+				12 => "腹筋を割り切れないまま\n海へ",
 				15 => "Blackout Tuesday\n今こそ前に進もう",
-				17 => "食欲が収まらずついに破産",
-				19 => "握手会に行くため欠席",
-				21 => "これが噂の無限くら寿司",
-				24 => "ランサムウェアに感染",
-				25 => "ワクチン開発に時間がかかる",
-				26 => "届いたのはザ・ノースフォイスだった！",
-				28 => "１社目の内定に落ちた",
-				29 => "脱サラして焼き芋屋を開店",
+				17 => "食欲が収まらず\nついに破産",
+				19 => "握手会に行くため\n欠席",
+				21 => "これが噂の\n無限くら寿司",
+				24 => "ランサムウェア\nに感染",
+				25 => "ワクチン開発に\n時間がかかる",
+				26 => "届いたのは\nザ・ノースフォイスだった！",
+				28 => "１社目の内定に\n落ちた",
+				29 => "脱サラして\n焼き芋屋を開店",
 				30 => "ゴール",
 				_ => string.Empty
 			};

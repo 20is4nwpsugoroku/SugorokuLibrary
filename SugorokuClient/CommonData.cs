@@ -4,7 +4,6 @@ using System.Text;
 using System.Net.Sockets;
 using SugorokuLibrary;
 using SugorokuClient.Scene;
-using SugorokuLibrary;
 
 
 
@@ -15,7 +14,6 @@ namespace SugorokuClient
 	/// </summary>
 	public static class CommonData
 	{
-
 		public static Socket socket;
 		public static string Address { get; } = "127.0.0.1";
 		public static int Port { get; } = 9500;

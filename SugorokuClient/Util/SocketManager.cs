@@ -25,13 +25,11 @@ namespace SugorokuClient.Util
 			{
 				isConnected = false;
 				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.ReceiveTimeout = 1000;
-				socket.SendTimeout = 1000;
 				socket.Connect(Address, Port);
 				isConnected = socket.Connected;
-				return true;
+				return isConnected;
 			}
-			catch(Exception e)
+			catch(Exception)
 			{
 				return false;
 			}	
@@ -66,13 +64,13 @@ namespace SugorokuClient.Util
 			{
 				isReceived = false;
 				var withHeader = HeaderProtocol.MakeHeader(body, true);
-				//DxLibDLL.DX.putsDx("Send" + withHeader);
+				DxLibDLL.DX.putsDx("Send" + withHeader);
 				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-				//DxLibDLL.DX.putsDx("Send" + recvMsg);
+				DxLibDLL.DX.putsDx("Send" + recvMsg);
 				isReceived = r;
 				return (r, recvMsg);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return (false, string.Empty);
 			}

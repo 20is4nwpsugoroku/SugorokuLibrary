@@ -53,6 +53,11 @@ namespace SugorokuClient.Util
 		{
 			MouseInputUpdate();
 			DX.GetHitKeyStateAll(KeyState);
+			byte[] temp = new byte[256];
+			for (int i = 0; i < temp.Length; i++)
+			{
+				KeyState[i] = (temp[i] != 0) ? (byte)(KeyState[i] + 1) : byte.MinValue;
+			}
 		}
 
 
@@ -142,5 +147,26 @@ namespace SugorokuClient.Util
 			return (MousePosX, MousePosY);
 		}
 
+
+		/// <summary>
+		/// キーコードに対応するキーが押された瞬間かどうか取得する
+		/// </summary>
+		/// <param name="DX_KEYCODE">キーコード</param>
+		/// <returns>true: キーがおされた</returns>
+		public static bool KeyDown(int DX_KEYCODE)
+		{
+			return KeyState[DX_KEYCODE] == 1;
+		}
+
+
+		/// <summary>
+		/// キーコードに対応するキーが押されているかどうか取得する
+		/// </summary>
+		/// <param name="DX_KEYCODE"></param>
+		/// <returns>true: キーがおされた</returns>
+		public static bool KeyPressed(int DX_KEYCODE)
+		{
+			return KeyState[DX_KEYCODE] > 0;
+		}
 	}
 }

@@ -111,6 +111,11 @@ namespace SugorokuClient.UI
 			v4.x = x1 - x4; v4.y = y1 - y4; v4.z = 0;
 		}
 
+		private double Cross2D(DX.VECTOR a, DX.VECTOR b)
+		{
+			return (double)a.x * b.y - (double)a.y * b.x;
+		}
+
 		#endregion
 
 
@@ -202,7 +207,9 @@ namespace SugorokuClient.UI
 		/// <param name="y3">右下のY座標</param>
 		/// <param name="x4">左下のX座標</param>
 		/// <param name="y4">左下のY座標</param>
-		public TextureButton(int textureHandle, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) : this(textureHandle)
+		public TextureButton(int textureHandle,
+			int x1, int y1, int x2, int y2,
+			int x3, int y3, int x4, int y4) : this(textureHandle)
 		{
 			this.x1 = x1;
 			this.y1 = y1;
@@ -247,10 +254,10 @@ namespace SugorokuClient.UI
 				mouseVec4.x = pos.Item1 - x4;
 				mouseVec4.y = pos.Item2 - y4;
 				mouseVec4.z = 0;
-				var b1 = DX.VCross(v1, mouseVec1).z > 0;
-				var b2 = DX.VCross(v2, mouseVec1).z > 0;
-				var b3 = DX.VCross(v3, mouseVec1).z > 0;
-				var b4 = DX.VCross(v4, mouseVec1).z > 0;
+				var b1 = Cross2D(v1, mouseVec1) > 0;
+				var b2 = Cross2D(v2, mouseVec2) > 0;
+				var b3 = Cross2D(v3, mouseVec3) > 0;
+				var b4 = Cross2D(v4, mouseVec4) > 0;
 				return b1 == b2 && b2 == b3 && b3 == b4 && b4 == b1;
 			}			
 		}
@@ -262,8 +269,9 @@ namespace SugorokuClient.UI
 		public void MouseOverDraw()
 		{
 			if (!MouseOver()) return;
-			DX.SetDrawBright(100, 100, 100);
+			DX.SetDrawBright(220, 220, 220);
 			TextureAsset.DrawModi(TextureHandle, x1, y1, x2, y2, x3, y3, x4, y4, DX.TRUE);
+			DrawText();
 			DX.SetDrawBright(255, 255, 255);
 		}
 

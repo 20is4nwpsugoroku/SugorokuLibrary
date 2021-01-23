@@ -17,14 +17,6 @@ namespace SugorokuClient
 		[STAThread]
 		static void Main()
 		{
-			//Application.SetHighDpiMode(HighDpiMode.SystemAware);
-			//Application.EnableVisualStyles();
-			//Application.SetCompatibleTextRenderingDefault(false);
-
-			//Form1 form = new Form1();
-			//form.Show();
-			// ウインドウモードで起動
-
 			DX.ChangeWindowMode(DX.TRUE);
 			DX.SetGraphMode(1280, 960, 32);
 			DX.SetDoubleStartValidFlag(DX.TRUE);
@@ -37,15 +29,13 @@ namespace SugorokuClient
 			SceneManager.Initialize();
 			IScene title = new Title();
 			IScene game = new Game();
-			SceneManager.AddScene("title", title);
-			SceneManager.AddScene("game", game);
-			SceneManager.ChangeScene("title");
-			while (DX.ProcessMessage() != -1) //Application.Runしないで自分でループを作る
+			SceneManager.AddScene(SceneManager.SceneName.Title, title);
+			SceneManager.AddScene(SceneManager.SceneName.Game, game);
+			SceneManager.ChangeScene(SceneManager.SceneName.Game);
+			while (DX.ProcessMessage() != -1)
 			{
 				MainLoop();
-				//Application.DoEvents();
 			}
-			//Application.Run(new Form1());
 		}
 
 		//ループする関数
