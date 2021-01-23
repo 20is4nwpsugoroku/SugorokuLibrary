@@ -1,12 +1,17 @@
+using Newtonsoft.Json;
 using SugorokuLibrary.Match;
+using SugorokuLibrary.SquareEvents.Converter;
 
 namespace SugorokuLibrary.SquareEvents
 {
-    public class NoneEvent : ISquareEvent
+    [JsonConverter(typeof(NoneEventConverter))]
+    public class NoneEvent : SquareEvent
     {
-        public void Event(MatchCore matchCore, int playerId)
+        public override void Event(MatchCore matchCore, int playerId)
         {
         }
+
+        public override string Message => "";
 
         public override string ToString()
         {

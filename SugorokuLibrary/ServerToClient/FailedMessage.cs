@@ -4,10 +4,9 @@ using SugorokuLibrary.ServerToClient.Converters;
 namespace SugorokuLibrary.ServerToClient
 {
     [JsonConverter(typeof(FailedMessageConverter))]
-    public class FailedMessage
+    public class FailedMessage : ServerMessage
     {
-        [JsonProperty("methodType")] public string MethodType => "failed";
-        
+        [JsonProperty("methodType")] public override string MethodType => "failed";
         [JsonProperty("message")] public string Message { get; }
 
         public FailedMessage(string message)
