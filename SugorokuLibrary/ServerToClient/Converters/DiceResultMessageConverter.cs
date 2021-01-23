@@ -16,10 +16,24 @@ namespace SugorokuLibrary.ServerToClient.Converters
 			writer.WritePropertyName("dice");
 			writer.WriteValue(diceResult.Dice);
 			writer.WritePropertyName("squareEvent");
-			writer.WriteValue(diceResult.SquareEvent);
+			writer.WriteValue(diceResult.Message);
 			writer.WritePropertyName("finalPosition");
 			writer.WriteValue(diceResult.FinalPosition);
-
+			writer.WritePropertyName("firstPosition");
+			writer.WriteValue(diceResult.FirstPosition);
+			if (diceResult.Ranking == null)
+			{
+				writer.WriteEndObject();
+				return;
+			}
+			// writer.WriteValue(diceResult.Ranking.ToList());
+			writer.WritePropertyName("ranking");
+			writer.WriteStartArray();
+			foreach (var r in diceResult.Ranking)
+			{
+				writer.WriteValue(r);
+			}
+			writer.WriteEndArray();
 			writer.WriteEndObject();
 		}
 
@@ -27,8 +41,12 @@ namespace SugorokuLibrary.ServerToClient.Converters
 			JsonSerializer serializer)
 		{
 			JObject jObject = JObject.Load(reader);
-			return new DiceResultMessage((int) jObject["dice"]!, (string) jObject["squareEvent"]!,
-				(int) jObject["finalObject"]!);
+			var dice = new DiceResultMessage((int) jObject["dice"]!, (string) jObject["squareEvent"]!,
+				(int) jObject["firstPosition"]!, (int) jObject["finalPosition"]!);
+
+			if (!jObject.ContainsKey("ranking")) return dice;
+			dice.Ranking = jObject["ranking"]!.ToObject<int[]>();
+			return dice;
 		}
 
 		public override bool CanConvert(Type objectType)

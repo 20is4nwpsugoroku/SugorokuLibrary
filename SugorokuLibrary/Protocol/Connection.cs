@@ -27,9 +27,14 @@ namespace SugorokuLibrary.Protocol
 			return HeaderProtocol.ParseHeader(msg);
 		}
 
-		public static void Send(string message, Socket partnerSocket)
+		public static void Send(string message, Socket partnerSocket, bool makeHeader = false)
 		{
 			var sendSize = 0;
+			if (makeHeader)
+			{
+				message = HeaderProtocol.MakeHeader(message, true);
+			}
+
 			var sendMsgBytes = Encoding.UTF8.GetBytes(message);
 			while (sendSize < sendMsgBytes.Length)
 			{
@@ -40,9 +45,10 @@ namespace SugorokuLibrary.Protocol
 			}
 		}
 
-		public static (int, bool, string) SendAndRecvMessage(string message, Socket partnerSocket)
+		public static (int, bool, string) SendAndRecvMessage(string message, Socket partnerSocket,
+			bool makeHeader = false)
 		{
-			Send(message, partnerSocket);
+			Send(message, partnerSocket, makeHeader);
 			return Receive(partnerSocket);
 		}
 	}

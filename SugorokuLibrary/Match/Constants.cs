@@ -11,6 +11,6 @@ namespace SugorokuLibrary.Match
 		public const int StartPosition = 0;
 		public const int GoalPosition = 30;
 		public const int InvalidPlayerID = -1;
-
+		public const int FinishedPlayerID = -2;
 	}
 }

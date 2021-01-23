@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SugorokuClientApp.ResultPage" NavigationPage.HasNavigationBar="false">
+    <ContentPage.Content>
+        <StackLayout>
+            <RelativeLayout x:Name="ResultLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <Image x:Name="StandImage"
+                       RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
+                       RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.5}" 
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}" />
+
+                <StackLayout x:Name="TopLayout">
+                       <Image x:Name="TopKoma"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.05}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.00}"
+                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.22}"
+                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.68}" />
+
+                       <Label x:Name="TopLabel"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=TopKoma, Property=X, Constant=0}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=TopKoma, Property=Y, Constant=-1.0}" />
+                </StackLayout>
+
+                <StackLayout x:Name="SecondLayout">
+                       <Image x:Name="SecondKoma"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.30}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.33}"
+                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.22}"
+                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.68}" />
+                       <Label x:Name="SecondLabel"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SecondKoma, Property=X, Constant=0}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SecondKoma, Property=Y, Constant=-1.0}" />
+                </StackLayout>
+
+                <StackLayout x:Name="ThirdLayout">
+                       <Image x:Name="ThirdKoma"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.55}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.62}"
+                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.22}"
+                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.68}" />
+                       <Label x:Name="ThirdLabel"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ThirdKoma, Property=X, Constant=0}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ThirdKoma, Property=Y, Constant=-1.0}" />
+                </StackLayout>
+
+                <StackLayout x:Name="ForthLayout">
+                       <Image x:Name="ForthKoma"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.80}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=1.00}"
+                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Width, Factor=0.22}"
+                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=StandImage, Property=Height, Factor=0.68}" />
+                       <Label x:Name="ForthLabel"
+                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ForthKoma, Property=X, Constant=0}"
+                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ForthKoma, Property=Y, Constant=-1.0}" />
+                </StackLayout>
+            </RelativeLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

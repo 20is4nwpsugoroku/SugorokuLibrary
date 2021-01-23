@@ -2,9 +2,9 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SugorokuLibrary.ServerToClient.Converters
+namespace SugorokuLibrary.SquareEvents.Converter
 {
-    public class ServerMessageConverter : JsonConverter
+    public class SquareEventConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
@@ -14,20 +14,24 @@ namespace SugorokuLibrary.ServerToClient.Converters
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JObject jObject = JObject.Load(reader);
-            JsonConverter converter = (string) jObject["methodType"]! switch
+            JsonConverter converter = (string) jObject["eventType"]! switch
             {
-                "failed" => new FailedMessageConverter(),
-                "diceResult" => new DiceResultMessageConverter(),
-                "alreadyFinished" => new AlreadyFinishedMessageConverter(),
+                "none" => new NoneEventConverter(),
+                "goStart" => new GoStartEventConverter(),
+                "diceAgain" => new DiceAgainEventConverter(),
+                "next" => new NextEventConverter(),
+                "prevDice" => new PrevDiceEventConverter(),
+                "prev" => new PrevEventConverter(),
+                "wait" => new WaitEventConverter(),
                 _ => throw new ArgumentException()
             };
             var newReader = jObject.CreateReader();
             return converter.ReadJson(newReader, objectType, existingValue, serializer);
         }
 
-        public override bool CanConvert(Type typeToConvert)
+        public override bool CanConvert(Type objectType)
         {
-            return typeToConvert == typeof(ServerMessage);
+            return objectType == typeof(SquareEvent);
         }
 
         public override bool CanWrite => false;
