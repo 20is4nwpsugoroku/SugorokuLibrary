@@ -15,6 +15,8 @@ namespace SugorokuLibrary.Match
 		/// <value> すごろくのマスの情報 </value>
 		public Field Field { get; }
 
+		public bool NextPlayerPrevDice { get; set; }
+
 		/// <value> プレイヤー情報、プレイヤーIDをKeyとするPlayerクラスの辞書</value>
 		public Dictionary<int, Player> Players { get; }
 
@@ -22,7 +24,9 @@ namespace SugorokuLibrary.Match
 		public ListQueue<int> ActionSchedule { get; }
 
 		/// <value> 順位を格納する </value>
-		public Queue<int> Ranking { get; private set; }
+		public IEnumerable<int> Ranking { get; private set; }
+
+		public int TopPlayerId { get; private set; }
 
 		/// <value> 乱数生成用のクラス </value>
 		private Random Rand { get; set; }
@@ -33,7 +37,7 @@ namespace SugorokuLibrary.Match
 		/// <summary>
 		/// デフォルトコンストラクタ
 		/// </summary>
-		MatchCore()
+		private MatchCore()
 		{
 			MatchInfo = new MatchInfo();
 			Field = new Field();
@@ -74,23 +78,40 @@ namespace SugorokuLibrary.Match
 			MatchInfo.NextPlayerID = ActionSchedule.Peek();
 		}
 
-
 		/// <summary>
 		/// 引数のプレイヤーの行動を試合に反映する
 		/// </summary>
 		/// <param name="playerAction">プレイヤーの行動</param>
-		public void ReflectAction(PlayerAction playerAction)
+		public ReflectionStatus ReflectAction(PlayerAction playerAction)
 		{
 			// エラー処理関連
-			if (playerAction.PlayerID != MatchInfo.NextPlayerID 
-				|| !Players.ContainsKey(playerAction.PlayerID))
+			if (MatchInfo.NextPlayerID == Constants.FinishedPlayerID)
 			{
-				return; // 行動できるプレイヤーではないのでリターン
+				// 誰かがゴール済みのとき、AlreadyFinishedを返す
+				return ReflectionStatus.AlreadyFinished;
 			}
-			if (playerAction.Length < Constants.ActionMinLength
-				|| playerAction.Length > Constants.ActionMaxLength)
+
+			if (playerAction.PlayerID != MatchInfo.NextPlayerID
+			    || !Players.ContainsKey(playerAction.PlayerID))
 			{
-				playerAction.Length = Rand.Next(Constants.ActionMinLength, 7); // Lengthが不正な場合、さいころをふる
+				return ReflectionStatus.NotYourTurn; // 行動できるプレイヤーではないのでリターン
+			}
+
+			if (playerAction.Length < Constants.ActionMinLength
+			    || playerAction.Length > Constants.ActionMaxLength)
+			{
+				// すごろくの値が不正な場合、エラーを返す
+				return ReflectionStatus.Error;
+			}
+
+			if (NextPlayerPrevDice)
+			{
+				NextPlayerPrevDice = false;
+				var prev = Players[playerAction.PlayerID].Position;
+				var next = prev - playerAction.Length;
+				Players[playerAction.PlayerID].Position = next;
+				IncrementTurn();
+				return ReflectionStatus.PrevDiceSuccess;
 			}
 
 			// プレイヤーの移動
@@ -98,27 +119,32 @@ namespace SugorokuLibrary.Match
 			var nextPos = prePos + playerAction.Length;
 			if (nextPos >= Constants.GoalPosition)
 			{
-				Goal(MatchInfo.NextPlayerID);
+				// Goal(MatchInfo.NextPlayerID);
+				End(playerAction.PlayerID);
 			}
 
 			// イベントの実行
 			Players[playerAction.PlayerID].Position = nextPos;
-			Field.Squares[nextPos].Event.Event(this, MatchInfo.NextPlayerID);
+			Field.Squares[nextPos].Event(this, MatchInfo.NextPlayerID);
 
 			// 次のターンに進める
 			if (ActionSchedule.Count != 0)
 			{
 				IncrementTurn();
 			}
+
+			return ReflectionStatus.NextSuccess;
 		}
 
 
 		/// <summary>
 		/// 試合を終了させる
 		/// </summary>
-		public void End()
+		private void End(int playerId)
 		{
-			MatchInfo.NextPlayerID = Constants.InvalidPlayerID;
+			TopPlayerId = playerId;
+			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID);
+			MatchInfo.NextPlayerID = Constants.FinishedPlayerID;
 		}
 
 
@@ -131,28 +157,7 @@ namespace SugorokuLibrary.Match
 			MatchInfo.NextPlayerID = ActionSchedule.Peek();
 		}
 
-
-		/// <summary>
-		/// プレイヤーがゴールした際の処理
-		/// </summary>
-		/// <param name="playerID">ゴールに到着したプレイヤーのID</param>
-		private void Goal(int playerID)
-		{
-			// キューから行動の順番を予定を消す処理
-			ActionSchedule.RemoveAll(p => p == playerID);
-
-			// プレイヤーの位置をゴール位置に合わせる
-			Players[playerID].Position = Constants.GoalPosition;
-			Ranking.Enqueue(playerID);
-			
-			// 全プレイヤーがゴールしたので、終了処理に移る
-			if (ActionSchedule.Count == 0)
-			{
-				End();
-			}
-		}
-
-		#endregion 
+		#endregion
 
 
 		#region プレイヤー情報の初期化関連
@@ -167,6 +172,7 @@ namespace SugorokuLibrary.Match
 			{
 				throw new ArgumentNullException();
 			}
+
 			ResetPlayersDictionary(players);
 			ResetActionSchedule(ActionSchedule, players);
 		}
@@ -201,6 +207,5 @@ namespace SugorokuLibrary.Match
 		}
 
 		#endregion
-
 	}
 }
