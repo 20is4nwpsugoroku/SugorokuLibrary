@@ -39,25 +39,37 @@ namespace SugorokuServer
 
 		private (bool, string) ThrowDice(DiceMessage diceMessage)
 		{
-			var matchInfo = _startedMatch[diceMessage.MatchKey];
-			if (matchInfo.ActionSchedule.Peek() != diceMessage.PlayerId)
+			var matchCore = _startedMatch[diceMessage.MatchKey];
+			if (matchCore.ActionSchedule.Peek() != diceMessage.PlayerId)
 			{
 				return (false, JsonConvert.SerializeObject(new FailedMessage("まだあなたのターンではありません")));
 			}
 
 			var dice = Dice();
+			var firstPos = matchCore.Players[diceMessage.PlayerId].Position + dice;
 			var action = new PlayerAction
 			{
 				PlayerID = diceMessage.PlayerId,
 				Length = dice
 			};
-			matchInfo.ReflectAction(action);
-			_startedMatch[diceMessage.MatchKey] = matchInfo;
+			var result = matchCore.ReflectAction(action);
+			_startedMatch[diceMessage.MatchKey] = matchCore;
 
-			var pos = matchInfo.Players[diceMessage.PlayerId].Position;
-			// return (true, $"{dice} {pos} {Field.Squares[pos].Event}");
-			return (true,
-				JsonConvert.SerializeObject(new DiceResultMessage(dice, Field.Squares[pos].Event.ToString()!, pos)));
+			var pos = matchCore.Players[diceMessage.PlayerId].Position;
+			return result switch
+			{
+				ReflectionStatus.NextSuccess => (true,
+					JsonConvert.SerializeObject(new DiceResultMessage(dice, matchCore.Field.Squares[firstPos].Message,
+						firstPos, pos))),
+				ReflectionStatus.AlreadyFinished => (true,
+					JsonConvert.SerializeObject(new AlreadyFinishedMessage(matchCore.TopPlayerId, matchCore.Ranking))),
+				ReflectionStatus.NotYourTurn => (false,
+					JsonConvert.SerializeObject(new FailedMessage("まだあなたのターンではありません"))),
+				ReflectionStatus.PrevDiceSuccess => (true,
+					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", firstPos, pos))),
+				ReflectionStatus.Error => throw new ArgumentException(),
+				_ => throw new ArgumentOutOfRangeException()
+			};
 		}
 
 		private static int Dice()
