@@ -93,5 +93,16 @@
       <Name>SugorokuClientApp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\saikoro_1.png" />
+    <AndroidResource Include="Resources\drawable\saikoro_2.png" />
+    <AndroidResource Include="Resources\drawable\saikoro_3.png" />
+    <AndroidResource Include="Resources\drawable\saikoro_4.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\saikoro_5.png" />
+    <AndroidResource Include="Resources\drawable\saikoro_6.png" />
+  </ItemGroup>
  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
