@@ -68,6 +68,8 @@ namespace SugorokuServer
 				ReflectionStatus.PrevDiceSuccess => (true,
 					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", firstPos, pos))),
 				ReflectionStatus.Error => throw new ArgumentException(),
+				ReflectionStatus.PlayerGoal => (true,
+					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", 30, 30) {Ranking = matchCore.Ranking})),
 				_ => throw new ArgumentOutOfRangeException()
 			};
 		}
