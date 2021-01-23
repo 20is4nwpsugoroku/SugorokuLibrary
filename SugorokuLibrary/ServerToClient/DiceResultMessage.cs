@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using SugorokuLibrary.ServerToClient.Converters;
 
@@ -11,6 +12,8 @@ namespace SugorokuLibrary.ServerToClient
         public string Message { get; }
         public int FirstPosition { get; }
         public int FinalPosition { get; }
+        
+        public IEnumerable<int>? Ranking { get; set; }
 
         public DiceResultMessage(int dice, string message, int firstPosition, int finalPosition)
         {

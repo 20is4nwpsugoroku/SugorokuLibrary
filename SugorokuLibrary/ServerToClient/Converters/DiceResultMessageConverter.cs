@@ -1,7 +1,6 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SugorokuLibrary.SquareEvents;
 
 namespace SugorokuLibrary.ServerToClient.Converters
 {
@@ -22,7 +21,19 @@ namespace SugorokuLibrary.ServerToClient.Converters
 			writer.WriteValue(diceResult.FinalPosition);
 			writer.WritePropertyName("firstPosition");
 			writer.WriteValue(diceResult.FirstPosition);
-
+			if (diceResult.Ranking == null)
+			{
+				writer.WriteEndObject();
+				return;
+			}
+			// writer.WriteValue(diceResult.Ranking.ToList());
+			writer.WritePropertyName("ranking");
+			writer.WriteStartArray();
+			foreach (var r in diceResult.Ranking)
+			{
+				writer.WriteValue(r);
+			}
+			writer.WriteEndArray();
 			writer.WriteEndObject();
 		}
 
@@ -30,8 +41,12 @@ namespace SugorokuLibrary.ServerToClient.Converters
 			JsonSerializer serializer)
 		{
 			JObject jObject = JObject.Load(reader);
-			return new DiceResultMessage((int) jObject["dice"]!, (string) jObject["squareEvent"]!,
+			var dice = new DiceResultMessage((int) jObject["dice"]!, (string) jObject["squareEvent"]!,
 				(int) jObject["firstPosition"]!, (int) jObject["finalPosition"]!);
+
+			if (!jObject.ContainsKey("ranking")) return dice;
+			dice.Ranking = jObject["ranking"]!.ToObject<int[]>();
+			return dice;
 		}
 
 		public override bool CanConvert(Type objectType)
