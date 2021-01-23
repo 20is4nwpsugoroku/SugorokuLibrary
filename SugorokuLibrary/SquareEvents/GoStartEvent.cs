@@ -1,10 +1,19 @@
+using Newtonsoft.Json;
 using SugorokuLibrary.Match;
+using SugorokuLibrary.SquareEvents.Converter;
 
 namespace SugorokuLibrary.SquareEvents
 {
-    public class GoStartEvent : ISquareEvent
+    [JsonConverter(typeof(GoStartEventConverter))]
+    public class GoStartEvent : SquareEvent
     {
-        public void Event(MatchCore matchCore, int playerId)
+        public override string Message { get; }
+
+        public GoStartEvent(string message)
+        {
+            Message = message + "\nスタートへ戻る";
+        }
+        public override void Event(MatchCore matchCore, int playerId)
         {
             matchCore.Players[playerId].Position = 0;
         }
