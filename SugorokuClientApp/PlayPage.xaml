@@ -35,11 +35,12 @@
                         <ColumnDefinition Width="5*" />
                         <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
-                    <StackLayout>
+                    <StackLayout x:Name="StatusLayout">
                         <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
                                HorizontalOptions="CenterAndExpand" />
                     </StackLayout>
-                    <Button Grid.Column="1" x:Name="DiceButton" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}" />
+                    <Button Grid.Column="1" x:Name="DiceButton" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}"
+                            Clicked="DiceButtonClicked" />
                 </Grid>
             </Grid>
         </Grid>

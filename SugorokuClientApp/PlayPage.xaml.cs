@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
@@ -15,6 +17,7 @@ namespace SugorokuClientApp
     public partial class PlayPage
     {
         private readonly Player _player;
+        private readonly MatchInfo _matchInfo;
         private readonly PlayPageViewModel _viewModel;
         private bool _isZooming;
 
@@ -30,11 +33,12 @@ namespace SugorokuClientApp
                 {30, (0.80, 0.73)}
             };
 
-        public PlayPage(Player player)
+        public PlayPage(Player player, MatchInfo matchInfo)
         {
             InitializeComponent();
 
             _player = player;
+            _matchInfo = matchInfo;
             FieldImage.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.sugorokuField.png");
             PlayerKomaIcon.Source =
                 ImageSource.FromResource($"SugorokuClientApp.ImageResource.koma_{player.PlayerID}.png");
@@ -42,7 +46,7 @@ namespace SugorokuClientApp
             _viewModel = new PlayPageViewModel();
             UpdateNowPlayerText();
             PlayerGrid.BindingContext = _viewModel;
-            Device.StartTimer(TimeSpan.FromMinutes(1), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(5), () =>
             {
                 UpdateNowPlayerText();
                 return true;
@@ -67,9 +71,6 @@ namespace SugorokuClientApp
             var info = JsonConvert.DeserializeObject<MatchInfo>(msg);
             _viewModel.NowPlayer = info.NextPlayerID == _player.PlayerID ? "あなたのターン" : $"{info.NextPlayerID}Pのターン";
             _viewModel.IsMyTurn = info.NextPlayerID == _player.PlayerID;
-            var (x, y) = PlayerPositionToConstant[_player.Position];
-            _viewModel.PlayerXPosition = x;
-            _viewModel.PlayerYPosition = y;
         }
 
         private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
@@ -81,6 +82,99 @@ namespace SugorokuClientApp
             FieldLayout.AnchorY = PlayerKomaIcon.Y / FieldLayout.Height;
             await FieldLayout.RelScaleTo(scale, 1000);
             SizeChangeButton.IsEnabled = true;
+        }
+
+        private async void DiceButtonClicked(object sender, EventArgs e)
+        {
+            DiceButton.IsEnabled = false;
+            using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
+                (int) Application.Current.Properties["serverPort"]);
+            var diceRequest = new DiceMessage(_player.MatchKey, _player.PlayerID);
+            var requestMsg = JsonConvert.SerializeObject(diceRequest);
+
+            var (_, _, response) = Connection.SendAndRecvMessage(requestMsg, socket, true);
+            var serverMessage = JsonConvert.DeserializeObject<ServerMessage>(response);
+
+            var task = serverMessage switch
+            {
+                DiceResultMessage dr => DiceEvent(dr),
+                FailedMessage f => FailedAction(f),
+                AlreadyFinishedMessage af => AlreadyFinishedAction(af),
+                _ => throw new ArgumentException()
+            };
+            await task;
+        }
+
+        private async Task DiceEvent(DiceResultMessage diceResult)
+        {
+            var diceImg = new Image
+            {
+                Source = ImageSource.FromFile($"Resources/drawable/saikoro_{diceResult.Dice}.png"),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            StatusLayout.Children.RemoveAt(0);
+            StatusLayout.Children.Add(diceImg);
+            await Task.Delay(2000);
+
+            var (firstX, firstY) = PlayerPositionToConstant[Math.Min(diceResult.FirstPosition, 30)];
+            var firstXConstraint = Constraint.RelativeToView(FieldImage, (layout, view) => view.Width * firstX);
+            var firstYConstraint = Constraint.RelativeToView(FieldImage, (layout, view) => view.Height * firstY);
+            RelativeLayout.SetXConstraint(PlayerKomaIcon, firstXConstraint);
+            RelativeLayout.SetYConstraint(PlayerKomaIcon, firstYConstraint);
+
+            if (diceResult.FirstPosition >= 30)
+            {
+                await DisplayAlert("ゴール", "ゴールおめでとう！リザルトへ移動します", "OK");
+                Device.BeginInvokeOnMainThread(async () =>
+                    await Navigation.PushAsync(new ResultPage(diceResult.Ranking!.ToArray(), _player.PlayerID,
+                        _matchInfo.Players)));
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(diceResult.Message))
+            {
+                await DisplayAlert("イベントマス", diceResult.Message, "OK");
+            }
+
+            var (finalX, finalY) = PlayerPositionToConstant[diceResult.FinalPosition];
+            var finalXConstraint = Constraint.RelativeToView(FieldImage, (layout, view) => view.Width * finalX);
+            var finalYConstraint = Constraint.RelativeToView(FieldImage, (layout, view) => view.Height * finalY);
+            RelativeLayout.SetXConstraint(PlayerKomaIcon, finalXConstraint);
+            RelativeLayout.SetYConstraint(PlayerKomaIcon, finalYConstraint);
+
+            var statusLabel = new Label
+            {
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand
+            };
+            statusLabel.SetBinding(Label.TextProperty, nameof(PlayPageViewModel.NowPlayer));
+            StatusLayout.Children.RemoveAt(0);
+            StatusLayout.Children.Add(statusLabel);
+
+            DiceButton.BindingContext = _viewModel;
+            DiceButton.SetBinding(IsEnabledProperty, nameof(PlayPageViewModel.IsMyTurn));
+        }
+
+        private async Task FailedAction(FailedMessage failed)
+        {
+            await Console.Error.WriteLineAsync($"Error: {failed.Message}");
+            Device.BeginInvokeOnMainThread(async () => await DisplayAlert("ダイスエラー", "まだあなたのターンではありませんでした。", "OK"));
+        }
+
+        private async Task AlreadyFinishedAction(AlreadyFinishedMessage message)
+        {
+            await DisplayAlert("他のプレイヤーがゴール済み", "他のプレイヤーがゴールしました。リザルト画面へ移動します", "OK");
+
+            Device.BeginInvokeOnMainThread(async () =>
+                await Navigation.PushAsync(new ResultPage(message.Ranking!.ToArray(), _player.PlayerID,
+                    _matchInfo.Players)));
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return false;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace SugorokuClientApp
     public partial class WaitOtherPlayerPage
     {
         private readonly Player _myPlayerInfo;
+        private MatchInfo _matchInfo;
         private bool _hostPlayersPageMoved;
 
         public WaitOtherPlayerPage(Player myInfo)
@@ -31,6 +32,8 @@ namespace SugorokuClientApp
                 DisplayAlert("あなたは参加者です", $"あなたは部屋{myInfo.MatchKey}に参加しました。ホストの開始までしばらくお待ちください。", "OK");
                 GameStartButton.IsEnabled = false;
             }
+
+            PlayerInfoUpdate();
 
             PlayersView.ItemsSource = new ListQueue<Player> {myInfo};
 
