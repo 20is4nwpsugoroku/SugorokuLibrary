@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SugorokuLibrary.SquareEvents;
 
 namespace SugorokuLibrary.ServerToClient.Converters
 {
@@ -16,9 +17,11 @@ namespace SugorokuLibrary.ServerToClient.Converters
 			writer.WritePropertyName("dice");
 			writer.WriteValue(diceResult.Dice);
 			writer.WritePropertyName("squareEvent");
-			writer.WriteValue(diceResult.SquareEvent);
+			writer.WriteValue(diceResult.Message);
 			writer.WritePropertyName("finalPosition");
 			writer.WriteValue(diceResult.FinalPosition);
+			writer.WritePropertyName("firstPosition");
+			writer.WriteValue(diceResult.FirstPosition);
 
 			writer.WriteEndObject();
 		}
@@ -28,7 +31,7 @@ namespace SugorokuLibrary.ServerToClient.Converters
 		{
 			JObject jObject = JObject.Load(reader);
 			return new DiceResultMessage((int) jObject["dice"]!, (string) jObject["squareEvent"]!,
-				(int) jObject["finalObject"]!);
+				(int) jObject["firstPosition"]!, (int) jObject["finalPosition"]!);
 		}
 
 		public override bool CanConvert(Type objectType)

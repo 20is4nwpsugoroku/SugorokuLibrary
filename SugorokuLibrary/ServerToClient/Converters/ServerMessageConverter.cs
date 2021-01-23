@@ -18,6 +18,7 @@ namespace SugorokuLibrary.ServerToClient.Converters
             {
                 "failed" => new FailedMessageConverter(),
                 "diceResult" => new DiceResultMessageConverter(),
+                "alreadyFinished" => new AlreadyFinishedMessageConverter(),
                 _ => throw new ArgumentException()
             };
             var newReader = jObject.CreateReader();

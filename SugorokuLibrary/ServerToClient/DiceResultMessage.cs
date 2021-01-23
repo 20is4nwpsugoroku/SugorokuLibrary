@@ -3,19 +3,21 @@ using SugorokuLibrary.ServerToClient.Converters;
 
 namespace SugorokuLibrary.ServerToClient
 {
-	[JsonConverter(typeof(DiceResultMessageConverter))]
-	public class DiceResultMessage : ServerMessage
-	{
-		[JsonProperty("methodType")] public string MethodType => "diceResult";
-		[JsonProperty("dice")] public int Dice { get; }
-		[JsonProperty("squareEvent")] public string SquareEvent { get; }
-		[JsonProperty("finalPosition")] public int FinalPosition { get; }
+    [JsonConverter(typeof(DiceResultMessageConverter))]
+    public class DiceResultMessage : ServerMessage
+    {
+        public override string MethodType => "diceResult";
+        public int Dice { get; }
+        public string Message { get; }
+        public int FirstPosition { get; }
+        public int FinalPosition { get; }
 
-		public DiceResultMessage(int dice, string squareEvent, int finalPosition)
-		{
-			Dice = dice;
-			SquareEvent = squareEvent;
-			FinalPosition = finalPosition;
-		}
-	}
+        public DiceResultMessage(int dice, string message, int firstPosition, int finalPosition)
+        {
+            Dice = dice;
+            Message = message;
+            FirstPosition = firstPosition;
+            FinalPosition = finalPosition;
+        }
+    }
 }

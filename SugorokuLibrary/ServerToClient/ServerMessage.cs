@@ -4,7 +4,8 @@ using SugorokuLibrary.ServerToClient.Converters;
 namespace SugorokuLibrary.ServerToClient
 {
     [JsonConverter(typeof(ServerMessageConverter))]
-    public class ServerMessage
+    public abstract class ServerMessage
     {
+        public abstract string MethodType { get; }
     }
 }
