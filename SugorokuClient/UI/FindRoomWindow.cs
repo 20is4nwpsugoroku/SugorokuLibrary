@@ -26,7 +26,7 @@ namespace SugorokuClient.UI
 
 		public bool isSelectedInfo { get; private set; } = false;
 
-		private KeyValuePair<string, MatchInfo> selectedMatch;
+		private MatchInfo SelectedMatch { get; set; }
 
 
 		private uint windowBaseColor = DX.GetColor(240, 240, 240);
@@ -55,7 +55,6 @@ namespace SugorokuClient.UI
 			listButtonTexture = TextureAsset.Register("FindRoomWindowList", listButtonPath);
 			reloadButtonTexture = TextureAsset.Register("FindRoomWindowReload", reloadButtonPath);
 			closeButtonTexture = TextureAsset.Register("FindRoomWindowClose", closeButtonPath);
-			SocketManager.Connect(CommonData.Address, CommonData.Port);
 		}
 
 
@@ -90,9 +89,7 @@ namespace SugorokuClient.UI
 			{
 				if (button.LeftClicked())
 				{
-					selectedMatch = new KeyValuePair<string, MatchInfo>(
-						button.Text, matches[button.Text]
-						);
+					SelectedMatch = matches[button.Text];
 					isVisible = false;
 					isSelectedInfo = true;
 					break;
@@ -170,15 +167,15 @@ namespace SugorokuClient.UI
 		}
 
 
-		public KeyValuePair<string, MatchInfo> GetSelectedMatch()
+		public MatchInfo GetSelectedMatch()
 		{
 			if (isSelectedInfo)
 			{
-				return selectedMatch;
+				return SelectedMatch;
 			}
 			else
 			{
-				return new KeyValuePair<string, MatchInfo>(string.Empty, new MatchInfo());
+				return  new MatchInfo();
 			}
 		}
 

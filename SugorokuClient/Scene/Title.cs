@@ -56,7 +56,8 @@ namespace SugorokuClient.Scene
 			MakeRoom,
 			FindRoom,
 			Load,
-			Popup
+			Popup,
+			ChangeGameScene
 		}
 
 		private State state;
@@ -181,6 +182,7 @@ namespace SugorokuClient.Scene
 								num = 4;
 								playerNum.Text = num.ToString();
 							}
+							CommonData.PlayerNum = num;
 							isWaitJoin = false;
 						}
 
@@ -197,6 +199,7 @@ namespace SugorokuClient.Scene
 					}
 					if (!isWaitJoin)
 					{
+						isWaitJoin = true;
 						Task.Run(()=>JoinMatch(CommonData.RoomName, CommonData.PlayerName));
 					}
 					if (!loadTexture.IsVisible())
@@ -210,10 +213,14 @@ namespace SugorokuClient.Scene
 					findRoomWindow.Update();
 					if (!findRoomWindow.isVisible)
 					{
-						CommonData.Match = findRoomWindow.GetSelectedMatch();
-						roomName.Text = CommonData.Match.Key;
+						CommonData.MatchInfo = findRoomWindow.GetSelectedMatch();
+						roomName.Text = CommonData.MatchInfo.MatchKey;
 						state = State.FindRoom;
 					}
+					break;
+
+				case State.ChangeGameScene:
+					SceneManager.ChangeScene(SceneManager.SceneName.Game);
 					break;
 
 				default:
@@ -309,7 +316,7 @@ namespace SugorokuClient.Scene
 			if (result)
 			{
 				CommonData.Player = JsonConvert.DeserializeObject<Player>(msg);
-				SceneManager.ChangeScene(SceneManager.SceneName.Game);
+				state = State.ChangeGameScene;
 			}
 			else
 			{

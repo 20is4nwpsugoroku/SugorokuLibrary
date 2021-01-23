@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
+using DxLibDLL;
 using SugorokuLibrary.ClientToServer;
 using SugorokuLibrary.Protocol;
 
@@ -64,15 +65,14 @@ namespace SugorokuClient.Util
 			{
 				isReceived = false;
 				var withHeader = HeaderProtocol.MakeHeader(body, true);
-				DxLibDLL.DX.putsDx("Send" + withHeader);
 				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-				DxLibDLL.DX.putsDx("Send" + recvMsg);
 				isReceived = r;
+				Close();
 				return (r, recvMsg);
 			}
 			catch (Exception)
 			{
-				return (false, string.Empty);
+				return (false, "Error" + string.Empty);
 			}
 		}
 

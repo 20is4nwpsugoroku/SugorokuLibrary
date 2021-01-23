@@ -12,16 +12,17 @@ namespace SugorokuClient.UI
 	{
 		private List<SugorokuSquareFrame> SquaresList { get; set; }
 		private int BackgroundTextureHandle { get; set; }
-
+		private Field Fld { get; set; }
 
 		public SugorokuFrame()
 		{
 			BackgroundTextureHandle = TextureAsset.Register("GameBackgroundImage",
 				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png");
 			SquaresList = new List<SugorokuSquareFrame>();
-			foreach (var square in Field.Squares)
+			Fld = new Field();
+			for (var i = 0; i < Fld.Squares.Length; i++)
 			{
-				SquaresList.Add(new SugorokuSquareFrame(square));
+				SquaresList.Add(new SugorokuSquareFrame(Fld.Squares[i], i));
 			}
 		}
 
@@ -32,6 +33,7 @@ namespace SugorokuClient.UI
 			{
 				square.Update();
 			}
+
 		}
 
 

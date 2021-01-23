@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DxLibDLL;
 using SugorokuLibrary;
+using SugorokuLibrary.SquareEvents;
 using SugorokuClient.Util;
 
 
@@ -13,16 +14,16 @@ namespace SugorokuClient.UI
 		private bool IsFirstClicked { get; set; }
 		private TextureButton SquareButton { get; set; }
 		private TextureFade DescriptionMessage { get; set; }
-		public Square Square { get; private set; }
+		public SquareEvent Square { get; private set; }
 		public (int, int) CenterPos { get; private set; }
 
 
-		public SugorokuSquareFrame(Square square)
+		public SugorokuSquareFrame(SquareEvent square, int index)
 		{
-			(this.CenterPos, this.SquareButton) = GenerateSquareButton(square.Index);
+			(this.CenterPos, this.SquareButton) = GenerateSquareButton(index);
 			int x, y, w, h, handle;
-			GetMessageBoxTextureInfo(square.Index, CenterPos, out handle, out x, out y, out w, out h);
-			var text = GetMessageBoxText(square.Index);
+			GetMessageBoxTextureInfo(index, CenterPos, out handle, out x, out y, out w, out h);
+			var text = GetMessageBoxText(index);
 			var fontHandle = (text != string.Empty) ? FontAsset.Register("MessageBoxFont", size: 18) : -1;
 			this.DescriptionMessage = new TextureFade(handle, x, y, w, h, 5, 30, 120, fontHandle, text, DX.GetColor(50, 50, 50));
 			this.Square = square;
