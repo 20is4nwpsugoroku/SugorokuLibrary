@@ -43,14 +43,10 @@ namespace SugorokuClient.Scene
 
 		private FindRoomWindow findRoomWindow { get; set; }
 
+		private TextureFade loadTexture { get; set; }
+
 		private Random rand { get; set; }
 		private bool isWaitJoin { get; set; }
-
-
-
-
-
-		
 
 
 		enum State
@@ -87,7 +83,7 @@ namespace SugorokuClient.Scene
 			backButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 500, 200, 50, "戻る", DX.GetColor(222, 222, 222), buttonFont);
 			makeRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 570, 300, 50, "部屋を作る", DX.GetColor(222, 222, 222), buttonFont);
 			joinRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 640, 300, 50, "部屋に参加する", DX.GetColor(222, 222, 222), buttonFont);
-			findRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 1000, 640, 100, 50, "探す", DX.GetColor(222, 222, 222), buttonFont);
+			findRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 1000, 570, 100, 50, "探す", DX.GetColor(222, 222, 222), buttonFont);
 			submitButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 780, 200, 50, "確定", DX.GetColor(222, 222, 222), buttonFont);
 			roomName = new TextBox(490, 570, 500, 50, textBoxFont);
 			roomName.FrameColor = DX.GetColor(50, 50, 50);
@@ -99,7 +95,7 @@ namespace SugorokuClient.Scene
 			playerNum.FrameColor = DX.GetColor(50, 50, 50);
 			playerNum.Text = "4";
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
-
+			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
 
 			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
@@ -203,6 +199,11 @@ namespace SugorokuClient.Scene
 					{
 						Task.Run(()=>JoinMatch(CommonData.RoomName, CommonData.PlayerName));
 					}
+					if (!loadTexture.IsVisible())
+					{
+						loadTexture.Start();
+					}
+					loadTexture.Update();
 					break;
 
 				case State.Popup:
@@ -231,7 +232,7 @@ namespace SugorokuClient.Scene
 		public void Draw()
 		{
 			TextureAsset.Draw(LogoImageHandle, LogoImageX, LogoImageY, LogoImageWidth, LogoImageHeight, DX.FALSE);
-
+			
 			switch (state)
 			{
 				case State.Start:
@@ -279,6 +280,7 @@ namespace SugorokuClient.Scene
 				case State.Load:
 					backButton.Draw();
 					backButton.DrawText();
+					loadTexture.Draw();
 					break;
 
 				case State.Popup:

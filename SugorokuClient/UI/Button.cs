@@ -125,11 +125,11 @@ namespace SugorokuClient.UI
 		/// <param name="textColor"></param>
 		public Button(int x, int y, int width, int height, uint mainColor, string text, uint textColor, int fontHandle) : this(x, y, width, height, mainColor)
 		{
-			TextColor = textColor;
 			Text = text;
+			TextColor = textColor;
 			FontHandle = fontHandle;
-			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
-			var textHeight = DX.GetFontSizeToHandle(fontHandle);
+			int textWidth, textHeight;
+			FontAsset.GetDrawTextSize(fontHandle, text, out textWidth, out textHeight, out _);
 			TextPosX = x + width / 2 - textWidth / 2;
 			TextPosY = y + height / 2 - textHeight / 2;
 		}

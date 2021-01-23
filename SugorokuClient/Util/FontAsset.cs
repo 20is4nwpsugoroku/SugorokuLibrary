@@ -93,7 +93,7 @@ namespace SugorokuClient.Util
 		/// <summary>
 		/// 描画される文字列の幅をアセット名を指定して取得する
 		/// </summary>
-		/// <param name="assetName">作成しフォントの名前</param>
+		/// <param name="assetName">作成したフォントの名前</param>
 		/// <param name="text">文字列の内容</param>
 		/// <returns>描画される文字列の幅</returns>
 		public static int GetDrawTextWidth(string assetName, string text, int verticalFlag = DX.FALSE)
@@ -112,6 +112,34 @@ namespace SugorokuClient.Util
 		public static int GetDrawTextWidth(int fontHandle, string text, int verticalFlag = DX.FALSE)
 		{
 			return DX.GetDrawStringWidthToHandle(text, (int)DX.strlenDx(text), fontHandle, verticalFlag);
+		}
+
+
+		/// <summary>
+		/// 描画される文字列の各種サイズをアセット名を指定して取得する
+		/// </summary>
+		/// <param name="assetName">作成したフォントの名前</param>
+		/// <param name="text">文字列の内容</param>
+		/// <param name="width">幅</param>
+		/// <param name="height">高さ</param>
+		/// <param name="lineCount">行数</param>
+		public static void GetDrawTextSize(string assetName, string text, out int width, out int height, out int lineCount)
+		{
+			GetDrawTextSize(GetFontHandle(assetName), text, out width, out height, out lineCount);
+		}
+
+
+		/// <summary>
+		/// 描画される文字列の各種サイズをフォントの識別子を指定して取得する
+		/// </summary>
+		/// <param name="fontHandle">フォントの識別子</param>
+		/// <param name="text">文字列の内容</param>
+		/// <param name="width">幅</param>
+		/// <param name="height">高さ</param>
+		/// <param name="lineCount">行数</param>
+		public static void GetDrawTextSize(int fontHandle, string text, out int width, out int height, out int lineCount)
+		{
+			DX.GetDrawStringSizeToHandle(out width, out height, out lineCount, text, (int)DX.strlenDx(text), fontHandle);
 		}
 
 

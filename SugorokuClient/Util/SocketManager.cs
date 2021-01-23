@@ -47,13 +47,9 @@ namespace SugorokuClient.Util
 
 		public static void Close()
 		{
-			try 
+			if(isConnected)
 			{
 				socket.Shutdown(SocketShutdown.Both);
-			}
-			catch(Exception)
-			{
-				DxLibDLL.DX.putsDx("Error");
 			}
 			socket.Close();
 			isConnected = false;
@@ -62,17 +58,24 @@ namespace SugorokuClient.Util
 
 		public static (bool, string) SendRecv(string body)
 		{
-			if (isConnected)
+			if (!isConnected)
 			{
 				if (!Reconnect()) return (false, string.Empty);
 			}
-			isReceived = false;
-			var withHeader = HeaderProtocol.MakeHeader(body, true);
-			//DxLibDLL.DX.putsDx("Send" + withHeader);
-			var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-			//DxLibDLL.DX.putsDx("Send" + recvMsg);
-			isReceived = r;
-			return (r, recvMsg);
+			try
+			{
+				isReceived = false;
+				var withHeader = HeaderProtocol.MakeHeader(body, true);
+				//DxLibDLL.DX.putsDx("Send" + withHeader);
+				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
+				//DxLibDLL.DX.putsDx("Send" + recvMsg);
+				isReceived = r;
+				return (r, recvMsg);
+			}
+			catch(Exception)
+			{
+				return (false, string.Empty);
+			}
 		}
 
 	}

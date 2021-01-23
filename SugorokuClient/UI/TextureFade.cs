@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DxLibDLL;
+using SugorokuClient.Util;
 
 namespace SugorokuClient.UI
 {
@@ -25,6 +26,13 @@ namespace SugorokuClient.UI
 		public int height { get; private set; }
 
 
+		public uint TextColor { get; set; } = DX.GetColor(30, 30, 30);
+		public string Text { get; set; } = string.Empty;
+		private int FontHandle { get; set; } = -1;
+		private int TextPosX { get; set; } = 0;
+		private int TextPosY { get; set; } = 0;
+
+
 		public TextureFade(int textureHandle, int x, int y, int width, int height,
 			uint fadeinFrame = 0, uint fadeoutFrame = 0, uint notFadeFrame = 0)
 		{
@@ -34,14 +42,29 @@ namespace SugorokuClient.UI
 			this.width = width;
 			this.height = height;
 			this.fadeinFrame = (int)fadeinFrame;
-			fadeoutFrameCount = this.fadeinFrame;
+			fadeinFrameCount = this.fadeinFrame;
 			this.fadeoutFrame =(int)fadeoutFrame;
 			fadeoutFrameCount = 0;
 			this.notFadeFrame = (int)notFadeFrame;
 			notFadeFrameCount = 0;
 			fadein = fadeinFrame != 0;
 			fadeout = fadeoutFrame != 0;
-			alpha = 255;
+			alpha = 0;
+		}
+
+
+		public TextureFade(int textureHandle, int x, int y, int width, int height,
+			uint fadeinFrame = 0, uint fadeoutFrame = 0, uint notFadeFrame = 0,
+			int fontHandle = -1, string text = "", uint textColor = 0)
+			: this(textureHandle, x, y, width, height,fadeinFrame, fadeoutFrame, notFadeFrame)
+		{
+			Text = text;
+			TextColor = textColor;
+			FontHandle = fontHandle;
+			int textWidth, textHeight;
+			FontAsset.GetDrawTextSize(fontHandle, text, out textWidth, out textHeight, out _);
+			TextPosX = x + width / 2 - textWidth / 2;
+			TextPosY = y + height / 2 - textHeight / 2;
 		}
 
 
@@ -62,7 +85,7 @@ namespace SugorokuClient.UI
 			{
 				fadeinFrameCount--;
 				nowFadein = fadeinFrameCount > 0;
-				alpha = 255 * fadeinFrameCount / fadeinFrame;
+				alpha = 255 - (255 * fadeinFrameCount / fadeinFrame);
 			}
 			else if (nowFadeout)
 			{
@@ -90,12 +113,48 @@ namespace SugorokuClient.UI
 			{
 				DX.SetDrawBlendMode(DX.DX_BLENDMODE_ALPHA, alpha);
 				DX.DrawModiGraph(x, y, x + width, y, x + width, y + height, x, y + height, textureHandle, DX.TRUE);
+				DrawTextWithoutMODESETTING();
 				DX.SetDrawBlendMode(DX.DX_BLENDMODE_NOBLEND, 0);
 			}
 			else
 			{
 				DX.DrawModiGraph(x, y, x + width, y, x + width, y + height, x, y + height, textureHandle, DX.TRUE);
+				DrawTextWithoutMODESETTING();
 			}
+		}
+
+
+		public void DrawText()
+		{
+			if (FontHandle >= 0)
+			{
+				if (fadeoutFrame <= fadeoutFrameCount) return;
+				if (nowFadein || nowFadeout)
+				{
+					DX.SetDrawBlendMode(DX.DX_BLENDMODE_ALPHA, alpha);
+					FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
+					DX.SetDrawBlendMode(DX.DX_BLENDMODE_NOBLEND, 0);
+				}
+				else
+				{
+					FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
+				}
+			}
+		}
+
+
+		private void DrawTextWithoutMODESETTING()
+		{
+			if (FontHandle >= 0)
+			{
+				FontAsset.Draw(FontHandle, Text, TextPosX, TextPosY, TextColor);
+			}
+		}
+
+
+		public bool IsVisible()
+		{
+			return alpha != 0;
 		}
 	}
 }

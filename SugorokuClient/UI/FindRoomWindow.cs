@@ -111,14 +111,14 @@ namespace SugorokuClient.UI
 			if (!isHaveInfo)
 			{
 				FontAsset.Draw(textFont, "Error",
-					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error"),
+					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error") / 2,
 					y + 60, DX.GetColor(255, 0, 0)
 					);
 			}
 			else if (isReloading)
 			{
 				FontAsset.Draw(textFont, "Loading",
-					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Loading"),
+					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Loading") / 2,
 					y + 60, textColor
 					);
 			}

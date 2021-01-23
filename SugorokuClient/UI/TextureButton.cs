@@ -183,8 +183,8 @@ namespace SugorokuClient.UI
 			Text = text;
 			TextColor = textColor;
 			FontHandle = fontHandle;
-			var textWidth = FontAsset.GetDrawTextWidth(fontHandle, text);
-			var textHeight = DX.GetFontSizeToHandle(fontHandle);
+			int textWidth, textHeight;
+			FontAsset.GetDrawTextSize(fontHandle, text, out textWidth, out textHeight, out _);
 			TextPosX = x + width / 2 - textWidth / 2;
 			TextPosY = y + height / 2 - textHeight / 2;
 		}
@@ -274,6 +274,7 @@ namespace SugorokuClient.UI
 		public void Draw()
 		{
 			TextureAsset.DrawModi(TextureHandle, x1, y1, x2, y2, x3, y3, x4, y4, DX.TRUE);
+			DrawText();
 		}
 
 
