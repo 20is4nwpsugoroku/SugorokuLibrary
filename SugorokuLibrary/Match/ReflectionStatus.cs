@@ -6,6 +6,7 @@ namespace SugorokuLibrary.Match
         PrevDiceSuccess,
         Error,
         NotYourTurn,
-        AlreadyFinished
+        AlreadyFinished,
+        PlayerGoal
     }
 }

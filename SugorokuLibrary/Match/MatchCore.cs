@@ -121,6 +121,8 @@ namespace SugorokuLibrary.Match
 			{
 				// Goal(MatchInfo.NextPlayerID);
 				End(playerAction.PlayerID);
+				Players[playerAction.PlayerID].Position = 30;
+				return ReflectionStatus.PlayerGoal;
 			}
 
 			// イベントの実行
@@ -143,7 +145,7 @@ namespace SugorokuLibrary.Match
 		private void End(int playerId)
 		{
 			TopPlayerId = playerId;
-			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID);
+			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID).ToList();
 			MatchInfo.NextPlayerID = Constants.FinishedPlayerID;
 		}
 
