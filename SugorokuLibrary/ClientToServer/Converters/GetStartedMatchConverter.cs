@@ -12,7 +12,7 @@ namespace SugorokuLibrary.ClientToServer.Converters
 			
 			writer.WriteStartObject();
 			writer.WritePropertyName("methodType");
-			writer.WriteValue(GetStartedMatchMessage.MethodType);
+			writer.WriteValue(getStartedMatch.MethodType);
 			writer.WritePropertyName("matchKey");
 			writer.WriteValue(getStartedMatch.MatchKey);
 			writer.WriteEndObject();

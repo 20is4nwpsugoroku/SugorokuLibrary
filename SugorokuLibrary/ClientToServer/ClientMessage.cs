@@ -14,5 +14,6 @@ namespace SugorokuLibrary.ClientToServer
 	[JsonConverter(typeof(ClientMessageConverter))]
 	public abstract class ClientMessage
 	{
+		public abstract string MethodType { get; }
 	}
 }

@@ -22,6 +22,7 @@ namespace SugorokuLibrary.ClientToServer.Converters
 				"getAllMatches" => new GetAllMatchesConverter(),
 				"dice" => new DiceMessageConverter(),
 				"getStartedMatch" => new GetStartedMatchConverter(),
+				"getRanking" => new GetRankingConverter(),
 				_ => throw new ArgumentException()
 			};
 			var newReader = jObject.CreateReader();
