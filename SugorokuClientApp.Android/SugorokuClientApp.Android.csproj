@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SugorokuClientApp\SugorokuClientApp.csproj">
-      <Project>{96798D7A-8DF9-426F-8402-4DBA8C854981}</Project>
+      <Project>{4064FB51-45D6-4D6E-8BFB-D8FBF236DFA8}</Project>
       <Name>SugorokuClientApp</Name>
     </ProjectReference>
   </ItemGroup>
