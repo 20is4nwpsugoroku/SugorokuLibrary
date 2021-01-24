@@ -2,9 +2,9 @@ using System.ComponentModel;
 
 namespace SugorokuClientApp
 {
-    public class PlayPageViewModel
+    public class PlayPageViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChangedHandler;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private string _nowPlayer;
 
@@ -15,7 +15,7 @@ namespace SugorokuClientApp
             {
                 if (_nowPlayer == value) return;
                 _nowPlayer = value;
-                PropertyChangedHandler?.Invoke(this, new PropertyChangedEventArgs(nameof(NowPlayer)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NowPlayer)));
             }
         }
 
@@ -26,9 +26,8 @@ namespace SugorokuClientApp
             get => _isMyTurn;
             set
             {
-                if (_isMyTurn == value) return;
                 _isMyTurn = value;
-                PropertyChangedHandler?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMyTurn)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMyTurn)));
             }
         }
     }

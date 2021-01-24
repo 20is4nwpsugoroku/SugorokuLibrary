@@ -69,8 +69,8 @@ namespace SugorokuClientApp
             }
 
             var info = JsonConvert.DeserializeObject<MatchInfo>(msg);
-            _viewModel.NowPlayer = info.NextPlayerID == _player.PlayerID ? "あなたのターン" : $"{info.NextPlayerID}Pのターン";
             _viewModel.IsMyTurn = info.NextPlayerID == _player.PlayerID;
+            _viewModel.NowPlayer = _viewModel.IsMyTurn ? "あなたのターン" : $"{info.NextPlayerID}Pのターン";
         }
 
         private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
@@ -86,7 +86,7 @@ namespace SugorokuClientApp
 
         private async void DiceButtonClicked(object sender, EventArgs e)
         {
-            DiceButton.IsEnabled = false;
+            _viewModel.IsMyTurn = false;
             using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
                 (int) Application.Current.Properties["serverPort"]);
             var diceRequest = new DiceMessage(_player.MatchKey, _player.PlayerID);
