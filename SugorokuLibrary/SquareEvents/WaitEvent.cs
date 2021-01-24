@@ -15,7 +15,7 @@ namespace SugorokuLibrary.SquareEvents
         }
         public override void Event(MatchCore matchCore, int playerId)
         {
-            matchCore.ActionSchedule.Remove(playerId);
+            matchCore.ActionSchedule.RemoveLast(playerId);
         }
 
         public override string ToString()
