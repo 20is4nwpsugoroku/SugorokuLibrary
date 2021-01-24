@@ -24,7 +24,7 @@ namespace SugorokuLibrary.Match
 		public ListQueue<int> ActionSchedule { get; }
 
 		/// <value> 順位を格納する </value>
-		public IEnumerable<int> Ranking { get; private set; }
+		public IEnumerable<int>? Ranking { get; private set; }
 
 		public int TopPlayerId { get; private set; }
 
@@ -43,7 +43,6 @@ namespace SugorokuLibrary.Match
 			Field = new Field();
 			Players = new Dictionary<int, Player>();
 			ActionSchedule = new ListQueue<int>();
-			Ranking = new Queue<int>();
 			Rand = new Random();
 		}
 
@@ -145,7 +144,7 @@ namespace SugorokuLibrary.Match
 		private void End(int playerId)
 		{
 			TopPlayerId = playerId;
-			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID).ToList();
+			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID);
 			MatchInfo.NextPlayerID = Constants.FinishedPlayerID;
 		}
 
