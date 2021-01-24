@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
+using SugorokuLibrary.Match;
 using SugorokuLibrary.Protocol;
 using SugorokuLibrary.ServerToClient;
 using Xamarin.Forms;
@@ -20,6 +21,8 @@ namespace SugorokuClientApp
         private readonly MatchInfo _matchInfo;
         private readonly PlayPageViewModel _viewModel;
         private bool _isZooming;
+        private bool _dicePlaying;
+        private bool _isFinished;
 
         private static IReadOnlyDictionary<int, (double, double)> PlayerPositionToConstant =>
             new Dictionary<int, (double, double)>
@@ -46,15 +49,14 @@ namespace SugorokuClientApp
             _viewModel = new PlayPageViewModel();
             UpdateNowPlayerText();
             PlayerGrid.BindingContext = _viewModel;
-            Device.StartTimer(TimeSpan.FromSeconds(5), () =>
-            {
-                UpdateNowPlayerText();
-                return true;
-            });
+            Device.StartTimer(TimeSpan.FromSeconds(5), UpdateNowPlayerText);
         }
 
-        private void UpdateNowPlayerText()
+        private bool UpdateNowPlayerText()
         {
+            if (_isFinished) return false;
+            if (_dicePlaying) return true;
+
             using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
                 (int) Application.Current.Properties["serverPort"]);
             var requestMethod = new GetMatchInfoMessage(_player.MatchKey);
@@ -69,8 +71,29 @@ namespace SugorokuClientApp
             }
 
             var info = JsonConvert.DeserializeObject<MatchInfo>(msg);
+            if (info.NextPlayerID == Constants.FinishedPlayerID)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("終了", "他のプレイヤーがゴールしました。現在の位置で順位を決定します。", "OK");
+                    using var rankSock = ConnectServer.CreateSocket(
+                        (IPAddress) Application.Current.Properties["serverIpAddress"],
+                        (int) Application.Current.Properties["serverPort"]);
+                    var req = new GetRankingMessage(_player.MatchKey);
+                    var reqText = JsonConvert.SerializeObject(req);
+                    var (_, canCheck, rankMsg) = Connection.SendAndRecvMessage(reqText, rankSock, true);
+
+                    if (!canCheck) throw new Exception("まだゴールしてない判定");
+                    var rankMsgConvert = JsonConvert.DeserializeObject<RankingMessage>(rankMsg);
+                    await Navigation.PushAsync(new ResultPage(rankMsgConvert.Ranking.ToList(),
+                        _matchInfo.Players));
+                });
+                return false;
+            }
+
             _viewModel.IsMyTurn = info.NextPlayerID == _player.PlayerID;
             _viewModel.NowPlayer = _viewModel.IsMyTurn ? "あなたのターン" : $"{info.NextPlayerID}Pのターン";
+            return true;
         }
 
         private async void FieldImageZoomButtonClicked(object sender, EventArgs e)
@@ -87,6 +110,7 @@ namespace SugorokuClientApp
         private async void DiceButtonClicked(object sender, EventArgs e)
         {
             _viewModel.IsMyTurn = false;
+            _dicePlaying = true;
             using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
                 (int) Application.Current.Properties["serverPort"]);
             var diceRequest = new DiceMessage(_player.MatchKey, _player.PlayerID);
@@ -103,6 +127,7 @@ namespace SugorokuClientApp
                 _ => throw new ArgumentException()
             };
             await task;
+            _dicePlaying = false;
         }
 
         private async Task DiceEvent(DiceResultMessage diceResult)
@@ -110,7 +135,7 @@ namespace SugorokuClientApp
             var diceImg = new Image
             {
                 Source = ImageSource.FromFile($"Resources/drawable/saikoro_{diceResult.Dice}.png"),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
@@ -126,9 +151,10 @@ namespace SugorokuClientApp
 
             if (diceResult.FirstPosition >= 30)
             {
+                _isFinished = true;
                 await DisplayAlert("ゴール", "ゴールおめでとう！リザルトへ移動します", "OK");
                 Device.BeginInvokeOnMainThread(async () =>
-                    await Navigation.PushAsync(new ResultPage(diceResult.Ranking!.ToArray(), _player.PlayerID,
+                    await Navigation.PushAsync(new ResultPage(diceResult.Ranking!.ToArray(),
                         _matchInfo.Players)));
                 return;
             }
@@ -144,6 +170,7 @@ namespace SugorokuClientApp
             RelativeLayout.SetXConstraint(PlayerKomaIcon, finalXConstraint);
             RelativeLayout.SetYConstraint(PlayerKomaIcon, finalYConstraint);
 
+            _viewModel.NowPlayer = "現在のプレイヤーを確認中…";
             var statusLabel = new Label
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -168,7 +195,7 @@ namespace SugorokuClientApp
             await DisplayAlert("他のプレイヤーがゴール済み", "他のプレイヤーがゴールしました。リザルト画面へ移動します", "OK");
 
             Device.BeginInvokeOnMainThread(async () =>
-                await Navigation.PushAsync(new ResultPage(message.Ranking!.ToArray(), _player.PlayerID,
+                await Navigation.PushAsync(new ResultPage(message.Ranking!.ToArray(),
                     _matchInfo.Players)));
         }
 
