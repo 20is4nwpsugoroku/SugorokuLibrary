@@ -31,6 +31,7 @@ namespace SugorokuServer
 				GetAllMatchesMessage _ => GetAllMatches(),
 				DiceMessage dm => ThrowDice(dm),
 				GetStartedMatchMessage gsm => GetStatedMatch(gsm),
+				GetRankingMessage gr => GetRanking(gr),
 				_ => throw new NotImplementedException()
 			};
 
@@ -62,7 +63,7 @@ namespace SugorokuServer
 					JsonConvert.SerializeObject(new DiceResultMessage(dice, matchCore.Field.Squares[firstPos].Message,
 						firstPos, pos))),
 				ReflectionStatus.AlreadyFinished => (true,
-					JsonConvert.SerializeObject(new AlreadyFinishedMessage(matchCore.TopPlayerId, matchCore.Ranking))),
+					JsonConvert.SerializeObject(new AlreadyFinishedMessage(matchCore.TopPlayerId, matchCore.Ranking!))),
 				ReflectionStatus.NotYourTurn => (false,
 					JsonConvert.SerializeObject(new FailedMessage("まだあなたのターンではありません"))),
 				ReflectionStatus.PrevDiceSuccess => (true,
@@ -166,6 +167,14 @@ namespace SugorokuServer
 			return _startedMatch.ContainsKey(message.MatchKey)
 				? (true, JsonConvert.SerializeObject(_startedMatch[message.MatchKey]))
 				: (false, JsonConvert.SerializeObject(new FailedMessage("This match key's match is not started")));
+		}
+
+		private (bool, string) GetRanking(GetRankingMessage message)
+		{
+			var ranking = _startedMatch[message.MatchKey].Ranking;
+			return ranking == null
+				? (false, JsonConvert.SerializeObject(new FailedMessage("まだランキングは決まっていません")))
+				: (true, JsonConvert.SerializeObject(new RankingMessage(ranking)));
 		}
 	}
 }
