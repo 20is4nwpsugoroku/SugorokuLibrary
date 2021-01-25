@@ -26,26 +26,34 @@
                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Width, Factor=0.03}"
                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=FieldImage, Property=Height, Factor=0.22}" />
             </RelativeLayout>
-            <Grid Grid.Row="1" BackgroundColor="White">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="3*" />
-                </Grid.RowDefinitions>
 
-                <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小" 
-                        BackgroundColor="#1D6315" TextColor="White" />
-                <Grid Grid.Row="1" x:Name="PlayerGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*" />
-                        <ColumnDefinition Width="5*" />
-                    </Grid.ColumnDefinitions>
-                    <StackLayout x:Name="StatusLayout">
-                        <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
-                               HorizontalOptions="CenterAndExpand" />
-                    </StackLayout>
-                    <Button Grid.Column="1" x:Name="DiceButton" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}"
-                            Clicked="DiceButtonClicked" BackgroundColor="#1D6315" TextColor="White" />
-                </Grid>
+            <Grid Grid.Row="1" BackgroundColor="White" x:Name="PlayerGrid" Padding="8,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小"
+                        TextColor="Black" BorderWidth="3" BorderColor="#0067A7" CornerRadius="12" FontSize="20"
+                        BackgroundColor="Transparent" />
+
+                <Frame x:Name="DiceResultFrame" Grid.Row="0" Grid.Column="1" VerticalOptions="FillAndExpand"
+                       HorizontalOptions="FillAndExpand" HasShadow="False" BorderColor="#0067A7" CornerRadius="12">
+                    <Image Source="{Binding DiceView}" VerticalOptions="Center" HorizontalOptions="Center" />
+                </Frame>
+
+                <Frame Grid.Row="1" Grid.Column="0" HasShadow="False" BorderColor="#0067A7" CornerRadius="12">
+                    <Label Text="{Binding NowPlayer}" VerticalOptions="CenterAndExpand"
+                           HorizontalOptions="CenterAndExpand" />
+                </Frame>
+
+                <Button Grid.Row="1" Grid.Column="1" Text="すごろくを振る" IsEnabled="{Binding IsMyTurn}"
+                        Clicked="DiceButtonClicked" TextColor="Black" BorderWidth="3" BorderColor="#0067A7"
+                        FontSize="20" CornerRadius="12" BackgroundColor="Transparent" />
             </Grid>
         </Grid>
     </ContentPage.Content>

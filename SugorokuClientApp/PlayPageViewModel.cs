@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Xamarin.Forms;
 
 namespace SugorokuClientApp
 {
@@ -28,6 +29,18 @@ namespace SugorokuClientApp
             {
                 _isMyTurn = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMyTurn)));
+            }
+        }
+
+        private ImageSource _diceView;
+
+        public ImageSource DiceView
+        {
+            get => _diceView;
+            set
+            {
+                _diceView = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DiceView)));
             }
         }
     }
