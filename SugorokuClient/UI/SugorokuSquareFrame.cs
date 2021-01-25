@@ -13,7 +13,7 @@ namespace SugorokuClient.UI
 	{
 		private bool IsFirstClicked { get; set; }
 		private TextureButton SquareButton { get; set; }
-		private TextureFade DescriptionMessage { get; set; }
+		public TextureFade DescriptionMessage { get; private set; }
 		public SquareEvent Square { get; private set; }
 		public (int, int) CenterPos { get; private set; }
 

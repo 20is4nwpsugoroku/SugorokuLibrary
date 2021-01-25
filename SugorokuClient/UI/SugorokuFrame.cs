@@ -28,9 +28,6 @@ namespace SugorokuClient.UI
 			
 			BackgroundTextureHandle = TextureAsset.Register("GameBackgroundImage",
 				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png");
-
-
-
 			SquareList = new List<SugorokuSquareFrame>();
 			Playerlist = new List<Player>();
 			Players = new Dictionary<int, Player>();
@@ -43,11 +40,13 @@ namespace SugorokuClient.UI
 				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
 			PlayerTextureHandle.Add(3, TextureAsset.Register("Player4",
 				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
+			PlayerAnimationTexture = new Dictionary<int, AnimationTexture>();
 			Fld = new Field();
 			for (var i = 0; i < Fld.Squares.Length; i++)
 			{
 				SquareList.Add(new SugorokuSquareFrame(Fld.Squares[i], i));
 			}
+			IsProcessingEvent = false;
 		}
 
 
@@ -87,8 +86,6 @@ namespace SugorokuClient.UI
 		}
 
 			
-
-
 		public void Update()
 		{
 
@@ -96,13 +93,24 @@ namespace SugorokuClient.UI
 			{
 				square.Update();
 			}
-			
+			foreach (var anime in PlayerAnimationTexture)
+			{
+				anime.Value.Update();
+				if (anime.Value.IsAnimationEndFrame())
+				{
+					SquareList[anime.Value.AnimationEndPos()].DescriptionMessage.Start();
+				}
+			}
 		}
 
 
 		public void Draw()
 		{
-			TextureAsset.Draw(BackgroundTextureHandle, 0, 0, 1280, 800, DX.TRUE);
+			TextureAsset.Draw(BackgroundTextureHandle, 0, 0, 1280, 800, DX.TRUE);	
+			foreach (var anime in PlayerAnimationTexture)
+			{
+				anime.Value.Draw();
+			}
 			foreach (var square in SquareList)
 			{
 				square.Draw();

@@ -67,8 +67,8 @@ namespace SugorokuClient.UI
 		public float Height { get; private set; }
 		public bool IsProcessingEvent { get; private set; }
 		public bool IsStopped { get; private set; }
-		private Queue<Animation> AnimationSchedule { get; set; }
-		private Animation ProcessingAnimation { get; set; }
+		private Queue<SugorokuAnimation> AnimationSchedule { get; set; }
+		private SugorokuAnimation ProcessingAnimation { get; set; }
 
 
 
@@ -93,7 +93,7 @@ namespace SugorokuClient.UI
 			Height = height;
 			IsProcessingEvent = false;
 			IsStopped = true;
-			AnimationSchedule = new Queue<Animation>();
+			AnimationSchedule = new Queue<SugorokuAnimation>();
 			//AnimationFrame = -1;
 			//TargetX = 0;
 			//TargetY = 0;
@@ -147,6 +147,12 @@ namespace SugorokuClient.UI
 		public bool IsAnimationEndFrame()
 		{
 			return IsProcessingEvent && ProcessingAnimation.AnimationFrame == 0;
+		}
+
+
+		public int AnimationEndPos()
+		{
+			return ProcessingAnimation.AnimationEndPos;
 		}
 
 

@@ -98,7 +98,7 @@ namespace SugorokuClient.Scene
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
 			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
-
+			SocketManager.Connect(CommonData.Address, CommonData.Port);
 			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
 		}
 
@@ -177,7 +177,7 @@ namespace SugorokuClient.Scene
 							CommonData.PlayerName = playerName.Text;
 							CommonData.RoomName = roomName.Text;
 							var num = int.Parse(playerNum.Text);
-							if (num > 4 || num < 1)
+							if (num > 4 || num < 0)
 							{
 								num = 4;
 								playerNum.Text = num.ToString();

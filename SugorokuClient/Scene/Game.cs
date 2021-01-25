@@ -49,9 +49,13 @@ namespace SugorokuClient.Scene
 		{
 		}
 
+
 		public void Init()
 		{
 			DX.SetBackgroundColor(255, 255, 255);
+			var handle = TextureAsset.Register("DiceImage",
+				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png");
+			DiceButton = new TextureButton(handle, 1120, 800, 160, 160);
 			SugorokuFrame = new SugorokuFrame();
 			PlayerEvents = new Queue<SugorokuEvent>();
 			Ranking = new List<int>();
@@ -104,12 +108,13 @@ namespace SugorokuClient.Scene
 			}
 
 			SugorokuFrame.Update();
-
 		}
 
 		public void Draw()
 		{
 			SugorokuFrame.Draw();
+			DiceButton.Draw();
+			DiceButton.MouseOverDraw();
 		}
 
 

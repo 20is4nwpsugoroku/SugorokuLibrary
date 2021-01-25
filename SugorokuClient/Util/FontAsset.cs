@@ -86,7 +86,14 @@ namespace SugorokuClient.Util
 		/// <param name="color">描画する文字列の色</param>
 		public static void Draw(int fontHandle, string text, int x, int y, uint color)
 		{
-			DX.DrawStringToHandle(x, y, text, color, fontHandle);
+			try
+			{
+				DX.DrawStringToHandle(x, y, text, color, fontHandle);
+			}
+			catch(Exception e)
+			{
+				Console.Error.WriteLine("Draw String Error :" + e);
+			}
 		}
 
 

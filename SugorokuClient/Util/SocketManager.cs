@@ -14,7 +14,7 @@ namespace SugorokuClient.Util
 		private static Socket socket { get; set; }
 		public static string Address { get; private set; }
 		public static int Port { get; private set; }
-		public static bool IsConnected { get; private set; }
+		public static bool IsConnected { get; private set; } = false;
 
 
 		public static bool Connect(string address, int port)
