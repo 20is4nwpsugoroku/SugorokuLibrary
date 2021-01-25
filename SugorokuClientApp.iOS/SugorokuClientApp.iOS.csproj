@@ -109,6 +109,32 @@
         <Name>SugorokuClientApp</Name>
       </ProjectReference>
     </ItemGroup>
+    <ItemGroup>
+      <Content Include="Resources\saikoro_1.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+      <Content Include="Resources\saikoro_2.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+      <Content Include="Resources\saikoro_3.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+      <Content Include="Resources\saikoro_4.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+      <Content Include="Resources\saikoro_5.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+      <Content Include="Resources\saikoro_6.png">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      </Content>
+    </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
       <PropertyGroup>

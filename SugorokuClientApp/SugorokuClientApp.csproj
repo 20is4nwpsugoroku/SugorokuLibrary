@@ -55,5 +55,7 @@
     <EmbeddedResource Include="ImageResource\text_goal.png" />
     <None Remove="ImageResource\text_start.png" />
     <EmbeddedResource Include="ImageResource\text_start.png" />
+    <None Remove="ImageResource\connectionButton.png" />
+    <EmbeddedResource Include="ImageResource\connectionButton.png" />
   </ItemGroup>
 </Project>
