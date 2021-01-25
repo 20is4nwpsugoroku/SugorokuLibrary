@@ -91,10 +91,12 @@ namespace SugorokuClient.UI
 
 		public void Update()
 		{
+
 			foreach(var square in SquareList)
 			{
 				square.Update();
 			}
+			
 		}
 
 
@@ -112,7 +114,28 @@ namespace SugorokuClient.UI
 		{
 			IsProcessingEvent = true;
 			SquareState[sugorokuEvent.EventStartPos - sugorokuEvent.Dice].ExistsControl(sugorokuEvent.PlayerId, false);
-			SquareState[sugorokuEvent.EventStartPos - sugorokuEvent.Dice].ExistsControl(sugorokuEvent.PlayerId, true);
+			SquareState[sugorokuEvent.EventStartPos].ExistsControl(sugorokuEvent.PlayerId, true);
+			var pos = SquareList[sugorokuEvent.EventStartPos].CenterPos;
+			var movedPosList = SquareState[sugorokuEvent.EventStartPos].GetPlayerIdAndPos(pos.Item1, pos.Item2);
+			foreach (var movedPos in movedPosList)
+			{
+				PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, sugorokuEvent.EventStartPos);
+				PlayerAnimationTexture[movedPos.Item1].Start();
+			}
+
+			if (sugorokuEvent.EventStartPos != sugorokuEvent.EventEndPos)
+			{
+				SquareState[sugorokuEvent.EventStartPos].ExistsControl(sugorokuEvent.PlayerId, false);
+				SquareState[sugorokuEvent.EventEndPos].ExistsControl(sugorokuEvent.PlayerId, true);
+				pos  = SquareList[sugorokuEvent.EventEndPos].CenterPos;
+				movedPosList = SquareState[sugorokuEvent.EventEndPos].GetPlayerIdAndPos(pos.Item1, pos.Item2);
+				foreach (var movedPos in movedPosList)
+				{
+					PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, sugorokuEvent.EventEndPos);
+					PlayerAnimationTexture[movedPos.Item1].Start();
+				}
+			}
+			IsProcessingEvent = false;
 		}
 
 	}

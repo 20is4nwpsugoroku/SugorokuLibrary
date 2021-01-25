@@ -39,6 +39,26 @@ namespace SugorokuClient.UI
 			public float IncrementHeight { get; set; }
 		}
 
+		private class SugorokuAnimation : Animation
+		{
+			public SugorokuAnimation(int animationFrame,
+				int targetX, int targetY,
+				int targetWidth, int targetHeight,
+				float incrementX, float incrementY,
+				float incrementWidth, float incrementHeight,
+				int animationEndPos) 
+				: base(animationFrame, targetX, targetY,
+				targetWidth, targetHeight,  incrementX, incrementY,
+				incrementWidth, incrementHeight)
+			{
+				AnimationEndPos = animationEndPos;
+			}
+
+			public int AnimationEndPos { get; set; }
+		}
+
+
+
 
 		private int TextureHandle { get; set; }
 		public float X { get; private set; }
@@ -88,7 +108,6 @@ namespace SugorokuClient.UI
 
 		public void Update()
 		{
-
 			if(IsProcessingEvent && ProcessingAnimation.AnimationFrame > 0)
 			{
 				X += ProcessingAnimation.IncrementX;
@@ -125,32 +144,41 @@ namespace SugorokuClient.UI
 		}
 
 
-		public void AddChangePosition(int x, int y, int frame)
+		public bool IsAnimationEndFrame()
 		{
-			var incrementX = (frame != 0) ? (x - X) / frame : (x - X);
-			var incrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
-			AnimationSchedule.Enqueue(new Animation(
-				frame, x, y, (int)Width, (int)Height, incrementX, incrementY, 0, 0));
+			return IsProcessingEvent && ProcessingAnimation.AnimationFrame == 0;
 		}
 
 
-		public void AddChangeScale(int width, int height, int frame)
+		public void AddChangePosition(int x, int y, int frame, int animationEndPosition)
 		{
-			var incrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
-			var incrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
-			AnimationSchedule.Enqueue(new Animation(
-				frame, (int)X, (int)Y, width, height, 0, 0, incrementWidth, incrementHeight));
+			var incrementX = (frame != 0) ? (x - X) / frame : (x - X);
+			var incrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
+			AnimationSchedule.Enqueue(new SugorokuAnimation(
+				frame, x, y, (int)Width, (int)Height,
+				incrementX, incrementY, 0, 0, animationEndPosition));
 		}
 
 
-		public void AddChangePositionAndScale(int x, int y, int width, int height, int frame)
+		public void AddChangeScale(int width, int height, int frame, int animationEndPosition)
+		{
+			var incrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
+			var incrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
+			AnimationSchedule.Enqueue(new SugorokuAnimation(
+				frame, (int)X, (int)Y, width, height, 0, 0,
+				incrementWidth, incrementHeight, animationEndPosition));
+		}
+
+
+		public void AddChangePositionAndScale(int x, int y, int width, int height, int frame, int animationEndPosition)
 		{
 			var incrementX = (frame != 0) ? (x - X) / frame : (x - X);
 			var incrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
 			var incrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
 			var incrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
-			AnimationSchedule.Enqueue(new Animation(
-				frame, x, y, width, height, incrementX, incrementY, incrementWidth, incrementHeight));
+			AnimationSchedule.Enqueue(new SugorokuAnimation(
+				frame, x, y, width, height, incrementX, incrementY,
+				incrementWidth, incrementHeight, animationEndPosition));
 		}
 
 
