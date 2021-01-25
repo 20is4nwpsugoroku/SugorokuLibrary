@@ -31,9 +31,9 @@ namespace SugorokuClientApp
             ResultView.ItemsSource = resultViewModels;
         }
 
-        private async void GameFinishButtonClicked(object sender, EventArgs e)
+        private void GameFinishButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync(false);
+            Device.BeginInvokeOnMainThread(async () => await Navigation.PopToRootAsync(false));
         }
     }
 }

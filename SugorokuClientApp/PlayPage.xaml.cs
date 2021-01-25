@@ -103,7 +103,7 @@ namespace SugorokuClientApp
             _isZooming = !_isZooming;
             FieldLayout.AnchorX = PlayerKomaIcon.X / FieldLayout.Width;
             FieldLayout.AnchorY = PlayerKomaIcon.Y / FieldLayout.Height;
-            await FieldLayout.RelScaleTo(scale, 1000);
+            Device.BeginInvokeOnMainThread(async () => await FieldLayout.RelScaleTo(scale, 1000));
             SizeChangeButton.IsEnabled = true;
         }
 
@@ -119,14 +119,13 @@ namespace SugorokuClientApp
             var (_, _, response) = Connection.SendAndRecvMessage(requestMsg, socket, true);
             var serverMessage = JsonConvert.DeserializeObject<ServerMessage>(response);
 
-            var task = serverMessage switch
+            await (serverMessage switch
             {
                 DiceResultMessage dr => DiceEvent(dr),
                 FailedMessage f => FailedAction(f),
                 AlreadyFinishedMessage af => AlreadyFinishedAction(af),
                 _ => throw new ArgumentException()
-            };
-            await task;
+            });
             _dicePlaying = false;
         }
 
@@ -152,16 +151,18 @@ namespace SugorokuClientApp
             if (diceResult.FirstPosition >= 30)
             {
                 _isFinished = true;
-                await DisplayAlert("ゴール", "ゴールおめでとう！リザルトへ移動します", "OK");
                 Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DisplayAlert("ゴール", "ゴールおめでとう！リザルトへ移動します", "OK");
                     await Navigation.PushAsync(new ResultPage(diceResult.Ranking!.ToArray(),
-                        _matchInfo.Players)));
+                        _matchInfo.Players));
+                });
                 return;
             }
 
             if (!string.IsNullOrEmpty(diceResult.Message))
             {
-                await DisplayAlert("イベントマス", diceResult.Message, "OK");
+                Device.BeginInvokeOnMainThread(async () => await DisplayAlert("イベントマス", diceResult.Message, "OK"));
             }
 
             var (finalX, finalY) = PlayerPositionToConstant[diceResult.FinalPosition];
@@ -192,11 +193,12 @@ namespace SugorokuClientApp
 
         private async Task AlreadyFinishedAction(AlreadyFinishedMessage message)
         {
-            await DisplayAlert("他のプレイヤーがゴール済み", "他のプレイヤーがゴールしました。リザルト画面へ移動します", "OK");
-
             Device.BeginInvokeOnMainThread(async () =>
+            {
+                await DisplayAlert("他のプレイヤーがゴール済み", "他のプレイヤーがゴールしました。リザルト画面へ移動します", "OK");
                 await Navigation.PushAsync(new ResultPage(message.Ranking!.ToArray(),
-                    _matchInfo.Players)));
+                    _matchInfo.Players));
+            });
         }
 
         protected override bool OnBackButtonPressed()

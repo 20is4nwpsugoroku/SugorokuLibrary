@@ -19,7 +19,7 @@ namespace SugorokuClientApp
             StartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.startButton.png");
         }
 
-        private async void OnStartButtonClicked(object sender, EventArgs e)
+        private void OnStartButtonClicked(object sender, EventArgs e)
         {
             StartButton.IsEnabled = false;
             var serverIpAddress = ServerIpAddress.Text;
@@ -29,13 +29,15 @@ namespace SugorokuClientApp
             if (string.IsNullOrEmpty(serverIpAddress) || string.IsNullOrEmpty(serverPort) ||
                 string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(roomName))
             {
-                await DisplayAlert("エラー", "サーバーのIPアドレス、ポート番号、プレイヤー名、部屋名のいずれかが不足しています", "OK");
+                Device.BeginInvokeOnMainThread(async () =>
+                    await DisplayAlert("エラー", "サーバーのIPアドレス、ポート番号、プレイヤー名、部屋名のいずれかが不足しています", "OK"));
                 return;
             }
 
             if (!IPAddress.TryParse(serverIpAddress, out var serverIp) || !int.TryParse(serverPort, out var port))
             {
-                await DisplayAlert("エラー", "IPアドレス、ポート番号の形式が正しくありません", "OK");
+                Device.BeginInvokeOnMainThread(async () =>
+                    await DisplayAlert("エラー", "IPアドレス、ポート番号の形式が正しくありません", "OK"));
                 return;
             }
 
@@ -53,7 +55,8 @@ namespace SugorokuClientApp
                 if (!result)
                 {
                     var failMessage = JsonConvert.DeserializeObject<FailedMessage>(recvMsg);
-                    await DisplayAlert("部屋の作成に失敗", failMessage.Message, "OK");
+                    Device.BeginInvokeOnMainThread(
+                        async () => await DisplayAlert("部屋の作成に失敗", failMessage.Message, "OK"));
                     return;
                 }
 
@@ -62,7 +65,8 @@ namespace SugorokuClientApp
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                await DisplayAlert("エラー", "ソケットのConnectで例外が発生しました。やり直してください。", "OK");
+                Device.BeginInvokeOnMainThread(async () =>
+                    await DisplayAlert("エラー", "ソケットのConnectで例外が発生しました。やり直してください。", "OK"));
             }
             finally
             {
