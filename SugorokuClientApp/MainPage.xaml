@@ -11,7 +11,8 @@
         <Entry x:Name="PlayerNameEditor" Placeholder="プレイヤーの名前" />
         <Entry x:Name="RoomNameEditor" Placeholder="部屋名" />
         <ImageButton x:Name="StartButton" Clicked="OnStartButtonClicked" Aspect="AspectFit"
-                     VerticalOptions="CenterAndExpand" BackgroundColor="White" />
+                     VerticalOptions="CenterAndExpand" BackgroundColor="White"
+                     WidthRequest="240" HeightRequest="70" />
     </StackLayout>
 
 </ContentPage>

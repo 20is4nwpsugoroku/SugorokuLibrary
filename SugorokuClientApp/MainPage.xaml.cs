@@ -16,10 +16,10 @@ namespace SugorokuClientApp
             InitializeComponent();
 
             LogoImage.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.logo.png");
-            StartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.startButton.png");
+            StartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.connectionButton.png");
         }
 
-        private void OnStartButtonClicked(object sender, EventArgs e)
+        private async void OnStartButtonClicked(object sender, EventArgs e)
         {
             StartButton.IsEnabled = false;
             var serverIpAddress = ServerIpAddress.Text;
@@ -72,8 +72,7 @@ namespace SugorokuClientApp
             {
                 if (playerData != null)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
-                        await Navigation.PushAsync(new WaitOtherPlayerPage(playerData)));
+                    await Navigation.PushAsync(new WaitOtherPlayerPage(playerData));
                 }
 
                 StartButton.IsEnabled = true;
