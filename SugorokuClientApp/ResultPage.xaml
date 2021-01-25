@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sugorokuClientApp="clr-namespace:SugorokuClientApp;assembly=SugorokuClientApp"
-             x:Class="SugorokuClientApp.ResultPage" NavigationPage.HasNavigationBar="false">
+             xmlns:iOsSpecific="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             x:Class="SugorokuClientApp.ResultPage" NavigationPage.HasNavigationBar="false"
+             iOsSpecific:Page.UseSafeArea="True">
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
