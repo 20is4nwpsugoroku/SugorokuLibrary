@@ -16,6 +16,6 @@ namespace SugorokuLibrary.ClientToServer
 	[JsonConverter(typeof(GetAllMatchesConverter))]
 	public class GetAllMatchesMessage : ClientMessage
 	{
-		[JsonProperty("methodType")] public string MethodType => "getAllMatches";
+		[JsonProperty("methodType")] public override string MethodType => "getAllMatches";
 	}
 }

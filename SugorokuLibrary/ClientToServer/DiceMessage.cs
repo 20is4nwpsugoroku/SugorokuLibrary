@@ -17,7 +17,7 @@ namespace SugorokuLibrary.ClientToServer
 	[JsonConverter(typeof(DiceMessageConverter))]
 	public class DiceMessage : ClientMessage
 	{
-		[JsonProperty("methodType")] public string MethodType => "dice";
+		[JsonProperty("methodType")] public override string MethodType => "dice";
 		[JsonProperty("matchKey")] public string MatchKey { get; }
 		[JsonProperty("playerId")] public int PlayerId { get; }
 
