@@ -16,14 +16,6 @@ namespace SugorokuLibrary
             return t;
         }
 
-        public bool RemoveLast(T item)
-        {
-            Reverse();
-            var result = Remove(item);
-            Reverse();
-            return result;
-        }
-
         public T Peek()
         {
             return base[0];

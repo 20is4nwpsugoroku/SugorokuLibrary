@@ -16,7 +16,7 @@ namespace SugorokuLibrary.SquareEvents
 
         public override void Event(MatchCore matchCore, int playerId)
         {
-            matchCore.ActionSchedule.Insert(0, playerId);
+            matchCore.NoEnqueue = true;
         }
 
         public override string ToString()

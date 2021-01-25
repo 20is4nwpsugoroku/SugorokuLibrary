@@ -31,6 +31,7 @@ namespace SugorokuLibrary.Match
 		/// <value> 乱数生成用のクラス </value>
 		private Random Rand { get; set; }
 
+		public bool NoEnqueue { get; set; }
 
 		#region コンストラクタ
 
@@ -106,6 +107,7 @@ namespace SugorokuLibrary.Match
 			if (NextPlayerPrevDice)
 			{
 				NextPlayerPrevDice = false;
+				NoEnqueue = false;
 				var prev = Players[playerAction.PlayerID].Position;
 				var next = prev - playerAction.Length;
 				Players[playerAction.PlayerID].Position = next;
@@ -129,7 +131,7 @@ namespace SugorokuLibrary.Match
 			Field.Squares[nextPos].Event(this, MatchInfo.NextPlayerID);
 
 			// 次のターンに進める
-			if (ActionSchedule.Count != 0)
+			if (!NextPlayerPrevDice)
 			{
 				IncrementTurn();
 			}
@@ -154,6 +156,12 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		private void IncrementTurn()
 		{
+			if (NoEnqueue)
+			{
+				NoEnqueue = false;
+				return;
+			}
+
 			ActionSchedule.Enqueue(ActionSchedule.Dequeue());
 			MatchInfo.NextPlayerID = ActionSchedule.Peek();
 		}
