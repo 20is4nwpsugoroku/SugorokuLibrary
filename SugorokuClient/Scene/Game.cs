@@ -45,11 +45,6 @@ namespace SugorokuClient.Scene
 
 		
 
-
-
-
-
-
 		public Game()
 		{
 		}

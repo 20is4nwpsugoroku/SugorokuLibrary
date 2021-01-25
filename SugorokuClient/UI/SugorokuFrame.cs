@@ -12,12 +12,16 @@ namespace SugorokuClient.UI
 	public class SugorokuFrame
 	{
 		private int BackgroundTextureHandle { get; set; }
-		private List<SugorokuSquareFrame> SquaresList { get; set; }
+		private List<SugorokuSquareFrame> SquareList { get; set; }
 		private Field Fld { get; set; }
 		public bool IsProcessingEvent { get; private set; }
-		private List<Player> PlayerIds { get; set; }
+		private List<Player> Playerlist { get; set; }
 		private Dictionary<int, Player> Players { get; set; }
 		private Dictionary<int, int> PlayerTextureHandle { get; set; }
+		private Dictionary<int, AnimationTexture> PlayerAnimationTexture { get; set; }
+		private List<SquareState> SquareState { get; set; }
+
+
 
 		public SugorokuFrame()
 		{
@@ -27,8 +31,8 @@ namespace SugorokuClient.UI
 
 
 
-			SquaresList = new List<SugorokuSquareFrame>();
-			PlayerIds = new List<Player>();
+			SquareList = new List<SugorokuSquareFrame>();
+			Playerlist = new List<Player>();
 			Players = new Dictionary<int, Player>();
 			PlayerTextureHandle = new Dictionary<int, int>();
 			PlayerTextureHandle.Add(0, TextureAsset.Register("Player1",
@@ -42,27 +46,52 @@ namespace SugorokuClient.UI
 			Fld = new Field();
 			for (var i = 0; i < Fld.Squares.Length; i++)
 			{
-				SquaresList.Add(new SugorokuSquareFrame(Fld.Squares[i], i));
+				SquareList.Add(new SugorokuSquareFrame(Fld.Squares[i], i));
 			}
 		}
 
 
-		public void Init(List<Player> playerIds)
+		public void Init(List<Player> players)
 		{
-			PlayerIds = playerIds;
-			for (int i = 0; i < PlayerIds.Count; i++)
+			Playerlist = players;
+			var idList = new List<int>();
+			foreach (var id in Playerlist)
 			{
-				Players.Add(PlayerIds[i].PlayerID, PlayerIds[i]);
-				var handle = PlayerTextureHandle[i];
-				PlayerTextureHandle.Remove(i);
-				PlayerTextureHandle.Add(PlayerIds[i].PlayerID, handle);
+				idList.Add(id.PlayerID);
+			}
+			for (var i = 0; i < 31; i++)
+			{
+				SquareState.Add(new SquareState(idList));
+			}
+			foreach (var id in idList)
+			{
+				SquareState[0].ExistsControl(id, true);
+			}
+			var retList = SquareState[0].GetPlayerIdAndPos(
+				SquareList[0].CenterPos.Item1,
+				SquareList[0].CenterPos.Item2);
+			
+			foreach (var ret in retList)
+			{
+				for (int i = 0; i < Playerlist.Count; i++)
+				{
+					if (ret.Item1 != Playerlist[i].PlayerID) break;
+					Players.Add(Playerlist[i].PlayerID, Playerlist[i]);
+					var handle = PlayerTextureHandle[i];
+					PlayerTextureHandle.Remove(i);
+					PlayerTextureHandle.Add(Playerlist[i].PlayerID, handle);
+					PlayerAnimationTexture.Add(Playerlist[i].PlayerID,
+						new AnimationTexture(handle, ret.Item1, ret.Item2, 70, 70));
+				}
 			}
 		}
+
+			
 
 
 		public void Update()
 		{
-			foreach(var square in SquaresList)
+			foreach(var square in SquareList)
 			{
 				square.Update();
 			}
@@ -72,7 +101,7 @@ namespace SugorokuClient.UI
 		public void Draw()
 		{
 			TextureAsset.Draw(BackgroundTextureHandle, 0, 0, 1280, 800, DX.TRUE);
-			foreach (var square in SquaresList)
+			foreach (var square in SquareList)
 			{
 				square.Draw();
 			}
@@ -82,7 +111,8 @@ namespace SugorokuClient.UI
 		public void ProcessEvent(SugorokuEvent sugorokuEvent)
 		{
 			IsProcessingEvent = true;
-
+			SquareState[sugorokuEvent.EventStartPos - sugorokuEvent.Dice].ExistsControl(sugorokuEvent.PlayerId, false);
+			SquareState[sugorokuEvent.EventStartPos - sugorokuEvent.Dice].ExistsControl(sugorokuEvent.PlayerId, true);
 		}
 
 	}

@@ -6,8 +6,8 @@ namespace SugorokuClient.Scene
 {
 	public class SquareState
 	{
-		public int PlayerNum { get; set; }
-		public Dictionary<int, bool> PlayerExists { get; set; }
+		public int PlayerNum { get; private set; }
+		public Dictionary<int, bool> PlayerExists { get; private set; }
 
 
 		public SquareState(List<int> PlayerIds)
@@ -54,6 +54,10 @@ namespace SugorokuClient.Scene
 					posList.Enqueue((centerX, centerY + 5));
 					break;
 				default:
+					for (int i = 0; i < PlayerNum; i++)
+					{
+						posList.Enqueue((centerX - 35, centerX - 35));
+					}
 					break;
 			}
 
