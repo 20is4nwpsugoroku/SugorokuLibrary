@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
 using SugorokuLibrary;
+using SugorokuLibrary.Match;
 using SugorokuClient.Scene;
 
 
@@ -22,5 +23,6 @@ namespace SugorokuClient
 		public static int PlayerNum { get; set; } = 4;
 		public static Player Player { get; set; } = new Player();
 		public static MatchInfo MatchInfo { get; set; } = new MatchInfo();
+		public static MatchCore Match { get; set; }
 	}
 }

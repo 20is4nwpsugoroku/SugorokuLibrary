@@ -14,8 +14,7 @@ namespace SugorokuClient.Util
 		private static Socket socket { get; set; }
 		public static string Address { get; private set; }
 		public static int Port { get; private set; }
-		public static bool isReceived { get; private set; }
-		public static bool isConnected { get; private set; }
+		public static bool IsConnected { get; private set; }
 
 
 		public static bool Connect(string address, int port)
@@ -24,11 +23,11 @@ namespace SugorokuClient.Util
 			Port = port;
 			try
 			{
-				isConnected = false;
+				IsConnected = false;
 				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect(Address, Port);
-				isConnected = socket.Connected;
-				return isConnected;
+				IsConnected = socket.Connected;
+				return IsConnected;
 			}
 			catch(Exception)
 			{
@@ -46,33 +45,31 @@ namespace SugorokuClient.Util
 
 		public static void Close()
 		{
-			if(isConnected)
+			if(IsConnected)
 			{
 				socket.Shutdown(SocketShutdown.Both);
 			}
 			socket.Close();
-			isConnected = false;
+			IsConnected = false;
 		}
 
 
 		public static (bool, string) SendRecv(string body)
 		{
-			if (!isConnected)
+			if (!IsConnected)
 			{
 				if (!Reconnect()) return (false, string.Empty);
 			}
 			try
 			{
-				isReceived = false;
 				var withHeader = HeaderProtocol.MakeHeader(body, true);
 				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-				isReceived = r;
 				Close();
 				return (r, recvMsg);
 			}
 			catch (Exception)
 			{
-				return (false, "Error" + string.Empty);
+				return (false, string.Empty);
 			}
 		}
 

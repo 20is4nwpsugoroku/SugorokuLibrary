@@ -9,6 +9,8 @@ using SugorokuClient.UI;
 using SugorokuClient.Util;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
+using SugorokuLibrary.ServerToClient;
+using SugorokuLibrary.Match;
 
 
 
@@ -20,11 +22,21 @@ namespace SugorokuClient.Scene
 		private SugorokuFrame SugorokuFrame { get; set; }
 		private static Timer EventTimer { get; set; }
 		private static State state { get; set; }
+		private static bool CanThrowDice { get; set; }
+		private static bool IsGoal { get; set; }
+		private static List<int> MyActionTurn { get; set; }
+		private static Queue<SugorokuEvent> PlayerEvents { get; set; }
+		private static List<int> Ranking { get; set; }
+
+
+
 
 		enum State
 		{
 			WaitMatchStarted,
 			WaitOtherPlayer,
+			Goal,
+			Error
 		}
 
 		
@@ -42,6 +54,9 @@ namespace SugorokuClient.Scene
 		{
 			DX.SetBackgroundColor(255, 255, 255);
 			SugorokuFrame = new SugorokuFrame();
+			PlayerEvents = new Queue<SugorokuEvent>();
+			Ranking = new List<int>();
+			MyActionTurn = new List<int>();
 			EventTimer = new Timer();
 			EventTimer.Elapsed += (o, e) => WaitStartMatchTask(o, e, CommonData.Player.IsHost);
 			EventTimer.Interval = 5000;
@@ -63,17 +78,69 @@ namespace SugorokuClient.Scene
 
 		private static void PlayingMatchTask(object source, ElapsedEventArgs e)
 		{
-			var (r, info) = GetMatchInfo(CommonData.MatchInfo.MatchKey);
+			var (r, match) = GetMatch(CommonData.MatchInfo.MatchKey);
+			if (!r) return;
+			if (match.MatchInfo.Turn == CommonData.MatchInfo.Turn) return;
 
+			if (match.MatchInfo.NextPlayerID == CommonData.Player.PlayerID)
+			{
+				var (status, dice, start, end, rank) = ThrowDice(CommonData.Match.MatchInfo.MatchKey, CommonData.Player.PlayerID);
+				switch (status)
+				{
+					case ReflectionStatus.NextSuccess:
+						PlayerEvents.Enqueue(new SugorokuEvent(dice, start, end, match.MatchInfo.NextPlayerID));
+						MyActionTurn.Add(match.MatchInfo.Turn);
+						CommonData.Match = match;
+						if (end == 7 || end == 17 || end == 21 || end == 26 || end == 28)
+						{
+							(r, match) = GetMatch(CommonData.MatchInfo.MatchKey);
+							if (!r || match.MatchInfo.NextPlayerID != CommonData.Player.PlayerID) return;
+							MyActionTurn.Add(match.MatchInfo.Turn);
+							CommonData.Match = match;
+							(_, dice, start, end, _) = ThrowDice(CommonData.Match.MatchInfo.MatchKey, CommonData.Player.PlayerID);
+							PlayerEvents.Enqueue(new SugorokuEvent(dice, start, end, match.MatchInfo.NextPlayerID));
+						}
+						break;
+
+					case ReflectionStatus.PrevDiceSuccess:
+						PlayerEvents.Enqueue(new SugorokuEvent(-dice, start, end, match.MatchInfo.NextPlayerID));
+						MyActionTurn.Add(match.MatchInfo.Turn);
+						CommonData.Match = match;
+						break;
+
+					case ReflectionStatus.AlreadyFinished:
+						IsGoal = true;
+						Ranking = new List<int>(rank);
+						state = State.Goal;
+						break;
+
+					case ReflectionStatus.NotYourTurn:
+					default:
+						break;
+				}
+			}
+			else
+			{
+				var eventList = ReverseEvent(CommonData.Match, match);
+				foreach(var playerEvent in eventList)
+				{
+					PlayerEvents.Enqueue(playerEvent);
+				}
+			}
+
+			if (state == State.Goal || state == State.Error)
+			{
+				EventTimer.Stop();
+			}
 		}
 
 
-		private static void WaitStartMatchTask(object source, ElapsedEventArgs e, bool isHost)
+		private static async void WaitStartMatchTask(object source, ElapsedEventArgs e, bool isHost)
 		{
 			var matchKey = CommonData.MatchInfo.MatchKey;
 			if (isHost)
 			{
-				state = (IsAbleToStart(matchKey, CommonData.PlayerNum))
+				state = (CanStartMatch(matchKey, CommonData.PlayerNum))
 					? State.WaitOtherPlayer : State.WaitMatchStarted;
 				if (state == State.WaitOtherPlayer) CloseJoinMatch(matchKey);
 			}
@@ -85,6 +152,17 @@ namespace SugorokuClient.Scene
 			if (state == State.WaitOtherPlayer)
 			{
 				EventTimer.Stop();
+				var (r, match) = GetMatch(matchKey);		
+				for (int i = 0; !r; i++)
+				{
+					await Task.Delay(5000);
+					(r, match) = GetMatch(matchKey);
+					if (i > 5)
+					{
+						state = State.Error;
+						return;
+					}
+				}
 				EventTimer.Elapsed += (o, e) => PlayingMatchTask(o, e);
 				EventTimer.Start();
 			}
@@ -100,7 +178,7 @@ namespace SugorokuClient.Scene
 		}
 
 
-		private static bool IsAbleToStart(string matchKey, int playerNum)
+		private static bool CanStartMatch(string matchKey, int playerNum)
 		{
 			var (r, info) = GetMatchInfo(matchKey);
 			if (r)
@@ -113,20 +191,85 @@ namespace SugorokuClient.Scene
 
 		private static void CloseJoinMatch(string matchKey)
 		{
-			var getInfo = new CloseCreateMessage(CommonData.MatchInfo.MatchKey);
-			var json = JsonConvert.SerializeObject(getInfo);
-			var (_, _) = SocketManager.SendRecv(json);
+			var sendMsg = new CloseCreateMessage(CommonData.MatchInfo.MatchKey);
+			var sendJson = JsonConvert.SerializeObject(sendMsg);
+			var (_, _) = SocketManager.SendRecv(sendJson);
 		}
 
 
 		private static (bool, MatchInfo) GetMatchInfo(string matchKey)
 		{
-			var getInfo = new GetMatchInfoMessage(matchKey);
-			var json = JsonConvert.SerializeObject(getInfo);
-			var (r, msg) = SocketManager.SendRecv(json);
+			var sendMsg = new GetMatchInfoMessage(matchKey);
+			var json = JsonConvert.SerializeObject(sendMsg);
+			var (r, recvJson) = SocketManager.SendRecv(json);
 			return (r)
-				? (r, JsonConvert.DeserializeObject<MatchInfo>(msg))
+				? (r, JsonConvert.DeserializeObject<MatchInfo>(recvJson))
 				: (r, new MatchInfo());
+		}
+
+
+		private static (bool, MatchCore) GetMatch(string matchKey)
+		{
+			var sendMsg = new GetStartedMatchMessage(matchKey);
+			var sendJson = JsonConvert.SerializeObject(sendMsg);
+			var (r, recvJson) = SocketManager.SendRecv(sendJson);
+			return (r)
+				? (r, JsonConvert.DeserializeObject<MatchCore>(recvJson))
+				: (r, null);
+		}
+
+
+		private static (ReflectionStatus, int, int, int, IEnumerable<int>)  ThrowDice(string matchKey, int playerId)
+		{
+			var ranking = new List<int>();
+			var sendMsg = new DiceMessage(matchKey, playerId);
+			var sendJson = JsonConvert.SerializeObject(sendMsg);
+			var (r, recvJson) = SocketManager.SendRecv(sendJson);
+			if (!r && recvJson == string.Empty) return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
+			var tempMsg = JsonConvert.DeserializeObject<ServerMessage>(recvJson);
+			
+
+			switch (tempMsg.MethodType)
+			{
+				case "diceResult":
+					var diceResult = JsonConvert.DeserializeObject<DiceResultMessage>(recvJson);
+					var dice = diceResult.Dice;
+					var startPos = diceResult.FirstPosition;
+					var finishPos = diceResult.FinalPosition;
+					return (diceResult.Message != "")
+						? (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking)
+						: (ReflectionStatus.PrevDiceSuccess, dice, startPos, finishPos, ranking);
+
+				case "alreadyFinished":
+					var alreadyFinished = JsonConvert.DeserializeObject<AlreadyFinishedMessage>(recvJson);
+					var goalPlayerId = alreadyFinished.GoaledPlayerId;
+					ranking = new List<int>(alreadyFinished.Ranking);
+					return (ReflectionStatus.AlreadyFinished, goalPlayerId, -1, -1, ranking);
+
+				case "failed":
+				default:
+					return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
+			}
+		}
+
+
+		private static IEnumerable<SugorokuEvent> ReverseEvent(MatchCore prev, MatchCore now)
+		{
+			var eventList = new List<SugorokuEvent>();
+			var alreadyReversePlayer = new List<int>();
+			if (now.MatchInfo.Turn == prev.MatchInfo.Turn) return eventList;
+			for(var i = prev.MatchInfo.Turn; i < now.MatchInfo.Turn; i++)
+			{
+				if (MyActionTurn.Contains(i)) continue;
+				var actionPlayer = prev.ActionSchedule.Dequeue();
+				if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+				var nowPos = now.Players[actionPlayer].Position;
+				var prevPos = prev.Players[actionPlayer].Position;
+				var dice = nowPos - prevPos;
+				alreadyReversePlayer.Add(actionPlayer);
+				eventList.Add(new SugorokuEvent(nowPos, nowPos, actionPlayer, dice));
+			}
+			return eventList;
 		}
 	}
 }
