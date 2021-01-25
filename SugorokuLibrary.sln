@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuClientApp", "Sugoro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuClientApp.Android", "SugorokuClientApp.Android\SugorokuClientApp.Android.csproj", "{6F26737D-5D65-4B0E-9C99-CD5BDFEDA538}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugorokuClientApp.iOS", "SugorokuClientApp.iOS\SugorokuClientApp.iOS.csproj", "{55E07CE1-80EE-4D9A-8174-70C577D798AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{6F26737D-5D65-4B0E-9C99-CD5BDFEDA538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F26737D-5D65-4B0E-9C99-CD5BDFEDA538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F26737D-5D65-4B0E-9C99-CD5BDFEDA538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E07CE1-80EE-4D9A-8174-70C577D798AD}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{55E07CE1-80EE-4D9A-8174-70C577D798AD}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{55E07CE1-80EE-4D9A-8174-70C577D798AD}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{55E07CE1-80EE-4D9A-8174-70C577D798AD}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
