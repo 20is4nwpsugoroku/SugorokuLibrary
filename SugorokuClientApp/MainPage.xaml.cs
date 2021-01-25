@@ -21,6 +21,7 @@ namespace SugorokuClientApp
 
         private async void OnStartButtonClicked(object sender, EventArgs e)
         {
+            StartButton.IsEnabled = false;
             var serverIpAddress = ServerIpAddress.Text;
             var serverPort = ServerPort.Text;
             var playerName = PlayerNameEditor.Text;
@@ -70,6 +71,8 @@ namespace SugorokuClientApp
                     Device.BeginInvokeOnMainThread(async () =>
                         await Navigation.PushAsync(new WaitOtherPlayerPage(playerData)));
                 }
+
+                StartButton.IsEnabled = true;
             }
         }
     }

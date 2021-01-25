@@ -13,6 +13,7 @@ namespace SugorokuClientApp
         public ResultPage(IEnumerable<int> ranking, IReadOnlyCollection<Player> players)
         {
             InitializeComponent();
+            EndButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.endButton.png");
 
             var resultViewModels = new List<ResultPageViewModel>();
 

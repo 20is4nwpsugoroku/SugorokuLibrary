@@ -70,6 +70,7 @@ namespace SugorokuClientApp
 
         private void GameStartButtonClicked(object sender, EventArgs e)
         {
+            GameStartButton.IsEnabled = false;
             using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
                 (int) Application.Current.Properties["serverPort"]);
             var requestMethod = new CloseCreateMessage(_myPlayerInfo.MatchKey);
