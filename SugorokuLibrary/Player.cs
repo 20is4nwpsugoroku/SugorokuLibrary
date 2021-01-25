@@ -18,6 +18,9 @@ namespace SugorokuLibrary
 		///<value>プレイヤーの名前</value>
 		[JsonProperty("playerName")]
 		public string PlayerName { get; set; }
+		
+		[JsonIgnore]
+		public bool Wait { get; set; }
 
 		[JsonProperty("isHost")] public bool IsHost { get; set; }
 
