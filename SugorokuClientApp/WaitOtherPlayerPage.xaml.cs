@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using SugorokuLibrary;
@@ -17,9 +19,19 @@ namespace SugorokuClientApp
         private MatchInfo _matchInfo;
         private bool _hostPlayersPageMoved;
 
+        private readonly List<ImageSource> _playerImages = new List<ImageSource>
+        {
+            ImageSource.FromResource("SugorokuClientApp.ImageResource.koma_1.png"),
+            ImageSource.FromResource("SugorokuClientApp.ImageResource.koma_2.png"),
+            ImageSource.FromResource("SugorokuClientApp.ImageResource.koma_3.png"),
+            ImageSource.FromResource("SugorokuClientApp.ImageResource.koma_4.png")
+        };
+
         public WaitOtherPlayerPage(Player myInfo)
         {
             InitializeComponent();
+
+            GameStartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.startButton.png");
 
             _myPlayerInfo = myInfo;
             if (myInfo.IsHost)
@@ -34,8 +46,6 @@ namespace SugorokuClientApp
             }
 
             PlayerInfoUpdate();
-
-            PlayersView.ItemsSource = new ListQueue<Player> {myInfo};
 
             Device.StartTimer(TimeSpan.FromSeconds(5), PlayerInfoUpdate);
         }
@@ -64,7 +74,14 @@ namespace SugorokuClientApp
                 return false;
             }
 
-            PlayersView.ItemsSource = _matchInfo.Players;
+            var viewModels = _matchInfo.Players.Select(p => new WaitOtherPlayerViewModel
+            {
+                IdInfo = $"{(p.PlayerID == _myPlayerInfo.PlayerID ? "自分 " : "")}ID: {p.PlayerID}",
+                PlayerName = p.PlayerName,
+                ImageSource = _playerImages[p.PlayerID - 1]
+            });
+
+            PlayersView.ItemsSource = viewModels;
             return true;
         }
 

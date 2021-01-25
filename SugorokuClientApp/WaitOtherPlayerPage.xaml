@@ -2,8 +2,8 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:sugorokuLibrary="clr-namespace:SugorokuLibrary;assembly=SugorokuLibrary"
              xmlns:iOsSpecific="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:sugorokuClientApp="clr-namespace:SugorokuClientApp;assembly=SugorokuClientApp"
              x:Class="SugorokuClientApp.WaitOtherPlayerPage" NavigationPage.HasNavigationBar="false"
              iOsSpecific:Page.UseSafeArea="true">
     <ContentPage.Content>
@@ -12,16 +12,20 @@
                 <RowDefinition Height="8*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-            <ListView x:Name="PlayersView">
+            <!-- 文字サイズ大きめを期待 -->
+            <ListView x:Name="PlayersView" SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding PlayerName}"
-                                  Detail="{Binding PlayerID}" x:DataType="sugorokuLibrary:Player" />
+                        <ImageCell ImageSource="{Binding ImageSource}"
+                            Text="{Binding PlayerName}"
+                            Detail="{Binding IdInfo}" x:DataType="sugorokuClientApp:WaitOtherPlayerViewModel"
+                            TextColor="#1E2AD5" DetailColor="#707070" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Grid.Row="1" Text="ゲーム開始" x:Name="GameStartButton" Clicked="GameStartButtonClicked" 
-                    BackgroundColor="#1D6315" TextColor="White"/>
+            <ImageButton Grid.Row="1" x:Name="GameStartButton" Clicked="GameStartButtonClicked" 
+                         BackgroundColor="White" HorizontalOptions="Center" VerticalOptions="Center"
+                         WidthRequest="240" HeightRequest="70" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>
