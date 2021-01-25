@@ -14,8 +14,8 @@ namespace SugorokuClient.UI
 		public float Y { get; private set; }
 		public float Width { get; private set; }
 		public float Height { get; private set; }
-		public bool IsAnimationProcess { get; set; }
-		public int AnimationFrame { get; set; }
+		public bool IsProcessingEvent { get; private set; }
+		public int AnimationFrame { get; private set; }
 		
 		private int TargetX { get; set; }
 		private int TargetY { get; set; }
@@ -35,7 +35,7 @@ namespace SugorokuClient.UI
 			Y = y;
 			Width = width;
 			Height = height;
-			IsAnimationProcess = false;
+			IsProcessingEvent = false;
 			AnimationFrame = -1;
 			TargetX = 0;
 			TargetY = 0;
@@ -50,7 +50,7 @@ namespace SugorokuClient.UI
 
 		public void Update()
 		{
-			if(IsAnimationProcess && AnimationFrame > 0)
+			if(IsProcessingEvent && AnimationFrame > 0)
 			{
 				X += IncrementX;
 				Y += IncrementY;
@@ -58,14 +58,14 @@ namespace SugorokuClient.UI
 				Height += IncrementHeight;
 				AnimationFrame--;
 			}
-			else if (IsAnimationProcess && AnimationFrame == 0)
+			else if (IsProcessingEvent && AnimationFrame == 0)
 			{
 				X = TargetX;
 				Y = TargetY;
 				Width = TargetWidth;
 				Height = TargetHeight;
 				AnimationFrame = 0;
-				IsAnimationProcess = false;
+				IsProcessingEvent = false;
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace SugorokuClient.UI
 			IncrementX = (frame != 0) ? (x - X) / frame : (x - X);
 			IncrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
 			AnimationFrame = frame;
-			IsAnimationProcess = false;
+			IsProcessingEvent = false;
 		}
 
 
@@ -99,7 +99,7 @@ namespace SugorokuClient.UI
 			IncrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
 			IncrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
 			AnimationFrame = frame;
-			IsAnimationProcess = false;
+			IsProcessingEvent = false;
 		}
 
 
@@ -112,18 +112,18 @@ namespace SugorokuClient.UI
 
 		public void Start()
 		{
-			IsAnimationProcess = true;
+			IsProcessingEvent = true;
 		}
 
 		public void Stop()
 		{
-			IsAnimationProcess = false;
+			IsProcessingEvent = false;
 		}
 
 
 		public void Reset()
 		{
-			IsAnimationProcess = false;
+			IsProcessingEvent = false;
 			TargetX = 0;
 			TargetY = 0;
 			TargetWidth = 0;
