@@ -16,7 +16,7 @@ namespace SugorokuLibrary.ClientToServer
 	[JsonConverter(typeof(CloseCreateConverter))]
 	public class CloseCreateMessage : ClientMessage
 	{
-		[JsonProperty("methodType")] public string MethodType => "closeCreate";
+		[JsonProperty("methodType")] public override string MethodType => "closeCreate";
 
 		[JsonProperty("matchKey")] public string MatchKey { get; }
 

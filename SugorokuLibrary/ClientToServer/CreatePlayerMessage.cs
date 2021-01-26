@@ -16,7 +16,7 @@ namespace SugorokuLibrary.ClientToServer
 	[JsonConverter(typeof(CreatePlayerConverter))]
 	public class CreatePlayerMessage : ClientMessage
 	{
-		[JsonProperty("methodType")] public string MethodType => "createPlayer";
+		[JsonProperty("methodType")] public override string MethodType => "createPlayer";
 
 		[JsonProperty("playerName")] public string PlayerName { get; }
 

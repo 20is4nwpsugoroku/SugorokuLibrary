@@ -24,13 +24,14 @@ namespace SugorokuLibrary.Match
 		public ListQueue<int> ActionSchedule { get; }
 
 		/// <value> 順位を格納する </value>
-		public IEnumerable<int> Ranking { get; private set; }
+		public IEnumerable<int>? Ranking { get; private set; }
 
 		public int TopPlayerId { get; private set; }
 
 		/// <value> 乱数生成用のクラス </value>
 		private Random Rand { get; set; }
 
+		public bool NoEnqueue { get; set; }
 
 		#region コンストラクタ
 
@@ -43,7 +44,6 @@ namespace SugorokuLibrary.Match
 			Field = new Field();
 			Players = new Dictionary<int, Player>();
 			ActionSchedule = new ListQueue<int>();
-			Ranking = new Queue<int>();
 			Rand = new Random();
 		}
 
@@ -107,6 +107,7 @@ namespace SugorokuLibrary.Match
 			if (NextPlayerPrevDice)
 			{
 				NextPlayerPrevDice = false;
+				NoEnqueue = false;
 				var prev = Players[playerAction.PlayerID].Position;
 				var next = prev - playerAction.Length;
 				Players[playerAction.PlayerID].Position = next;
@@ -130,7 +131,7 @@ namespace SugorokuLibrary.Match
 			Field.Squares[nextPos].Event(this, MatchInfo.NextPlayerID);
 
 			// 次のターンに進める
-			if (ActionSchedule.Count != 0)
+			if (!NextPlayerPrevDice)
 			{
 				IncrementTurn();
 			}
@@ -145,7 +146,7 @@ namespace SugorokuLibrary.Match
 		private void End(int playerId)
 		{
 			TopPlayerId = playerId;
-			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID).ToList();
+			Ranking = Players.OrderByDescending(p => p.Value.Position).Select(kvp => kvp.Value.PlayerID);
 			MatchInfo.NextPlayerID = Constants.FinishedPlayerID;
 		}
 
@@ -155,6 +156,12 @@ namespace SugorokuLibrary.Match
 		/// </summary>
 		private void IncrementTurn()
 		{
+			if (NoEnqueue)
+			{
+				NoEnqueue = false;
+				return;
+			}
+
 			ActionSchedule.Enqueue(ActionSchedule.Dequeue());
 			MatchInfo.NextPlayerID = ActionSchedule.Peek();
 		}

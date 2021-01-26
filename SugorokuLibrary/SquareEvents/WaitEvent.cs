@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json;
 using SugorokuLibrary.Match;
 using SugorokuLibrary.SquareEvents.Converter;
@@ -13,9 +14,12 @@ namespace SugorokuLibrary.SquareEvents
         {
             Message = message + "\n1回休み";
         }
+
         public override void Event(MatchCore matchCore, int playerId)
         {
-            matchCore.ActionSchedule.Remove(playerId);
+            var (_, secondPosition) =
+                matchCore.ActionSchedule.Skip(1).Select((p, i) => (p, i)).First(t => t.p == playerId);
+            matchCore.ActionSchedule.RemoveAt(secondPosition + 1);
         }
 
         public override string ToString()
