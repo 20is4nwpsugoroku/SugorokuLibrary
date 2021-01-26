@@ -13,7 +13,7 @@
                 <RowDefinition Height="6*" />
                 <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
-            <RelativeLayout x:Name="FieldLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+            <RelativeLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
                             BackgroundColor="Gray">
                 <Image x:Name="FieldImage"
                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1.0}"
@@ -40,7 +40,7 @@
                 <Grid>
                     <ActivityIndicator x:Name="Indicator" IsRunning="False" HorizontalOptions="Center"
                                        VerticalOptions="Center" Color="Accent" />
-                    <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小"
+                    <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="他プレイヤー確認"
                             TextColor="Black" BorderWidth="3" BorderColor="#0067A7" CornerRadius="12" FontSize="20"
                             BackgroundColor="Transparent" />
                 </Grid>

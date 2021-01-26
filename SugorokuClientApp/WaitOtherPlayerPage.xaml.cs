@@ -30,8 +30,9 @@ namespace SugorokuClientApp
         public WaitOtherPlayerPage(Player myInfo)
         {
             InitializeComponent();
-
-            GameStartButton.Source = ImageSource.FromResource("SugorokuClientApp.ImageResource.startButton.png");
+            GameStartButton.BorderColor = myInfo.IsHost ? Color.FromHex("#0067A7") : Color.FromHex("0067A780");
+            GameStartButton.BorderWidth = 3;
+            GameStartButton.TextColor = myInfo.IsHost ? Color.FromHex("#0067A7") : Color.FromHex("0067A780");
 
             _myPlayerInfo = myInfo;
             if (myInfo.IsHost)

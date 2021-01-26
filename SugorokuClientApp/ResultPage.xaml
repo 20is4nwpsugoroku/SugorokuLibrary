@@ -7,11 +7,7 @@
              x:Class="SugorokuClientApp.ResultPage" NavigationPage.HasNavigationBar="false"
              iOsSpecific:Page.UseSafeArea="True">
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="2*" />
-            </Grid.RowDefinitions>
+        <StackLayout Padding="10, 10">
             <ListView x:Name="ResultView">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -21,7 +17,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ImageButton x:Name="EndButton" Grid.Row="1" Clicked="GameFinishButtonClicked" BackgroundColor="White" />
-        </Grid>
+            <ImageButton x:Name="EndButton" Clicked="GameFinishButtonClicked" BackgroundColor="White"
+                         WidthRequest="240" HeightRequest="70" />
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
