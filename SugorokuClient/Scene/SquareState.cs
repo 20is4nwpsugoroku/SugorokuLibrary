@@ -39,7 +39,7 @@ namespace SugorokuClient.Scene
 					break;
 				case 2:
 					posList.Enqueue((centerX - 70, centerY - 35));
-					posList.Enqueue((centerX + 70, centerY - 35));
+					posList.Enqueue((centerX, centerY - 35));
 					break;
 				case 3:
 					posList.Enqueue((centerX - 70, centerY - 75));

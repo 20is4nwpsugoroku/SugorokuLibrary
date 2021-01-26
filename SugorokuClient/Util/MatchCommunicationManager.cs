@@ -198,7 +198,7 @@ namespace SugorokuClient.Util
 			if (!r && recvJson == string.Empty) return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
 			var tempMsg = JsonConvert.DeserializeObject<ServerMessage>(recvJson);
 			DX.putsDx("Start Throw Dice");
-
+			DX.putsDx(recvJson);
 			switch (tempMsg.MethodType)
 			{
 				case "diceResult":
@@ -206,9 +206,11 @@ namespace SugorokuClient.Util
 					var dice = diceResult.Dice;
 					var startPos = diceResult.FirstPosition;
 					var finishPos = diceResult.FinalPosition;
-					return (diceResult.Message != "")
+					return (startPos < 31)
 						? (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking)
-						: (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking);
+						: (ReflectionStatus.PrevDiceSuccess, -dice, startPos, finishPos, ranking);
+				//? (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking)
+				//: (ReflectionStatus.PrevDiceSuccess,- dice, finishPos + dice, finishPos, ranking);
 
 				case "alreadyFinished":
 					var alreadyFinished = JsonConvert.DeserializeObject<AlreadyFinishedMessage>(recvJson);

@@ -11,7 +11,7 @@ namespace SugorokuClient.UI
 {
 	public class SugorokuSquareFrame
 	{
-		private bool IsFirstClicked { get; set; }
+		public bool IsFirstClicked { get; set; }
 		private TextureButton SquareButton { get; set; }
 		public TextureFade DescriptionMessage { get; private set; }
 		public SquareEvent Square { get; private set; }
@@ -38,7 +38,6 @@ namespace SugorokuClient.UI
 			{
 				IsFirstClicked = true;
 				DescriptionMessage.Start();
-				DX.putsDx("x : " + CenterPos.Item1.ToString() + " y : " + CenterPos.Item2);
 			}
 			if (IsFirstClicked) DescriptionMessage.Update();
 		}
@@ -48,6 +47,13 @@ namespace SugorokuClient.UI
 		{
 			SquareButton.MouseOverDraw();
 			if (IsFirstClicked) DescriptionMessage.Draw();
+		}
+
+
+		public void MessageBoxStart()
+		{
+			IsFirstClicked = true;
+			DescriptionMessage.Start();
 		}
 
 

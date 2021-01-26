@@ -23,13 +23,13 @@ namespace SugorokuClient.Scene
 		private static Timer WaitEventTimer { get; set; }
 		private static Timer PlayingEventTimer { get; set; }
 		private static State state { get; set; }
-		private static bool CanThrowDice { get; set; }
-		private static bool IsGoal { get; set; }
 		private static List<int> MyActionTurn { get; set; }
 		private static Queue<SugorokuEvent> PlayerEvents { get; set; }
 		private static List<int> Ranking { get; set; }
-		private TextureButton DiceButton { get; set; }
 		private static CommonData Data { get; set; }
+		private static bool IsGoal { get; set; }
+		private TextureButton DiceButton { get; set; }
+		private DiceTexture DiceTexture { get; set; }
 		private int UIFontTexture { get; set; }
 		private string MessageText { get; set; }
 		private static bool isProcessingPlayingEvent { get; set; }
@@ -60,6 +60,7 @@ namespace SugorokuClient.Scene
 			var handle = TextureAsset.Register("Dice1",
 				"../../../images/saikoro_1.png");
 			DiceButton = new TextureButton(handle, 1120, 800, 160, 160);
+			DiceTexture = new DiceTexture(960, 800, 160, 160);
 			SugorokuFrame = new SugorokuFrame();
 			PlayerEvents = new Queue<SugorokuEvent>();
 			Ranking = new List<int>();
@@ -104,18 +105,28 @@ namespace SugorokuClient.Scene
 				}
 			}
 
-			if (state == State.WaitThrowDice 
-				&& DiceButton.LeftClicked()
-				&& !SugorokuFrame.IsProcessingEvent)
+
+			if (state == State.WaitThrowDice
+				&& !SugorokuFrame.IsProcessingEvent
+				&& DiceTexture.AnimationFrame == 0)
 			{
 				SugorokuFrame.ProcessEvent(currentEvent);
 				PlayerEvents.Dequeue();
 				state = State.WaitOtherPlayer;
 			}
+			else if (state == State.WaitThrowDice 
+				&& DiceButton.LeftClicked()
+				&& !SugorokuFrame.IsProcessingEvent)
+			{
+				DiceTexture.AnimationStart(currentEvent.Dice);
+			}
 			else if (DiceButton.LeftClicked())
 			{
 				// まだターンじゃない表示
 			}
+
+			DiceTexture.Update();
+			
 
 			SugorokuFrame.Update();
 			MessageText = $"EventNum:{PlayerEvents.Count}\n" + $"MyActionTurn:{MyActionTurn.Count}\n"
@@ -128,7 +139,6 @@ namespace SugorokuClient.Scene
 				State.Goal => "ゴールしました。",
 				_ => ""
 			};
-
 		}
 
 		public void Draw()
@@ -136,6 +146,7 @@ namespace SugorokuClient.Scene
 			SugorokuFrame.Draw();
 			DiceButton.Draw();
 			DiceButton.MouseOverDraw();
+			DiceTexture.Draw();
 			FontAsset.Draw(UIFontTexture, MessageText, 0, 800, DX.GetColor(50, 50, 50));
 		}
 
@@ -226,26 +237,27 @@ namespace SugorokuClient.Scene
 				switch (status)
 				{
 					case ReflectionStatus.NextSuccess:
+					case ReflectionStatus.PrevDiceSuccess:
 						PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
 						MyActionTurn.Add(match.Turn);
 						data.MatchInfo = match;
-						if (end == 7 || end == 17 || end == 21 || end == 26 || end == 28)
-						{
-							(r, match) = data.MatchManager.GetMatch();
-							if (!r || match.NextPlayerID != data.Player.PlayerID) return;
-							MyActionTurn.Add(match.Turn);
-							data.MatchInfo = match;
-							Task.Delay(6000);
-							(_, dice, start, end, _) = data.MatchManager.ThrowDice();
-							PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
-						}
+						//if (end == 7 || end == 17 || end == 21 || end == 26 || end == 28)
+						//{
+						//	(r, match) = data.MatchManager.GetMatch();
+						//	if (!r || match.NextPlayerID != data.Player.PlayerID) return;
+						//	MyActionTurn.Add(match.Turn);
+						//	data.MatchInfo = match;
+						//	Task.Delay(6000);
+						//	(_, dice, start, end, _) = data.MatchManager.ThrowDice();
+						//	PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
+						//}
 						break;
 
-					case ReflectionStatus.PrevDiceSuccess:
-						PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, -dice));
-						MyActionTurn.Add(match.Turn);
-						data.MatchInfo = match;
-						break;
+					//case ReflectionStatus.PrevDiceSuccess:
+					//	PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
+					//	MyActionTurn.Add(match.Turn);
+					//	data.MatchInfo = match;
+					//	break;
 
 					case ReflectionStatus.AlreadyFinished:
 						IsGoal = true;
@@ -260,7 +272,7 @@ namespace SugorokuClient.Scene
 			}
 			else
 			{
-				if (match.Turn == data.MatchInfo.Turn) return;
+				//if (match.Turn == data.MatchInfo.Turn) return;
 				var eventList = ReverseEvent(data.MatchInfo, match, Data.Player.PlayerID);
 				foreach (var playerEvent in eventList)
 				{
@@ -325,7 +337,7 @@ namespace SugorokuClient.Scene
 			}
 			else
 			{
-				state = (data.MatchManager.IsMatchStarted()) ? State.SugorokuFrameInit : State.WaitMatchStart;
+				state = (data.MatchManager.IsMatchStarted()) ? State.SugorokuFrameInitBefore : State.WaitMatchStart;
 			}
 
 			if (state == State.SugorokuFrameInitBefore)

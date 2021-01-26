@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DxLibDLL;
 using SugorokuClient.Util;
+using SugorokuLibrary;
 
 
 namespace SugorokuClient.UI
@@ -12,10 +13,10 @@ namespace SugorokuClient.UI
 		private class Animation
 		{
 			public Animation(int animationFrame,
-				int targetX, int targetY,
-				int targetWidth, int targetHeight,
-				float incrementX, float incrementY,
-				float incrementWidth, float incrementHeight)
+				double targetX, double targetY,
+				double targetWidth, double targetHeight,
+				double incrementX, double incrementY,
+				double incrementWidth, double incrementHeight)
 			{
 				AnimationFrame = animationFrame;
 				TargetX = targetX;
@@ -29,23 +30,23 @@ namespace SugorokuClient.UI
 			}
 
 			public int AnimationFrame { get; set; }
-			public int TargetX { get; set; }
-			public int TargetY { get; set; }
-			public int TargetWidth { get; set; }
-			public int TargetHeight { get; set; }
-			public float IncrementX { get; set; }
-			public float IncrementY { get; set; }
-			public float IncrementWidth { get; set; }
-			public float IncrementHeight { get; set; }
+			public double TargetX { get; set; }
+			public double TargetY { get; set; }
+			public double TargetWidth { get; set; }
+			public double TargetHeight { get; set; }
+			public double IncrementX { get; set; }
+			public double IncrementY { get; set; }
+			public double IncrementWidth { get; set; }
+			public double IncrementHeight { get; set; }
 		}
 
 		private class SugorokuAnimation : Animation
 		{
 			public SugorokuAnimation(int animationFrame,
-				int targetX, int targetY,
-				int targetWidth, int targetHeight,
-				float incrementX, float incrementY,
-				float incrementWidth, float incrementHeight,
+				double targetX, double targetY,
+				double targetWidth, double targetHeight,
+				double incrementX, double incrementY,
+				double incrementWidth, double incrementHeight,
 				int animationEndPos) 
 				: base(animationFrame, targetX, targetY,
 				targetWidth, targetHeight,  incrementX, incrementY,
@@ -61,30 +62,30 @@ namespace SugorokuClient.UI
 
 
 		private int TextureHandle { get; set; }
-		public float X { get; private set; }
-		public float Y { get; private set; }
-		public float Width { get; private set; }
-		public float Height { get; private set; }
+		public double X { get; private set; }
+		public double Y { get; private set; }
+		public double Width { get; private set; }
+		public double Height { get; private set; }
 		public bool IsProcessingEvent { get; private set; }
 		public bool IsStopped { get; private set; }
-		private Queue<SugorokuAnimation> AnimationSchedule { get; set; }
+		private ListQueue<SugorokuAnimation> AnimationSchedule { get; set; }
 		private SugorokuAnimation ProcessingAnimation { get; set; }
 
 
 
-		//public int AnimationFrame { get; private set; }
-		//private int TargetX { get; set; }
-		//private int TargetY { get; set; }
-		//private int TargetWidth { get; set; }
-		//private int TargetHeight { get; set; }
-		//private float IncrementX { get; set; }
-		//private float IncrementY { get; set; }
-		//private float IncrementWidth { get; set; }
-		//private float IncrementHeight { get; set; }
+		//public double AnimationFrame { get; private set; }
+		//private double TargetX { get; set; }
+		//private double TargetY { get; set; }
+		//private double TargetWidth { get; set; }
+		//private double TargetHeight { get; set; }
+		//private double IncrementX { get; set; }
+		//private double IncrementY { get; set; }
+		//private double IncrementWidth { get; set; }
+		//private double IncrementHeight { get; set; }
 
 
 
-		public AnimationTexture(int textureHandle, int x, int y, int width, int height)
+		public AnimationTexture(int textureHandle, double x, double y, double width, double height)
 		{
 			TextureHandle = textureHandle;
 			X = x;
@@ -93,7 +94,7 @@ namespace SugorokuClient.UI
 			Height = height;
 			IsProcessingEvent = false;
 			IsStopped = true;
-			AnimationSchedule = new Queue<SugorokuAnimation>();
+			AnimationSchedule = new ListQueue<SugorokuAnimation>();
 			ProcessingAnimation = new SugorokuAnimation(0, x, y, width, height, 0, 0, 0, 0, 0);
 			//AnimationFrame = -1;
 			//TargetX = 0;
@@ -136,11 +137,9 @@ namespace SugorokuClient.UI
 
 		public void Draw()
 		{
-			TextureAsset.DrawModi(TextureHandle,
+			TextureAsset.Draw(TextureHandle,
 				(int)X, (int)Y,
-				(int)(X + Width), (int)Y,
 				(int)(X + Width), (int)(Y + Height),
-				(int)X, (int)(Y + Height),
 				DX.TRUE);
 		}
 
@@ -159,30 +158,78 @@ namespace SugorokuClient.UI
 
 		public void AddChangePosition(int x, int y, int frame, int animationEndPosition)
 		{
-			var incrementX = (frame != 0) ? (x - X) / frame : (x - X);
-			var incrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
+			double incrementX, incrementY, baseX, baseY, baseWidth, baseHeight;
+			if (AnimationSchedule.Count != 0)
+			{
+				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				baseX = anime.TargetX;
+				baseY = anime.TargetY;
+				baseWidth = anime.TargetWidth;
+				baseHeight = anime.TargetHeight;
+			}
+			else
+			{
+				baseX = X;
+				baseY = Y;
+				baseWidth = Width;
+				baseHeight = Height;
+			}
+			incrementX = (frame != 0) ? (x - baseX) / frame : (x - baseX);
+			incrementY = (frame != 0) ? (y - baseY) / frame : (y - baseY);
 			AnimationSchedule.Enqueue(new SugorokuAnimation(
-				frame, x, y, (int)Width, (int)Height,
+				frame, x, y, baseWidth, baseHeight,
 				incrementX, incrementY, 0, 0, animationEndPosition));
 		}
 
 
 		public void AddChangeScale(int width, int height, int frame, int animationEndPosition)
 		{
-			var incrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
-			var incrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
+			double incrementWidth, incrementHeight, baseX, baseY, baseWidth, baseHeight;
+			if (AnimationSchedule.Count != 0)
+			{
+				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				baseX = anime.TargetX;
+				baseY = anime.TargetY;
+				baseWidth = anime.TargetWidth;
+				baseHeight = anime.TargetHeight;
+			}
+			else
+			{
+				baseX = X;
+				baseY = Y;
+				baseWidth = Width;
+				baseHeight = Height;
+			}
+			incrementWidth = (frame != 0) ? (width - baseWidth) / frame : (width - baseWidth);
+			incrementHeight = (frame != 0) ? (height - baseHeight) / frame : (height - baseHeight);
 			AnimationSchedule.Enqueue(new SugorokuAnimation(
-				frame, (int)X, (int)Y, width, height, 0, 0,
+				frame, baseX, baseY, width, height, 0, 0,
 				incrementWidth, incrementHeight, animationEndPosition));
 		}
 
 
 		public void AddChangePositionAndScale(int x, int y, int width, int height, int frame, int animationEndPosition)
 		{
-			var incrementX = (frame != 0) ? (x - X) / frame : (x - X);
-			var incrementY = (frame != 0) ? (y - Y) / frame : (y - Y);
-			var incrementWidth = (frame != 0) ? (width - Width) / frame : (width - Width);
-			var incrementHeight = (frame != 0) ? (height - Height) / frame : (height - Height);
+			double incrementX, incrementY, incrementWidth, incrementHeight, baseX, baseY, baseWidth, baseHeight;
+			if (AnimationSchedule.Count != 0)
+			{
+				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				baseX = anime.TargetX;
+				baseY = anime.TargetY;
+				baseWidth = anime.TargetWidth;
+				baseHeight = anime.TargetHeight;
+			}
+			else
+			{
+				baseX = X;
+				baseY = Y;
+				baseWidth = Width;
+				baseHeight = Height;
+			}
+			incrementX = (frame != 0) ? (x - baseX) / frame : (x - baseX);
+			incrementY = (frame != 0) ? (y - baseY) / frame : (y - baseY);
+			incrementWidth = (frame != 0) ? (width - baseWidth) / frame : (width - baseWidth);
+			incrementHeight = (frame != 0) ? (height - baseHeight) / frame : (height - baseHeight);
 			AnimationSchedule.Enqueue(new SugorokuAnimation(
 				frame, x, y, width, height, incrementX, incrementY,
 				incrementWidth, incrementHeight, animationEndPosition));
