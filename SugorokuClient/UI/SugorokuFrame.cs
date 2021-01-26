@@ -32,13 +32,13 @@ namespace SugorokuClient.UI
 			Playerlist = new List<Player>();
 			Players = new Dictionary<int, Player>();
 			PlayerTextureHandle = new Dictionary<int, int>();
-			PlayerTextureHandle.Add(0, TextureAsset.Register("Player1",
+			PlayerTextureHandle.Add(-1, TextureAsset.Register("Player1",
 				"../../../images/koma_1.png"));
-			PlayerTextureHandle.Add(1, TextureAsset.Register("Player2",
+			PlayerTextureHandle.Add(-2, TextureAsset.Register("Player2",
 				"../../../images/koma_2.png"));
-			PlayerTextureHandle.Add(2, TextureAsset.Register("Player3",
+			PlayerTextureHandle.Add(-3, TextureAsset.Register("Player3",
 				"../../../images/koma_3.png"));
-			PlayerTextureHandle.Add(3, TextureAsset.Register("Player4",
+			PlayerTextureHandle.Add(-4, TextureAsset.Register("Player4",
 				"../../../images/koma_4.png"));
 			PlayerAnimationTexture = new Dictionary<int, AnimationTexture>();
 			Fld = new Field();
@@ -54,6 +54,7 @@ namespace SugorokuClient.UI
 		{
 			Playerlist = players;
 			var idList = new List<int>();
+			SquareState = new List<SquareState>();
 			foreach (var id in Playerlist)
 			{
 				idList.Add(id.PlayerID);
@@ -76,8 +77,8 @@ namespace SugorokuClient.UI
 				{
 					if (ret.Item1 != Playerlist[i].PlayerID) break;
 					Players.Add(Playerlist[i].PlayerID, Playerlist[i]);
-					var handle = PlayerTextureHandle[i];
-					PlayerTextureHandle.Remove(i);
+					var handle = PlayerTextureHandle[-(i + 1)];
+					PlayerTextureHandle.Remove(-(i + 1));
 					PlayerTextureHandle.Add(Playerlist[i].PlayerID, handle);
 					PlayerAnimationTexture.Add(Playerlist[i].PlayerID,
 						new AnimationTexture(handle, ret.Item1, ret.Item2, 70, 70));
@@ -120,6 +121,7 @@ namespace SugorokuClient.UI
 
 		public void ProcessEvent(SugorokuEvent sugorokuEvent)
 		{
+			DX.putsDx($"Dice:{sugorokuEvent.Dice}, StartPos:{sugorokuEvent.EventStartPos}, EndPos:{sugorokuEvent.EventEndPos}");
 			IsProcessingEvent = true;
 			SquareState[sugorokuEvent.EventStartPos - sugorokuEvent.Dice].ExistsControl(sugorokuEvent.PlayerId, false);
 			SquareState[sugorokuEvent.EventStartPos].ExistsControl(sugorokuEvent.PlayerId, true);
@@ -127,6 +129,7 @@ namespace SugorokuClient.UI
 			var movedPosList = SquareState[sugorokuEvent.EventStartPos].GetPlayerIdAndPos(pos.Item1, pos.Item2);
 			foreach (var movedPos in movedPosList)
 			{
+				DX.putsDx($"Id:{movedPos.Item1}, X:{movedPos.Item2}, Y:{movedPos.Item3}");
 				PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, sugorokuEvent.EventStartPos);
 				PlayerAnimationTexture[movedPos.Item1].Start();
 			}

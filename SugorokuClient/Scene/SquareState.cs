@@ -35,7 +35,7 @@ namespace SugorokuClient.Scene
 			{
 				// 駒の画像ファイルが70px*70pxで上下だけ10px離して配置する
 				case 1:
-					posList.Enqueue((centerX - 35, centerX - 35));
+					posList.Enqueue((centerX - 35, centerY - 35));
 					break;
 				case 2:
 					posList.Enqueue((centerX - 70, centerY - 35));
@@ -56,7 +56,7 @@ namespace SugorokuClient.Scene
 				default:
 					for (int i = 0; i < PlayerNum; i++)
 					{
-						posList.Enqueue((centerX - 35, centerX - 35));
+						posList.Enqueue((centerX - 35, centerY - 35));
 					}
 					break;
 			}

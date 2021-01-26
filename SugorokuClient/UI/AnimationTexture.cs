@@ -94,6 +94,7 @@ namespace SugorokuClient.UI
 			IsProcessingEvent = false;
 			IsStopped = true;
 			AnimationSchedule = new Queue<SugorokuAnimation>();
+			ProcessingAnimation = new SugorokuAnimation(0, x, y, width, height, 0, 0, 0, 0, 0);
 			//AnimationFrame = -1;
 			//TargetX = 0;
 			//TargetY = 0;
@@ -192,6 +193,10 @@ namespace SugorokuClient.UI
 		{
 			IsProcessingEvent = true;
 			IsStopped = false;
+			if (AnimationSchedule.Count != 0)
+			{
+				ProcessingAnimation = AnimationSchedule.Dequeue();
+			}
 		}
 
 		public void Stop()

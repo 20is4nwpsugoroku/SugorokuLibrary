@@ -38,6 +38,7 @@ namespace SugorokuClient.UI
 			{
 				IsFirstClicked = true;
 				DescriptionMessage.Start();
+				DX.putsDx("x : " + CenterPos.Item1.ToString() + " y : " + CenterPos.Item2);
 			}
 			if (IsFirstClicked) DescriptionMessage.Update();
 		}

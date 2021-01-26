@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using DxLibDLL;
@@ -14,6 +15,9 @@ namespace SugorokuClient.Util
 	{
 		public int MyPlayerId { get; private set; }
 		public string MatchKey { get; private set; }
+		public MatchInfo LastMatchInfo { get; set; }
+		public bool LastGetSuccess { get; set; }
+
 
 
 		public MatchCommunicationManager()
@@ -27,6 +31,8 @@ namespace SugorokuClient.Util
 		{
 			MyPlayerId = myPlayerId;
 			MatchKey = matchKey;
+			LastGetSuccess = false;
+			LastMatchInfo = new MatchInfo();
 		}
 
 
@@ -52,11 +58,12 @@ namespace SugorokuClient.Util
 
 		public bool CanStartMatch(string matchKey, int playerNum)
 		{
-			var (r, info) = GetMatchInfo(matchKey);
+			var (r, info) = GetMatch(matchKey);
 			if (r)
 			{
 				r = info.Players.Count >= playerNum;
 			}
+			//r = info.Players.Count >= playerNum;
 			DX.putsDx("canstartMatch:" + r.ToString());
 			return r;
 		}
@@ -72,9 +79,21 @@ namespace SugorokuClient.Util
 		{
 			var sendMsg = new CloseCreateMessage(matchKey);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
-			var (_, _) = SocketManager.SendRecv(sendJson);
-			DX.putsDx(sendJson);
+			var (r, recvJson) = SocketManager.SendRecv(sendJson);
+			while (!r)
+			{
+				
+				DX.putsDx(sendJson);
+				DX.putsDx("///////Close Result/////////////");
+				DX.putsDx(recvJson);
+				DX.putsDx("///////Close Result/////////////");
+				sendJson = JsonConvert.SerializeObject(sendMsg);
+				(r, recvJson) = SocketManager.SendRecv(sendJson);
+
+			}
 			DX.putsDx("close match");
+			DX.putsDx("***********Closed************");
+
 		}
 
 
@@ -89,11 +108,11 @@ namespace SugorokuClient.Util
 			var sendMsg = new GetMatchInfoMessage(matchKey);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			DX.putsDx(sendJson);
-			DX.putsDx(recvJson);
+			DX.putsDx(r.ToString() + sendJson);
+			DX.putsDx(r.ToString() + recvJson);
 			var ret = new MatchInfo();
 			return (r)
-				? (true, ret = JsonConvert.DeserializeObject<MatchInfo>(recvJson))
+				? (true, JsonConvert.DeserializeObject<MatchInfo>(recvJson))
 				: (false, new MatchInfo());
 		}
 
@@ -135,7 +154,6 @@ namespace SugorokuClient.Util
 		}
 
 
-
 		public (bool, MatchInfo) GetMatch(string matchKey)
 		{
 			var sendMsg = new GetStartedMatchMessage(matchKey);
@@ -161,6 +179,22 @@ namespace SugorokuClient.Util
 			var sendMsg = new DiceMessage(matchKey, playerId);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
+			DX.putsDx(sendJson);
+			DX.putsDx(recvJson);
+			while (!r)
+			{
+				DX.putsDx("///////Close Result/////////////");
+				DX.putsDx(sendJson);
+				DX.putsDx(recvJson);
+				DX.putsDx("---------------------");
+				sendJson = JsonConvert.SerializeObject(sendMsg);
+				(r, recvJson) = SocketManager.SendRecv(sendJson);
+
+			}
+			DX.putsDx("fice Start");
+			DX.putsDx("***********Dice************");
+
+
 			if (!r && recvJson == string.Empty) return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
 			var tempMsg = JsonConvert.DeserializeObject<ServerMessage>(recvJson);
 			DX.putsDx("Start Throw Dice");
@@ -174,7 +208,7 @@ namespace SugorokuClient.Util
 					var finishPos = diceResult.FinalPosition;
 					return (diceResult.Message != "")
 						? (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking)
-						: (ReflectionStatus.PrevDiceSuccess, dice, startPos, finishPos, ranking);
+						: (ReflectionStatus.NextSuccess, dice, startPos, finishPos, ranking);
 
 				case "alreadyFinished":
 					var alreadyFinished = JsonConvert.DeserializeObject<AlreadyFinishedMessage>(recvJson);
