@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 using SugorokuLibrary;
@@ -66,14 +68,25 @@ namespace SugorokuServer
                 mapImage.Mutate(ctx =>
                 {
                     // resize koma image
-                    komaImage.Mutate(w =>
-                    {
-                        w.Resize(60, 60);
-                    });
+                    komaImage.Mutate(w => { w.Resize(60, 60); });
 
                     ctx.DrawImage(komaImage, new Point(x + presetX, y + presetY), 1);
                 });
             }
+
+            // Generate Time data
+            var collection = new FontCollection();
+            using var fontStream =
+                Assembly.GetManifestResourceStream("SugorokuServer.ImageResources.NotoSans-Regular.ttf");
+            if (fontStream == null)
+            {
+                return mapImage;
+            }
+
+            var family = collection.Install(fontStream);
+            var font = family.CreateFont(20);
+            var now = DateTime.Now;
+            mapImage.Mutate(ctx => ctx.DrawText($"Generate: {now:HH:mm:ss}", font, Color.Black, new Point(800, 680)));
 
             return mapImage;
         }
