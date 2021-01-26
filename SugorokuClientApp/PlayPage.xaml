@@ -37,9 +37,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小"
-                        TextColor="Black" BorderWidth="3" BorderColor="#0067A7" CornerRadius="12" FontSize="20"
-                        BackgroundColor="Transparent" />
+                <Grid>
+                    <ActivityIndicator x:Name="Indicator" IsRunning="False" HorizontalOptions="Center"
+                                       VerticalOptions="Center" Color="Accent" />
+                    <Button x:Name="SizeChangeButton" Clicked="FieldImageZoomButtonClicked" Text="マップ拡大/縮小"
+                            TextColor="Black" BorderWidth="3" BorderColor="#0067A7" CornerRadius="12" FontSize="20"
+                            BackgroundColor="Transparent" />
+                </Grid>
 
                 <Frame x:Name="DiceResultFrame" Grid.Row="0" Grid.Column="1" VerticalOptions="FillAndExpand"
                        HorizontalOptions="FillAndExpand" HasShadow="False" BorderColor="#0067A7" CornerRadius="12">

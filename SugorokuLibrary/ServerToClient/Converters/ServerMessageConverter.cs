@@ -20,6 +20,7 @@ namespace SugorokuLibrary.ServerToClient.Converters
                 "diceResult" => new DiceResultMessageConverter(),
                 "alreadyFinished" => new AlreadyFinishedMessageConverter(),
                 "ranking" => new RankingMessageConverter(),
+                "matchMapImage" => new MatchMapImageMessageConverter(),
                 _ => throw new ArgumentException()
             };
             var newReader = jObject.CreateReader();

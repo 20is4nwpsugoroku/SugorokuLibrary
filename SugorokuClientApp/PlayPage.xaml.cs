@@ -20,7 +20,6 @@ namespace SugorokuClientApp
         private readonly Player _player;
         private readonly MatchInfo _matchInfo;
         private readonly PlayPageViewModel _viewModel;
-        private bool _isZooming;
         private bool _dicePlaying;
         private bool _isFinished;
 
@@ -99,11 +98,23 @@ namespace SugorokuClientApp
         private void FieldImageZoomButtonClicked(object sender, EventArgs e)
         {
             SizeChangeButton.IsEnabled = false;
-            var scale = _isZooming ? -1.0 : 1.0;
-            _isZooming = !_isZooming;
-            FieldLayout.AnchorX = PlayerKomaIcon.X / FieldLayout.Width;
-            FieldLayout.AnchorY = PlayerKomaIcon.Y / FieldLayout.Height;
-            Device.BeginInvokeOnMainThread(async () => await FieldLayout.RelScaleTo(scale, 1000));
+            Indicator.IsRunning = true;
+            using var socket = ConnectServer.CreateSocket((IPAddress) Application.Current.Properties["serverIpAddress"],
+                (int) Application.Current.Properties["serverPort"]);
+            var message = new GetMatchViewImageMessage(_matchInfo.MatchKey);
+            var req = JsonConvert.SerializeObject(message);
+            var (_, status, res) = Connection.SendAndRecvMessage(req, socket, true);
+            if (!status)
+            {
+                var fail = JsonConvert.DeserializeObject<FailedMessage>(res);
+                throw new Exception($"画像レスポンスに失敗 サーバーサイドでnullを返してる: {fail.Message}");
+            }
+
+            var imageMsg = JsonConvert.DeserializeObject<MatchMapImageMessage>(res);
+            Device.BeginInvokeOnMainThread(async () =>
+                await Navigation.PushAsync(new MapImageViewer(imageMsg.ImageBase64)));
+
+            Indicator.IsRunning = false;
             SizeChangeButton.IsEnabled = true;
         }
 
