@@ -32,6 +32,7 @@ namespace SugorokuServer
 				DiceMessage dm => ThrowDice(dm),
 				GetStartedMatchMessage gsm => GetStatedMatch(gsm),
 				GetRankingMessage gr => GetRanking(gr),
+				GetMatchViewImageMessage gmv => GetMatchView(gmv),
 				_ => throw new NotImplementedException()
 			};
 
@@ -67,7 +68,7 @@ namespace SugorokuServer
 				ReflectionStatus.NotYourTurn => (false,
 					JsonConvert.SerializeObject(new FailedMessage("まだあなたのターンではありません"))),
 				ReflectionStatus.PrevDiceSuccess => (true,
-					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", firstPos, pos))),
+					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", pos, pos))),
 				ReflectionStatus.Error => throw new ArgumentException(),
 				ReflectionStatus.PlayerGoal => (true,
 					JsonConvert.SerializeObject(new DiceResultMessage(dice, "", 30, 30) {Ranking = matchCore.Ranking})),
@@ -175,6 +176,14 @@ namespace SugorokuServer
 			return ranking == null
 				? (false, JsonConvert.SerializeObject(new FailedMessage("まだランキングは決まっていません")))
 				: (true, JsonConvert.SerializeObject(new RankingMessage(ranking)));
+		}
+
+		private (bool, string) GetMatchView(GetMatchViewImageMessage message)
+		{
+			var imageString = ImageProvider.GenerateEncodedMapImage(_matches[message.MatchKey].Players);
+			return imageString == null
+				? (false, JsonConvert.SerializeObject(new FailedMessage("マップ画像の生成に失敗しました")))
+				: (true, JsonConvert.SerializeObject(new MatchMapImageMessage(imageString)));
 		}
 	}
 }

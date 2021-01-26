@@ -12,6 +12,16 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="ImageResources\koma_1.png" />
+      <EmbeddedResource Include="ImageResources\koma_2.png" />
+      <EmbeddedResource Include="ImageResources\koma_3.png" />
+      <EmbeddedResource Include="ImageResources\koma_4.png" />
+      <None Remove="ImageResources\viewEventsMap.png" />
+      <EmbeddedResource Include="ImageResources\viewEventsMap.png" />
     </ItemGroup>
 
 </Project>
