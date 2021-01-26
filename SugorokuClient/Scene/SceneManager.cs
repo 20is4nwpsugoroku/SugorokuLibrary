@@ -28,6 +28,7 @@ namespace SugorokuClient.Scene
 
 		/// <value> 描画タイミングの調整をするクラス </value>
 		private static FPSAdjuster FpsAdjuster { get; set; }
+		private static CommonData Data { get; set; }
 
 
 		/// <summary>
@@ -38,7 +39,8 @@ namespace SugorokuClient.Scene
 			CurrentScene = null;
 			Scenes = new Dictionary<SceneName, IScene>();
 			Scenes.Clear();
-			FpsAdjuster = new FPSAdjuster();
+			FpsAdjuster = new FPSAdjuster(30);
+			Data = new CommonData();
 		}
 
 
@@ -91,7 +93,7 @@ namespace SugorokuClient.Scene
 		public static void ChangeScene(SceneName sceneName)
 		{
 			CurrentScene = Scenes[sceneName];
-			CurrentScene.Init();
+			CurrentScene.Init(Data);
 		}
 
 

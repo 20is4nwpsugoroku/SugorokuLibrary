@@ -27,19 +27,19 @@ namespace SugorokuClient.UI
 		{
 			
 			BackgroundTextureHandle = TextureAsset.Register("GameBackgroundImage",
-				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png");
+				"../../../images/Map.png");
 			SquareList = new List<SugorokuSquareFrame>();
 			Playerlist = new List<Player>();
 			Players = new Dictionary<int, Player>();
 			PlayerTextureHandle = new Dictionary<int, int>();
 			PlayerTextureHandle.Add(0, TextureAsset.Register("Player1",
-				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
+				"../../../images/koma_1.png"));
 			PlayerTextureHandle.Add(1, TextureAsset.Register("Player2",
-				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
+				"../../../images/koma_2.png"));
 			PlayerTextureHandle.Add(2, TextureAsset.Register("Player3",
-				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
+				"../../../images/koma_3.png"));
 			PlayerTextureHandle.Add(3, TextureAsset.Register("Player4",
-				"E:/workspace/devs/SugorokuLibrary/dev/haruto8631/SugorokuClient/images/Image1.png"));
+				"../../../images/koma_4.png"));
 			PlayerAnimationTexture = new Dictionary<int, AnimationTexture>();
 			Fld = new Field();
 			for (var i = 0; i < Fld.Squares.Length; i++)

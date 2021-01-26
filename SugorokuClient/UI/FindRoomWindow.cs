@@ -83,6 +83,7 @@ namespace SugorokuClient.UI
 			{
 				isVisible = false;
 				isSelectedInfo = false;
+				return;
 			}
 			if (isReloading) return;
 			foreach (var button in matchesListButtons)

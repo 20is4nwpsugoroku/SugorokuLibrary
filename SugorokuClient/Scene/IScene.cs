@@ -6,7 +6,7 @@ namespace SugorokuClient.Scene
 {
 	public interface IScene
 	{
-		public void Init();
+		public void Init(CommonData data);
 
 		public void Update();
 

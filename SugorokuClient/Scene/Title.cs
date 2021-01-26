@@ -15,12 +15,7 @@ namespace SugorokuClient.Scene
 {
 	public class Title : IScene
 	{
-		#region Temp
-		private const string DummyImagePath = "E:\\workspace\\devs\\SugorokuLibrary\\dev\\haruto8631\\SugorokuClient\\images\\Image1.png";
-		#endregion
-
 		private int LogoImageHandle;
-		private const string LogoImagePath = DummyImagePath;
 		private const int LogoImageHeight = 300;
 		private const int LogoImageWidth = 300;
 		private const int LogoImageX = 490;
@@ -47,6 +42,7 @@ namespace SugorokuClient.Scene
 
 		private Random rand { get; set; }
 		private bool isWaitJoin { get; set; }
+		private static CommonData Data { get; set; }
 
 
 		enum State
@@ -71,15 +67,15 @@ namespace SugorokuClient.Scene
 		/// <summary>
 		/// シーンの初期化処理
 		/// </summary>
-		public void Init()
+		public void Init(CommonData data)
 		{
 			rand = new Random();
-
+			Data = data;
 			state = State.Start;
-			LogoImageHandle = TextureAsset.Register("Logo", LogoImagePath);
+			LogoImageHandle = TextureAsset.Register("Logo", "../../../images/TitleLogo.png");
 			var buttonFont = FontAsset.Register("Default", size: 40);
 			var textBoxFont = FontAsset.Register("TextBox", size: 20);
-			startButton = new TextureButton(TextureAsset.Register("button1Base", DummyImagePath), 540, 500, 200, 50, "はじめる", DX.GetColor(222, 222, 222), buttonFont);
+			startButton = new TextureButton(TextureAsset.Register("button1Base", "../../../images/StartButton.png"), 540, 500, 200, 50, "はじめる", DX.GetColor(222, 222, 222), buttonFont);
 			endButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 570, 200, 50, "終わる", DX.GetColor(222, 222, 222), buttonFont);
 			backButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 500, 200, 50, "戻る", DX.GetColor(222, 222, 222), buttonFont);
 			makeRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 570, 300, 50, "部屋を作る", DX.GetColor(222, 222, 222), buttonFont);
@@ -98,7 +94,7 @@ namespace SugorokuClient.Scene
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
 			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
-			SocketManager.Connect(CommonData.Address, CommonData.Port);
+			SocketManager.Connect(Data.Address, Data.Port);
 			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
 		}
 
@@ -148,8 +144,8 @@ namespace SugorokuClient.Scene
 							&& playerName.Text.Length != 0)
 						{
 							state = State.Load;
-							CommonData.PlayerName = playerName.Text;
-							CommonData.RoomName = roomName.Text;
+							Data.PlayerName = playerName.Text;
+							Data.RoomName = roomName.Text;
 						}
 						isWaitJoin = false;
 					}
@@ -174,15 +170,15 @@ namespace SugorokuClient.Scene
 							&& playerNum.Text.Length != 0)
 						{
 							state = State.Load;
-							CommonData.PlayerName = playerName.Text;
-							CommonData.RoomName = roomName.Text;
+							Data.PlayerName = playerName.Text;
+							Data.RoomName = roomName.Text;
 							var num = int.Parse(playerNum.Text);
 							if (num > 4 || num < 0)
 							{
 								num = 4;
 								playerNum.Text = num.ToString();
 							}
-							CommonData.PlayerNum = num;
+							Data.PlayerNum = num;
 							isWaitJoin = false;
 						}
 
@@ -200,7 +196,7 @@ namespace SugorokuClient.Scene
 					if (!isWaitJoin)
 					{
 						isWaitJoin = true;
-						Task.Run(()=>JoinMatch(CommonData.RoomName, CommonData.PlayerName));
+						Task.Run(()=>JoinMatch(Data.RoomName, Data.PlayerName));
 					}
 					if (!loadTexture.IsVisible())
 					{
@@ -213,8 +209,8 @@ namespace SugorokuClient.Scene
 					findRoomWindow.Update();
 					if (!findRoomWindow.isVisible)
 					{
-						CommonData.MatchInfo = findRoomWindow.GetSelectedMatch();
-						roomName.Text = CommonData.MatchInfo.MatchKey;
+						Data.MatchInfo = findRoomWindow.GetSelectedMatch();
+						roomName.Text = Data.MatchInfo.MatchKey;
 						state = State.FindRoom;
 					}
 					break;
@@ -315,7 +311,9 @@ namespace SugorokuClient.Scene
 			var (result, msg) = SocketManager.SendRecv(json);
 			if (result)
 			{
-				CommonData.Player = JsonConvert.DeserializeObject<Player>(msg);
+				Data.Player = JsonConvert.DeserializeObject<Player>(msg);
+				DX.putsDx(json);
+				DX.putsDx(msg);
 				state = State.ChangeGameScene;
 			}
 			else

@@ -58,7 +58,7 @@ namespace SugorokuClient.Util
 		{
 			if (!IsConnected)
 			{
-				if (!Reconnect()) return (false, string.Empty);
+				if (Reconnect()) return (false, string.Empty);
 			}
 			try
 			{
