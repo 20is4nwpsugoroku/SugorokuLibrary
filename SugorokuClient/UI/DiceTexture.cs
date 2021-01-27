@@ -47,7 +47,8 @@ namespace SugorokuClient.UI
 			}
 			else if (AnimationFrame == 0)
 			{
-				CurrentTexture = DiceTexturelist[Dice - 1];
+				if (Math.Abs(Dice) < 1 || Math.Abs(Dice) > 6) Dice = 6;
+				CurrentTexture = DiceTexturelist[Math.Abs(Dice) - 1];
 				AnimationFrame = -1;
 			}
 		}

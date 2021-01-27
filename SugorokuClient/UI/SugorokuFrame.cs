@@ -17,7 +17,7 @@ namespace SugorokuClient.UI
 		public bool IsProcessingEvent { get; private set; }
 		private List<Player> Playerlist { get; set; }
 		private Dictionary<int, Player> Players { get; set; }
-		private Dictionary<int, int> PlayerTextureHandle { get; set; }
+		public Dictionary<int, int> PlayerTextureHandle { get; private set; }
 		private Dictionary<int, AnimationTexture> PlayerAnimationTexture { get; set; }
 		private List<SquareState> SquareState { get; set; }
 
@@ -43,20 +43,15 @@ namespace SugorokuClient.UI
 			hyosyou = new Dictionary<int, (int, int)>();
 			kingTexture = TextureAsset.Register("king", "../../../images/king.png");
 			HyosyodaiTextureHandle = TextureAsset.Register("hyoushoudai", "../../../images/hyoushoudai.png");
-			BackgroundTextureHandle = TextureAsset.Register("GameBackgroundImage",
-				"../../../images/Map.png");
+			BackgroundTextureHandle = TextureAsset.Register("GameBackgroundImage", "../../../images/Map.png");
 			SquareList = new List<SugorokuSquareFrame>();
 			Playerlist = new List<Player>();
 			Players = new Dictionary<int, Player>();
 			PlayerTextureHandle = new Dictionary<int, int>();
-			PlayerTextureHandle.Add(-1, TextureAsset.Register("Player1",
-				"../../../images/koma_1.png"));
-			PlayerTextureHandle.Add(-2, TextureAsset.Register("Player2",
-				"../../../images/koma_2.png"));
-			PlayerTextureHandle.Add(-3, TextureAsset.Register("Player3",
-				"../../../images/koma_3.png"));
-			PlayerTextureHandle.Add(-4, TextureAsset.Register("Player4",
-				"../../../images/koma_4.png"));
+			PlayerTextureHandle.Add(-1, TextureAsset.Register("Player1", "../../../images/koma_1.png"));
+			PlayerTextureHandle.Add(-2, TextureAsset.Register("Player2", "../../../images/koma_2.png"));
+			PlayerTextureHandle.Add(-3, TextureAsset.Register("Player3", "../../../images/koma_3.png"));
+			PlayerTextureHandle.Add(-4, TextureAsset.Register("Player4", "../../../images/koma_4.png"));
 			PlayerAnimationTexture = new Dictionary<int, AnimationTexture>();
 			Fld = new Field();
 			for (var i = 0; i < Fld.Squares.Length; i++)
@@ -114,7 +109,6 @@ namespace SugorokuClient.UI
 			{
 				if (anime.Value.IsAnimationEndFrame())
 				{
-					// //DX.putsDx($"Event Message Generate {anime.Value.AnimationEndPos()} {SquareList[anime.Value.AnimationEndPos()].DescriptionMessage.Text}");
 					SquareList[anime.Value.AnimationEndPos()].MessageBoxStart();
 				}
 				anime.Value.Update();
@@ -135,7 +129,8 @@ namespace SugorokuClient.UI
 			}
 			if (isResult)
 			{
-				DX.DrawBox(170, 70, 170 + 940, 70 + 720, DX.GetColor(200, 200, 200), DX.TRUE);
+				DX.DrawBox(130, 70, 130 + 1020, 70 + 800, DX.GetColor(255, 255, 255), DX.TRUE);
+				DX.DrawBox(130, 70, 130 + 1020, 70 + 800, DX.GetColor(0, 103, 167), DX.FALSE);
 				TextureAsset.Draw(HyosyodaiTextureHandle, hyosyoudaiX, hyosyoudaiY, 920, 300, DX.TRUE);
 				foreach (var hyo in hyosyou)
 				{
@@ -148,8 +143,9 @@ namespace SugorokuClient.UI
 
 		public void DrawRanking(List<int> ranking)
 		{
-			for(int i = 0; i < ranking.Count; i++)
+			for (int i = 0; i < ranking.Count; i++)
 			{
+				if (hyosyou.ContainsKey(ranking[i])) continue;
 				hyosyou.Add(ranking[i], hyosyoudaiPos[i]);
 			}
 			isResult = true;
@@ -158,17 +154,13 @@ namespace SugorokuClient.UI
 
 		public void ProcessEvent(SugorokuEvent sugorokuEvent)
 		{
-			//// //DX.putsDx($"Dice:{sugorokuEvent.Dice}, StartPos:{sugorokuEvent.EventStartPos}, EndPos:{sugorokuEvent.EventEndPos}");
 			IsProcessingEvent = true;
 			bool temp = false;
 			int nowPosition = 0;
 			for (var i = 0; i < SquareState.Count; i++)
 			{
 				temp = SquareState[i].PlayerExists[sugorokuEvent.PlayerId];
-				if (temp)
-				{
-					nowPosition = i;
-				}
+				if (!temp) nowPosition = i;
 			}
 			SquareState[nowPosition].ExistsControl(sugorokuEvent.PlayerId, false);
 			SquareState[sugorokuEvent.EventStartPos].ExistsControl(sugorokuEvent.PlayerId, true);
@@ -176,7 +168,6 @@ namespace SugorokuClient.UI
 			var movedPosList = SquareState[sugorokuEvent.EventStartPos].GetPlayerIdAndPos(pos.Item1, pos.Item2);
 			foreach (var movedPos in movedPosList)
 			{
-				// //DX.putsDx($"Id:{movedPos.Item1}, X:{movedPos.Item2}, Y:{movedPos.Item3}");
 				PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, sugorokuEvent.EventStartPos);
 				PlayerAnimationTexture[movedPos.Item1].Start();
 			}
@@ -191,11 +182,6 @@ namespace SugorokuClient.UI
 				{
 					PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, 0);
 				}
-			}
-
-			foreach (var movedPos in movedPosList)
-			{
-				PlayerAnimationTexture[movedPos.Item1].Start();
 			}
 			IsProcessingEvent = false;
 		}

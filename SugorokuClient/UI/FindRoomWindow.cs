@@ -15,84 +15,81 @@ namespace SugorokuClient.UI
 {
 	public class FindRoomWindow
 	{
-		private int x;
-		private int y;
-		private int width;
-		private int height;
-		private int listButtonHeight { get; set; } = 50;
-		public bool isVisible = false;
-		private bool isHaveInfo = false;
-		private bool isReloading = false;
-
-		public bool isSelectedInfo { get; private set; } = false;
-
+		private int X { get; set; }
+		private int Y { get; set; }
+		private int Width { get; set; }
+		private int Height { get; set; }
+		private int ListButtonHeight { get; set; }
+		private bool IsHaveInfo { get; set; }
+		private bool IsReloading { get; set; }
+		public bool IsSelectedInfo { get; private set; }
+		public bool IsVisible { get; set; }
+		private uint WindowBaseColor { get; set; }
+		private uint WindowFrameColor { get; set; }
+		private uint TextColor { get; set; }
+		private int TextFont { get; set; }
+		private int ListButtonTexture { get; set; }
+		private int ReloadButtonTexture { get; set; }
+		private int CloseButtonTexture { get; set; }
+		private Dictionary<string, MatchInfo> Matches { get; set; }
+		private List<TextureButton> MatchesListButtons { get; set; }
+		private TextureButton ReloadButton { get; set; }
+		private TextureButton CloseButton { get; set; }
 		private MatchInfo SelectedMatch { get; set; }
 
-
-		private uint windowBaseColor = DX.GetColor(240, 240, 240);
-		private uint windowFrameColor = DX.GetColor(125, 125, 125);
-		private uint textColor = DX.GetColor(50, 50, 50);
-		private int textFont;
-
-		private int listButtonTexture = -1;
-		private int reloadButtonTexture = -1;
-		private int closeButtonTexture = -1;
-		private string listButtonPath = "../../../images/FindRoomListButton.png";
-		private string reloadButtonPath = "../../../images/Reload.png";
-		private string closeButtonPath = "../../../images/Close.png";
-
-		private Dictionary<string, MatchInfo> matches { get; set; }
-		private List<TextureButton> matchesListButtons { get; set; }
-		private TextureButton reloadButton { get; set; }
-		private TextureButton closeButton { get; set; }
 
 
 		private FindRoomWindow()
 		{
-			isVisible = false;
-			isHaveInfo = false;
-			isReloading = false;
-			listButtonTexture = TextureAsset.Register("FindRoomWindowList", listButtonPath);
-			reloadButtonTexture = TextureAsset.Register("FindRoomWindowReload", reloadButtonPath);
-			closeButtonTexture = TextureAsset.Register("FindRoomWindowClose", closeButtonPath);
+			IsVisible = false;
+			IsHaveInfo = false;
+			IsReloading = false;
+			IsSelectedInfo = false;
+			ListButtonHeight = 50;
+			WindowBaseColor = DX.GetColor(240, 240, 240);
+			WindowFrameColor = DX.GetColor(125, 125, 125);
+			TextColor = DX.GetColor(50, 50, 50);
+			ListButtonTexture = TextureAsset.Register("FindRoomWindowList", "../../../images/FindRoomListButton.png");
+			ReloadButtonTexture = TextureAsset.Register("FindRoomWindowReload", "../../../images/Reload.png");
+			CloseButtonTexture = TextureAsset.Register("FindRoomWindowClose", "../../../images/Close.png");
 		}
 
 
 		public FindRoomWindow(int x, int y, int width, int height) : this()
 		{
-			this.x = x;
-			this.y = y;
-			this.width = (width > 130) ? width : 115;
-			this.height = (height > 110) ? height : 110;
-			reloadButton = new TextureButton(reloadButtonTexture, x + width - 110, y + 5, 50, 50);
-			closeButton = new TextureButton(closeButtonTexture, x + width - 55, y + 5, 50, 50);
-			textFont = FontAsset.Register("FindRoomWindowFont", size: 40);
-			matchesListButtons = new List<TextureButton>();
+			X = x;
+			Y = y;
+			Width = (width > 130) ? width : 115;
+			Height = (height > 110) ? height : 110;
+			ReloadButton = new TextureButton(ReloadButtonTexture, x + width - 110, y + 5, 50, 50);
+			CloseButton = new TextureButton(CloseButtonTexture, x + width - 55, y + 5, 50, 50);
+			TextFont = FontAsset.Register("FindRoomWindowFont", size: 40);
+			MatchesListButtons = new List<TextureButton>();
 			Task.Run(() => Reload());
 		}
 
 
 		public void Update()
 		{
-			if (!isVisible) return;
-			if (reloadButton.LeftClicked() && !isReloading)
+			if (!IsVisible) return;
+			if (ReloadButton.LeftClicked() && !IsReloading)
 			{
 				Task.Run(()=>Reload());
 			}
-			if (closeButton.LeftClicked())
+			if (CloseButton.LeftClicked())
 			{
-				isVisible = false;
-				isSelectedInfo = false;
+				IsVisible = false;
+				IsSelectedInfo = false;
 				return;
 			}
-			if (isReloading) return;
-			foreach (var button in matchesListButtons)
+			if (IsReloading) return;
+			foreach (var button in MatchesListButtons)
 			{
 				if (button.LeftClicked())
 				{
-					SelectedMatch = matches[button.Text];
-					isVisible = false;
-					isSelectedInfo = true;
+					SelectedMatch = Matches[button.Text];
+					IsVisible = false;
+					IsSelectedInfo = true;
 					break;
 				}
 			}
@@ -101,28 +98,28 @@ namespace SugorokuClient.UI
 
 		public void Draw()
 		{
-			if (!isVisible) return;
-			DX.DrawBox(x-1, y-1, x + width + 1, y + height + 1, windowBaseColor, DX.TRUE);
-			DX.DrawBox(x-1, y-1, x + width + 1, y + height + 1, windowFrameColor, DX.FALSE);
-			reloadButton.Draw();
-			closeButton.Draw();
-			if (!isHaveInfo)
+			if (!IsVisible) return;
+			DX.DrawBox(X-1, Y-1, X + Width + 1, Y + Height + 1, WindowBaseColor, DX.TRUE);
+			DX.DrawBox(X-1, Y-1, X + Width + 1, Y + Height + 1, WindowFrameColor, DX.FALSE);
+			ReloadButton.Draw();
+			CloseButton.Draw();
+			if (!IsHaveInfo)
 			{
-				//FontAsset.Draw(textFont, "Error",
-				//	x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error") / 2,
-				//	y + 60, DX.GetColor(200, 0, 0)
-				//	);
+				FontAsset.Draw(TextFont, "Please Reload",
+					X + Width / 2 - FontAsset.GetDrawTextWidth(TextFont, "Please Reload") / 2,
+					Y + 60, TextColor
+					);
 			}
-			else if (isReloading)
+			else if (IsReloading)
 			{
-				FontAsset.Draw(textFont, "Loading...",
-					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Loading") / 2,
-					y + 60, textColor
+				FontAsset.Draw(TextFont, "Loading...",
+					X + Width / 2 - FontAsset.GetDrawTextWidth(TextFont, "Loading...") / 2,
+					Y + 60, TextColor
 					);
 			}
 			else
 			{
-				foreach (var button in matchesListButtons)
+				foreach (var button in MatchesListButtons)
 				{
 					button.Draw();
 					button.DrawText();
@@ -139,7 +136,7 @@ namespace SugorokuClient.UI
 			var (result, msg) = SocketManager.SendRecv(jsonMsg);
 			if (result)
 			{
-				matches = JsonConvert.DeserializeObject<Dictionary<string, MatchInfo>>(msg);
+				Matches = JsonConvert.DeserializeObject<Dictionary<string, MatchInfo>>(msg);
 			}
 			return result;
 		}
@@ -147,34 +144,33 @@ namespace SugorokuClient.UI
 
 		private void Reload()
 		{
-			isReloading = true;
-			isHaveInfo = GetAllMatchInfo();
-			matchesListButtons.Clear();
-			if (!isHaveInfo)
+			IsReloading = true;
+			IsHaveInfo = GetAllMatchInfo();
+			MatchesListButtons.Clear();
+			if (!IsHaveInfo)
 			{
-				isReloading = false;
+				IsReloading = false;
 				return;
 			}
 			var matchNum = 0;
-			foreach(var match in matches)
+			foreach(var match in Matches)
 			{
 				matchNum++;
-				var listButtonPosY = matchNum * listButtonHeight + 50 + y;
-				if (listButtonPosY + listButtonHeight > height) break;
+				var listButtonPosY = matchNum * ListButtonHeight + 50 + Y;
+				if (listButtonPosY + ListButtonHeight > Height) break;
 
-				matchesListButtons.Add(
-					new TextureButton(listButtonTexture, x, listButtonPosY, width, listButtonHeight,
-					match.Key, textColor, textFont)
+				MatchesListButtons.Add(
+					new TextureButton(ListButtonTexture, X, listButtonPosY, Width, ListButtonHeight,
+					match.Key, TextColor, TextFont)
 				);
-				// // // // // //DX.putsDx(match.Key);
 			}
-			isReloading = false;
+			IsReloading = false;
 		}
 
 
 		public MatchInfo GetSelectedMatch()
 		{
-			if (isSelectedInfo)
+			if (IsSelectedInfo)
 			{
 				return SelectedMatch;
 			}
@@ -183,7 +179,5 @@ namespace SugorokuClient.UI
 				return  new MatchInfo();
 			}
 		}
-
 	}
-
 }

@@ -1,30 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Net;
+﻿using DxLibDLL;
 using Newtonsoft.Json;
-using DxLibDLL;
 using SugorokuClient.UI;
 using SugorokuClient.Util;
 using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
-using SugorokuLibrary.Protocol;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+
 
 namespace SugorokuClient.Scene
 {
 	public class Title : IScene
 	{
-		private int LogoImageHandle;
-		private const int LogoImageHeight = 300;
-		private const int LogoImageWidth = 300;
-		private const int LogoImageX = 490;
-		private const int LogoImageY = 90;
-
-		
-
-
 		private TextureButton startButton { get; set; }
 		private TextureButton endButton { get; set; }
 		private TextureButton backButton { get; set; }
@@ -33,21 +21,18 @@ namespace SugorokuClient.Scene
 		private TextureButton joinRoomButton { get; set; }
 		private TextureButton findRoomButton { get; set; }
 		private TextureButton saveIpAddress { get; set; }
-
-
 		private TextBox roomName { get; set; }
 		private TextBox playerName { get; set; }
 		private TextBox playerNum { get; set; }
 		private TextBox ipAddress { get; set; }
 		private TextBox portNumber { get; set; }
-
 		private FindRoomWindow findRoomWindow { get; set; }
-
 		private TextureFade loadTexture { get; set; }
-
 		private Random rand { get; set; }
 		private bool isWaitJoin { get; set; }
+		private int LogoImageHandle { get; set; }
 		private static CommonData Data { get; set; }
+		private State state { get; set; }
 
 
 		enum State
@@ -61,13 +46,11 @@ namespace SugorokuClient.Scene
 			ChangeGameScene
 		}
 
-		private State state;
-
 
 		public Title()
 		{
-
 		}
+
 
 		/// <summary>
 		/// シーンの初期化処理
@@ -104,9 +87,12 @@ namespace SugorokuClient.Scene
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
 			loadTexture = new TextureFade(TextureAsset.Register("LoadImage", "../../../images/TitleLoad.png"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
-			//SocketManager.Connect(Data.Address, Data.Port);
-			//SocketManager.SetAddress(Data.Address, Data.Port);
 			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
+			DX.SetKeyInputStringColor(DX.GetColor(50, 50, 50), DX.GetColor(50, 50, 50), DX.GetColor(255, 255, 255),
+				DX.GetColor(50, 50, 50), DX.GetColor(50, 50, 50), DX.GetColor(0, 55, 255),
+				DX.GetColor(50, 50, 50), DX.GetColor(50, 50, 50), DX.GetColor(50, 50, 50),
+				DX.GetColor(50, 50, 50), DX.GetColor(50, 50, 50), DX.GetColor(0, 55, 255),
+				DX.GetColor(0, 55, 255), DX.GetColor(0, 55, 255), DX.GetColor(0, 55, 255));
 		}
 
 
@@ -174,7 +160,7 @@ namespace SugorokuClient.Scene
 					if (findRoomButton.LeftClicked())
 					{
 						state = State.Popup;
-						findRoomWindow.isVisible = true;
+						findRoomWindow.IsVisible = true;
 					}
 					roomName.Update();
 					playerName.Update();
@@ -229,7 +215,7 @@ namespace SugorokuClient.Scene
 
 				case State.Popup:
 					findRoomWindow.Update();
-					if (!findRoomWindow.isVisible)
+					if (!findRoomWindow.IsVisible)
 					{
 						Data.MatchInfo = findRoomWindow.GetSelectedMatch();
 						roomName.Text = Data.MatchInfo.MatchKey;
@@ -256,7 +242,7 @@ namespace SugorokuClient.Scene
 		/// </summary>
 		public void Draw()
 		{
-			TextureAsset.Draw(LogoImageHandle, LogoImageX, LogoImageY, LogoImageWidth, LogoImageHeight, DX.TRUE);
+			TextureAsset.Draw(LogoImageHandle, 490, 90, 300, 300, DX.TRUE);
 			ipAddress.Draw();
 			portNumber.Draw();
 			saveIpAddress.Draw();
@@ -311,7 +297,7 @@ namespace SugorokuClient.Scene
 					break;
 
 				case State.Popup:
-					if (findRoomWindow.isVisible)
+					if (findRoomWindow.IsVisible)
 					{
 						findRoomWindow.Draw();
 					}
@@ -346,8 +332,6 @@ namespace SugorokuClient.Scene
 			if (result)
 			{
 				Data.Player = JsonConvert.DeserializeObject<Player>(msg);
-				// // //DX.putsDx(json);
-				// // //DX.putsDx(msg);
 				state = State.ChangeGameScene;
 			}
 			else

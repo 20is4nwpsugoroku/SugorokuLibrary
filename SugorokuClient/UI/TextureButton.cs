@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DxLibDLL;
 using SugorokuClient.UI.Interfaces;
 using SugorokuClient.Util;
-using DxLibDLL;
 
 namespace SugorokuClient.UI
 {
@@ -95,7 +92,7 @@ namespace SugorokuClient.UI
 
 		#region あたり判定用
 
-		private bool isRect { get; set; } = true;
+		private bool IsRect { get; set; } = true;
 
 		private DX.VECTOR v1; // 1-2のベクトル
 		private DX.VECTOR v2; // 2-3のベクトル
@@ -126,7 +123,7 @@ namespace SugorokuClient.UI
 		private TextureButton(int textureHandle)
 		{
 			TextureHandle = textureHandle;
-			isRect = true;
+			IsRect = true;
 		}
 
 
@@ -220,7 +217,7 @@ namespace SugorokuClient.UI
 			this.x4 = x4;
 			this.y4 = y4;
 			SetVector(x1, y1, x2, y2, x3, y3, x4, y4);
-			isRect = (x1 - x4) == 0 
+			IsRect = (x1 - x4) == 0 
 				&& (x2 - x3) == 0
 				&& (y1 - y2) == 0
 				&& (y4 - y3) == 0;
@@ -234,7 +231,7 @@ namespace SugorokuClient.UI
 		public bool MouseOver()
 		{
 			var pos = InputManager.GetMousePos();
-			if (isRect)
+			if (IsRect)
 			{
 				return (pos.Item1 >= x1 && pos.Item1 <= x3
 					&& pos.Item2 >= y1 && pos.Item2 <= y3);

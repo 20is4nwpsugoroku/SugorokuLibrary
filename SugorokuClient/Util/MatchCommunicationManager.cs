@@ -63,7 +63,7 @@ namespace SugorokuClient.Util
 				r = info.Players.Count >= playerNum;
 			}
 			//r = info.Players.Count >= playerNum;
-			// // //DX.putsDx("canstartMatch:" + r.ToString());
+			// // ////DX.putsDx("canstartMatch:" + r.ToString());
 			return r;
 		}
 
@@ -82,16 +82,16 @@ namespace SugorokuClient.Util
 			while (!r)
 			{
 				
-				// // //DX.putsDx(sendJson);
-				// // //DX.putsDx("///////Close Result/////////////");
-				// // //DX.putsDx(recvJson);
-				// // //DX.putsDx("///////Close Result/////////////");
+				// // ////DX.putsDx(sendJson);
+				// // ////DX.putsDx("///////Close Result/////////////");
+				// // ////DX.putsDx(recvJson);
+				// // ////DX.putsDx("///////Close Result/////////////");
 				sendJson = JsonConvert.SerializeObject(sendMsg);
 				(r, recvJson) = SocketManager.SendRecv(sendJson);
 
 			}
-			// // //DX.putsDx("close match");
-			// // //DX.putsDx("***********Closed************");
+			// // ////DX.putsDx("close match");
+			// // ////DX.putsDx("***********Closed************");
 
 		}
 
@@ -107,8 +107,8 @@ namespace SugorokuClient.Util
 			var sendMsg = new GetMatchInfoMessage(matchKey);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			// // //DX.putsDx(r.ToString() + sendJson);
-			// // //DX.putsDx(r.ToString() + recvJson);
+			// // ////DX.putsDx(r.ToString() + sendJson);
+			// // ////DX.putsDx(r.ToString() + recvJson);
 			return (r)
 				? (true, JsonConvert.DeserializeObject<MatchInfo>(recvJson))
 				: (false, new MatchInfo());
@@ -126,8 +126,8 @@ namespace SugorokuClient.Util
 			var sendMsg = new GetMatchInfoMessage(matchKey);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			// // //DX.putsDx(sendJson);
-			////DX.putsDx(recvJson);
+			// // ////DX.putsDx(sendJson);
+			//////DX.putsDx(recvJson);
 			return (r)
 				? (true, recvJson)
 				: (false, "");
@@ -139,8 +139,8 @@ namespace SugorokuClient.Util
 		//	var sendMsg = new GetStartedMatchMessage(matchKey);
 		//	var sendJson = JsonConvert.SerializeObject(sendMsg);
 		//	var (r, recvJson) = SocketManager.SendRecv(sendJson);
-		//	// // //DX.putsDx(sendJson);
-		//	// // //DX.putsDx(recvJson);
+		//	// // ////DX.putsDx(sendJson);
+		//	// // ////DX.putsDx(recvJson);
 		//	return (r)
 		//		? (r, JsonConvert.DeserializeObject<MatchCore>(recvJson))
 		//		: (r, null);
@@ -156,8 +156,8 @@ namespace SugorokuClient.Util
 		{
 			var sendJson = JsonConvert.SerializeObject(new GetStartedMatchMessage(matchKey));
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			// // //DX.putsDx(sendJson);
-			////DX.putsDx(recvJson);
+			// // ////DX.putsDx(sendJson);
+			//////DX.putsDx(recvJson);
 			return (r)
 				? (r, JsonConvert.DeserializeObject<MatchInfo>(recvJson))
 				: (r, null);
@@ -173,8 +173,8 @@ namespace SugorokuClient.Util
 		{
 			var sendJson = JsonConvert.SerializeObject(new GetStartedMatchMessage(matchKey));
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			// // //DX.putsDx(sendJson);
-			////DX.putsDx(recvJson);
+			// // ////DX.putsDx(sendJson);
+			//////DX.putsDx(recvJson);
 			return (r)
 				? (r, recvJson)
 				: (r, "");
@@ -193,26 +193,26 @@ namespace SugorokuClient.Util
 			var sendMsg = new DiceMessage(matchKey, playerId);
 			var sendJson = JsonConvert.SerializeObject(sendMsg);
 			var (r, recvJson) = SocketManager.SendRecv(sendJson);
-			// // //DX.putsDx(sendJson);
-			// // //DX.putsDx(recvJson);
+			// // ////DX.putsDx(sendJson);
+			// // ////DX.putsDx(recvJson);
 			while (!r)
 			{
-				// // //DX.putsDx("///////Close Result/////////////");
-				// // //DX.putsDx(sendJson);
-				// // //DX.putsDx(recvJson);
-				// // //DX.putsDx("---------------------");
+				// // ////DX.putsDx("///////Close Result/////////////");
+				// // ////DX.putsDx(sendJson);
+				// // ////DX.putsDx(recvJson);
+				// // ////DX.putsDx("---------------------");
 				sendJson = JsonConvert.SerializeObject(sendMsg);
 				(r, recvJson) = SocketManager.SendRecv(sendJson);
 
 			}
-			// // //DX.putsDx("fice Start");
-			// // //DX.putsDx("***********Dice************");
+			// // ////DX.putsDx("fice Start");
+			// // ////DX.putsDx("***********Dice************");
 
 
 			if (!r && recvJson == string.Empty) return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
 			var tempMsg = JsonConvert.DeserializeObject<ServerMessage>(recvJson);
-			// // //DX.putsDx("Start Throw Dice");
-			// // //DX.putsDx(recvJson);
+			// // ////DX.putsDx("Start Throw Dice");
+			// // ////DX.putsDx(recvJson);
 			switch (tempMsg.MethodType)
 			{
 				case "diceResult":
@@ -260,30 +260,30 @@ namespace SugorokuClient.Util
 		{
 			//DX.putsDx("Start Reverse Event");
 			var eventList = new List<SugorokuEvent>();
-			var alreadyReversePlayer = new List<int>();
 
 			for (var i = 0; i < prev.Players.Count; i++)
 			{
 				int actionPlayer, nowPos, prevPos, dice;
 				//DX.putsDx($"Reverse {prev.Players[i].PlayerID}");
-				if (prev.Players[i].PlayerID == myPlayerID) continue;
-
-				for (var j = 0; j < now.Players.Count; j++)
+				if (prev.Players[i].PlayerID != myPlayerID)
 				{
-					if (now.Players[j].PlayerID == prev.Players[i].PlayerID
-								&& now.Players[j].Position != prev.Players[i].Position)
+					for (var j = 0; j < now.Players.Count; j++)
 					{
-						actionPlayer = prev.Players[i].PlayerID;
-						//if (alreadyReversePlayer.Contains(actionPlayer)) continue;
-						nowPos = now.Players[j].Position;
-						prevPos = prev.Players[i].Position;
-						dice = nowPos - prevPos;
-						//alreadyReversePlayer.Add(actionPlayer);
-						var eve = new SugorokuEvent(prevPos, nowPos, actionPlayer, dice);
-						eventList.Add(eve);
-						//DX.putsDx(JsonConvert.SerializeObject(eve));
-						//DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
-						break;
+						if (now.Players[j].PlayerID == prev.Players[i].PlayerID
+									&& now.Players[j].Position != prev.Players[i].Position)
+						{
+							actionPlayer = prev.Players[i].PlayerID;
+							//if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+							nowPos = now.Players[j].Position;
+							prevPos = prev.Players[i].Position;
+							dice = nowPos - prevPos;
+							//alreadyReversePlayer.Add(actionPlayer);
+							var eve = new SugorokuEvent(prevPos, nowPos, actionPlayer, dice);
+							eventList.Add(eve);
+							//DX.putsDx(JsonConvert.SerializeObject(eve));
+							//DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
+							break;
+						}
 					}
 				}
 			}

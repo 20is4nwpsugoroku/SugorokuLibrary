@@ -66,7 +66,11 @@ namespace SugorokuClient.Scene
 			{
 				if (i.Value)
 				{
-					var pos = posList.Dequeue();
+					var pos = (centerX, centerY);
+					if (posList.Count != 0)
+					{
+						pos = posList.Dequeue();
+					}
 					list.Add((i.Key, pos.Item1, pos.Item2));
 				}
 			}

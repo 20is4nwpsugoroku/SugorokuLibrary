@@ -114,9 +114,9 @@ namespace SugorokuClient.Util
 			try
 			{
 				var withHeader = HeaderProtocol.MakeHeader(body, true);
-				////DX.putsDx(withHeader);
+				//////DX.putsDx(withHeader);
 				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-				////DX.putsDx(recvMsg);
+				//////DX.putsDx(recvMsg);
 				socket.Close();
 				return (r, recvMsg);
 			}
