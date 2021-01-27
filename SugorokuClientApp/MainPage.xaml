@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SugorokuClientApp.MainPage" NavigationPage.HasNavigationBar="false">
+
+    <StackLayout VerticalOptions="CenterAndExpand">
+        <Image x:Name="LogoImage" HeightRequest="150" />
+        <Entry x:Name="ServerIpAddress" Placeholder="サーバーのIPアドレス" />
+        <Entry x:Name="ServerPort" Placeholder="サーバーのポート番号" />
+        <Entry x:Name="PlayerNameEditor" Placeholder="プレイヤーの名前" />
+        <Entry x:Name="RoomNameEditor" Placeholder="部屋名" />
+        <ImageButton x:Name="StartButton" Clicked="OnStartButtonClicked" Aspect="AspectFit"
+                     VerticalOptions="CenterAndExpand" BackgroundColor="White"
+                     WidthRequest="240" HeightRequest="70" />
+    </StackLayout>
+
+</ContentPage>
