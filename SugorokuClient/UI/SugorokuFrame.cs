@@ -122,10 +122,10 @@ namespace SugorokuClient.UI
 
 		public void ProcessEvent(SugorokuEvent sugorokuEvent)
 		{
-			DX.putsDx($"Dice:{sugorokuEvent.Dice}, StartPos:{sugorokuEvent.EventStartPos}, EndPos:{sugorokuEvent.EventEndPos}");
+			//DX.putsDx($"Dice:{sugorokuEvent.Dice}, StartPos:{sugorokuEvent.EventStartPos}, EndPos:{sugorokuEvent.EventEndPos}");
 			IsProcessingEvent = true;
 			bool temp = false;
-			int nowPosition = 0; ;
+			int nowPosition = 0;
 			for (var i = 0; i < SquareState.Count; i++)
 			{
 				temp = SquareState[i].PlayerExists[sugorokuEvent.PlayerId];
@@ -141,7 +141,7 @@ namespace SugorokuClient.UI
 			foreach (var movedPos in movedPosList)
 			{
 				DX.putsDx($"Id:{movedPos.Item1}, X:{movedPos.Item2}, Y:{movedPos.Item3}");
-				PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, sugorokuEvent.EventStartPos);
+				PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 30, sugorokuEvent.EventStartPos);
 				PlayerAnimationTexture[movedPos.Item1].Start();
 			}
 
@@ -154,8 +154,12 @@ namespace SugorokuClient.UI
 				foreach (var movedPos in movedPosList)
 				{
 					PlayerAnimationTexture[movedPos.Item1].AddChangePosition(movedPos.Item2, movedPos.Item3, 60, 0);
-					//PlayerAnimationTexture[movedPos.Item1].Start();
 				}
+			}
+
+			foreach (var movedPos in movedPosList)
+			{
+				PlayerAnimationTexture[movedPos.Item1].Start();
 			}
 			IsProcessingEvent = false;
 		}

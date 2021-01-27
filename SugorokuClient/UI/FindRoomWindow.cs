@@ -132,7 +132,7 @@ namespace SugorokuClient.UI
 
 
 
-		private bool GetMatchInfo()
+		private bool GetAllMatchInfo()
 		{
 			var getAll = new GetAllMatchesMessage();
 			var jsonMsg = JsonConvert.SerializeObject(getAll);
@@ -141,7 +141,6 @@ namespace SugorokuClient.UI
 			{
 				matches = JsonConvert.DeserializeObject<Dictionary<string, MatchInfo>>(msg);
 			}
-			isHaveInfo = result;
 			return result;
 		}
 
@@ -149,9 +148,13 @@ namespace SugorokuClient.UI
 		private void Reload()
 		{
 			isReloading = true;
-			GetMatchInfo();
+			isHaveInfo = GetAllMatchInfo();
 			matchesListButtons.Clear();
-			if (!isHaveInfo) return;
+			if (!isHaveInfo)
+			{
+				isReloading = false;
+				return;
+			}
 			var matchNum = 0;
 			foreach(var match in matches)
 			{
@@ -163,6 +166,7 @@ namespace SugorokuClient.UI
 					new TextureButton(listButtonTexture, x, listButtonPosY, width, listButtonHeight,
 					match.Key, textColor, textFont)
 				);
+				DX.putsDx(match.Key);
 			}
 			isReloading = false;
 		}

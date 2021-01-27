@@ -149,7 +149,16 @@ namespace SugorokuClient.Util
 		/// <param name="transFlag">画像の透明度を有効にするかどうか</param>
 		public static void DrawModi(int textureHandle, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int transFlag)
 		{
-			DX.DrawModiGraph(x1, y1, x2, y2, x3, y3, x4, y4, textureHandle, transFlag);
+			try
+			{
+				DX.DrawModiGraph(x1, y1, x2, y2, x3, y3, x4, y4, textureHandle, transFlag);
+			}
+			catch(AccessViolationException e)
+			{
+				Console.Error.WriteLine("Draw Error:" + e);
+				var handle = Register("ErrorImage", "");
+				DX.DrawModiGraph(x1, y1, x2, y2, x3, y3, x4, y4, handle, transFlag);
+			}
 		}
 
 

@@ -39,7 +39,7 @@ namespace SugorokuClient.Scene
 			CurrentScene = null;
 			Scenes = new Dictionary<SceneName, IScene>();
 			Scenes.Clear();
-			FpsAdjuster = new FPSAdjuster(30);
+			FpsAdjuster = new FPSAdjuster(60);
 			Data = new CommonData();
 		}
 

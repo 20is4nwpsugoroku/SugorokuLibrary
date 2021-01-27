@@ -223,5 +223,16 @@ namespace SugorokuClient.Util
 					return (ReflectionStatus.NotYourTurn, -1, -1, -1, ranking);
 			}
 		}
+
+
+		public (bool, IEnumerable<int>) GetRanking(string matchKey)
+		{
+			var sendMsg = new GetRankingMessage(matchKey);
+			var sendJson = JsonConvert.SerializeObject(sendMsg);
+			var (r, recvJson) = SocketManager.SendRecv(sendJson);
+			return (r)
+				? (r, JsonConvert.DeserializeObject<RankingMessage>(recvJson).Ranking)
+				: (r, new List<int>());
+		}
 	}
 }

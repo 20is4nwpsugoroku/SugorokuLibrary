@@ -55,7 +55,7 @@ namespace SugorokuClient.Scene
 
 		public void Init(CommonData data)
 		{
-			UIFontTexture = FontAsset.Register("GameSceneUI", size: 16);
+			UIFontTexture = FontAsset.Register("GameSceneUI", size: 80);
 			DX.SetBackgroundColor(255, 255, 255);
 			var handle = TextureAsset.Register("Dice1",
 				"../../../images/saikoro_1.png");
@@ -126,11 +126,8 @@ namespace SugorokuClient.Scene
 			}
 
 			DiceTexture.Update();
-			
-
 			SugorokuFrame.Update();
-			MessageText = $"EventNum:{PlayerEvents.Count}\n" + $"MyActionTurn:{MyActionTurn.Count}\n"
-				+ (state) switch
+			MessageText = (state) switch
 			{
 				State.WaitMatchStart => "試合の開始を待っています",
 				State.WaitOtherPlayer => "他のプレイヤーの行動を待っています",
@@ -274,17 +271,31 @@ namespace SugorokuClient.Scene
 			{
 				//if (match.Turn == data.MatchInfo.Turn) return;
 				var eventList = ReverseEvent(data.MatchInfo, match, Data.Player.PlayerID);
-				foreach (var playerEvent in eventList)
+				for (var i = 0; i < eventList.Count; i++)
 				{
-					PlayerEvents.Enqueue(playerEvent);
+					PlayerEvents.Enqueue(eventList[i]);
 				}
 				data.MatchInfo = match;
 			}
 			isProcessingPlayingEvent = false;
 
-			//if (state == State.Goal || state == State.Error)
-			//{
-			//}
+			foreach (var player in data.MatchInfo.Players)
+			{
+				if (player.Position == 30)
+				{
+					IsGoal = true;
+					break;
+				}
+			}
+
+			if (state == State.Goal || state == State.Error || IsGoal)
+			{
+				PlayingEventTimer.Stop();
+				var (_, _, _, _, rank) = data.MatchManager.ThrowDice();
+				Ranking = new List<int>(rank);
+				PlayingEventTimer.Enabled = false;
+				PlayingEventTimer.Dispose();
+			}
 		}
 
 
@@ -387,37 +398,62 @@ namespace SugorokuClient.Scene
 		//}
 
 
-		private static IEnumerable<SugorokuEvent> ReverseEvent(MatchInfo prev, MatchInfo now, int myPlayerID)
+		private static List<SugorokuEvent> ReverseEvent(MatchInfo prev, MatchInfo now, int myPlayerID)
 		{
 			DX.putsDx("Start Reverse Event");
 			var eventList = new List<SugorokuEvent>();
 			var alreadyReversePlayer = new List<int>();
-			if (now.Turn == prev.Turn) return eventList;
-			for (var i = prev.Turn; i < now.Turn; i++)
+
+			for (var i = 0; i < prev.Players.Count; i++)
 			{
 				int actionPlayer, nowPos, prevPos, dice;
-				if (MyActionTurn.Contains(i)) continue;
-				for (int j = 0; j < prev.Players.Count; j++)
+				DX.putsDx($"Reverse {prev.Players[i].PlayerID}");
+				if (prev.Players[i].PlayerID == myPlayerID) continue;
+
+				for (var j = 0; j < now.Players.Count; j++)
 				{
-					if (myPlayerID == prev.Players[i].PlayerID) continue;
-					for (int k = 0; k < now.Players.Count; k++)
+					if (now.Players[j].PlayerID == prev.Players[i].PlayerID
+								&& now.Players[j].Position != prev.Players[i].Position)
 					{
-						if (myPlayerID == now.Players[i].PlayerID) continue;
-						if (now.Players[i].PlayerID == prev.Players[i].PlayerID
-							&& now.Players[i].Position != prev.Players[i].Position)
-						{
-							actionPlayer = prev.Players[i].PlayerID;
-							if (alreadyReversePlayer.Contains(actionPlayer)) continue;
-							nowPos = now.Players[actionPlayer].Position;
-							prevPos = prev.Players[actionPlayer].Position;
-							dice = nowPos - prevPos;
-							alreadyReversePlayer.Add(actionPlayer);
-							eventList.Add(new SugorokuEvent(nowPos, nowPos, actionPlayer, dice));
-							break;
-						}
+						actionPlayer = prev.Players[i].PlayerID;
+						if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+						nowPos = now.Players[actionPlayer].Position;
+						prevPos = prev.Players[actionPlayer].Position;
+						dice = nowPos - prevPos;
+						alreadyReversePlayer.Add(actionPlayer);
+						eventList.Add(new SugorokuEvent(prevPos, nowPos, actionPlayer, dice));
+						DX.putsDx(JsonConvert.SerializeObject(eventList[^1]));
+						DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
 					}
 				}
 			}
+
+
+			//for (var i = prev.Turn; i < now.Turn; i++)
+			//{
+			//	int actionPlayer, nowPos, prevPos, dice;
+			//	if (MyActionTurn.Contains(i)) continue;
+			//	for (int j = 0; j < prev.Players.Count; j++)
+			//	{
+			//		if (myPlayerID == prev.Players[i].PlayerID) continue;
+			//		for (int k = 0; k < now.Players.Count; k++)
+			//		{
+			//			if (myPlayerID == now.Players[i].PlayerID) continue;
+			//			if (now.Players[i].PlayerID == prev.Players[i].PlayerID
+			//				&& now.Players[i].Position != prev.Players[i].Position)
+			//			{
+			//				actionPlayer = prev.Players[i].PlayerID;
+			//				if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+			//				nowPos = now.Players[actionPlayer].Position;
+			//				prevPos = prev.Players[actionPlayer].Position;
+			//				dice = nowPos - prevPos;
+			//				alreadyReversePlayer.Add(actionPlayer);
+			//				eventList.Add(new SugorokuEvent(nowPos, nowPos, actionPlayer, dice));
+			//				break;
+			//			}
+			//		}
+			//	}
+			//}
 			return eventList;
 		}
 	}

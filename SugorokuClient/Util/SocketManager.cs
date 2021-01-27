@@ -9,62 +9,113 @@ using SugorokuLibrary.Protocol;
 
 namespace SugorokuClient.Util
 {
+	//public static class SocketManager
+	//{
+	//	private static Socket socket { get; set; }
+	//	public static string Address { get; private set; }
+	//	public static int Port { get; private set; }
+	//	public static bool IsConnected { get; private set; } = false;
+
+
+	//	public static bool Connect(string address, int port)
+	//	{
+	//		Address = address;
+	//		Port = port;
+	//		try
+	//		{
+	//			IsConnected = false;
+	//			socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+	//			socket.Connect(Address, Port);
+	//			IsConnected = socket.Connected;
+	//			return IsConnected;
+	//		}
+	//		catch(Exception)
+	//		{
+	//			return false;
+	//		}	
+	//	}
+
+
+	//	public static bool Reconnect()
+	//	{
+	//		Close();
+	//		return Connect(Address, Port);
+	//	}
+
+
+	//	public static void Close()
+	//	{
+	//		if(IsConnected)
+	//		{
+	//			socket.Shutdown(SocketShutdown.Both);
+	//		}
+	//		socket.Close();
+	//		IsConnected = false;
+	//	}
+
+
+	//	public static (bool, string) SendRecv(string body)
+	//	{
+	//		if (!IsConnected)
+	//		{
+	//			if (Reconnect()) return (false, string.Empty);
+	//		}
+	//		try
+	//		{
+	//			var withHeader = HeaderProtocol.MakeHeader(body, true);
+	//			var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
+	//			Close();
+	//			return (r, recvMsg);
+	//		}
+	//		catch (Exception)
+	//		{
+	//			return (false, string.Empty);
+	//		}
+	//	}
+
+	//}
+
 	public static class SocketManager
 	{
-		private static Socket socket { get; set; }
 		public static string Address { get; private set; }
 		public static int Port { get; private set; }
-		public static bool IsConnected { get; private set; } = false;
 
+		private static bool BeforeSetAddress { get; set; } = true;
 
-		public static bool Connect(string address, int port)
+		public static void SetAddress(string address, int port)
 		{
 			Address = address;
 			Port = port;
-			try
-			{
-				IsConnected = false;
-				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect(Address, Port);
-				IsConnected = socket.Connected;
-				return IsConnected;
-			}
-			catch(Exception)
-			{
-				return false;
-			}	
+			BeforeSetAddress = false; ;
 		}
 
 
-		public static bool Reconnect()
+		private static Socket Reconnect(Socket socket)
 		{
-			Close();
-			return Connect(Address, Port);
-		}
-
-
-		public static void Close()
-		{
-			if(IsConnected)
-			{
-				socket.Shutdown(SocketShutdown.Both);
-			}
 			socket.Close();
-			IsConnected = false;
+			socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			socket.Connect(Address, Port);
+			return socket;
 		}
 
 
 		public static (bool, string) SendRecv(string body)
 		{
-			if (!IsConnected)
+			if (BeforeSetAddress) return (false, string.Empty);
+			Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			socket.Connect(Address, Port);
+			if (!socket.Connected)
 			{
-				if (Reconnect()) return (false, string.Empty);
+				while(!socket.Connected)
+				{
+					socket = Reconnect(socket);
+				}
 			}
 			try
 			{
 				var withHeader = HeaderProtocol.MakeHeader(body, true);
 				var (s, r, recvMsg) = Connection.SendAndRecvMessage(withHeader, socket);
-				Close();
+				socket.Close();
 				return (r, recvMsg);
 			}
 			catch (Exception)
@@ -72,6 +123,5 @@ namespace SugorokuClient.Util
 				return (false, string.Empty);
 			}
 		}
-
 	}
 }

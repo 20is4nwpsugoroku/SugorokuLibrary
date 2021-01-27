@@ -139,7 +139,7 @@ namespace SugorokuClient.UI
 		{
 			TextureAsset.Draw(TextureHandle,
 				(int)X, (int)Y,
-				(int)(X + Width), (int)(Y + Height),
+				(int)(Width), (int)(Height),
 				DX.TRUE);
 		}
 
@@ -161,7 +161,7 @@ namespace SugorokuClient.UI
 			double incrementX, incrementY, baseX, baseY, baseWidth, baseHeight;
 			if (AnimationSchedule.Count != 0)
 			{
-				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				var anime = AnimationSchedule[^1];
 				baseX = anime.TargetX;
 				baseY = anime.TargetY;
 				baseWidth = anime.TargetWidth;
@@ -187,7 +187,7 @@ namespace SugorokuClient.UI
 			double incrementWidth, incrementHeight, baseX, baseY, baseWidth, baseHeight;
 			if (AnimationSchedule.Count != 0)
 			{
-				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				var anime = AnimationSchedule[^1];
 				baseX = anime.TargetX;
 				baseY = anime.TargetY;
 				baseWidth = anime.TargetWidth;
@@ -213,7 +213,7 @@ namespace SugorokuClient.UI
 			double incrementX, incrementY, incrementWidth, incrementHeight, baseX, baseY, baseWidth, baseHeight;
 			if (AnimationSchedule.Count != 0)
 			{
-				var anime = AnimationSchedule[AnimationSchedule.Count - 1];
+				var anime = AnimationSchedule[^1];
 				baseX = anime.TargetX;
 				baseY = anime.TargetY;
 				baseWidth = anime.TargetWidth;

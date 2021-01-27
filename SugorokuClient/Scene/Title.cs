@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Net;
 using Newtonsoft.Json;
 using DxLibDLL;
 using SugorokuClient.UI;
@@ -31,10 +32,14 @@ namespace SugorokuClient.Scene
 		private TextureButton makeRoomButton { get; set; }
 		private TextureButton joinRoomButton { get; set; }
 		private TextureButton findRoomButton { get; set; }
+		private TextureButton saveIpAddress { get; set; }
+
 
 		private TextBox roomName { get; set; }
 		private TextBox playerName { get; set; }
 		private TextBox playerNum { get; set; }
+		private TextBox ipAddress { get; set; }
+		private TextBox portNumber { get; set; }
 
 		private FindRoomWindow findRoomWindow { get; set; }
 
@@ -84,17 +89,21 @@ namespace SugorokuClient.Scene
 			submitButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 780, 200, 50, "確定", DX.GetColor(222, 222, 222), buttonFont);
 			roomName = new TextBox(490, 570, 500, 50, textBoxFont);
 			roomName.FrameColor = DX.GetColor(50, 50, 50);
-			roomName.Text = $"Room{rand.Next(100, 100000)}";
+			//roomName.Text = $"Room{rand.Next(100, 100000)}";
 			playerName = new TextBox(490, 640, 500, 50, textBoxFont);
 			playerName.FrameColor = DX.GetColor(50, 50, 50);
 			playerName.Text = $"Player{rand.Next(100, 100000)}";
 			playerNum = new TextBox(490, 710, 500, 50, textBoxFont);
 			playerNum.FrameColor = DX.GetColor(50, 50, 50);
 			playerNum.Text = "4";
+			ipAddress = new TextBox(0, 0, 200, 50, textBoxFont);
+			portNumber = new TextBox(0, 50, 200, 50, textBoxFont);
+			saveIpAddress = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 0, 100, 200, 50, "IPを反映する", DX.GetColor(222, 222, 222), buttonFont);
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
 			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
-			SocketManager.Connect(Data.Address, Data.Port);
+			//SocketManager.Connect(Data.Address, Data.Port);
+			//SocketManager.SetAddress(Data.Address, Data.Port);
 			DX.SetBackgroundColor(255, 255, 255); // 背景色を白に設定
 		}
 
@@ -104,6 +113,16 @@ namespace SugorokuClient.Scene
 		/// </summary>
 		public void Update()
 		{
+			ipAddress.Update();
+			portNumber.Update();
+			if(saveIpAddress.LeftClicked())
+			{
+				if (IPAddress.TryParse(ipAddress.Text, out _)
+					&& int.TryParse(portNumber.Text, out _))
+				{
+					SocketManager.SetAddress(ipAddress.Text, int.Parse(portNumber.Text));
+				}
+			}
 			switch (state)
 			{
 				case State.Start:
@@ -234,8 +253,10 @@ namespace SugorokuClient.Scene
 		/// </summary>
 		public void Draw()
 		{
-			TextureAsset.Draw(LogoImageHandle, LogoImageX, LogoImageY, LogoImageWidth, LogoImageHeight, DX.FALSE);
-			
+			TextureAsset.Draw(LogoImageHandle, LogoImageX, LogoImageY, LogoImageWidth, LogoImageHeight, DX.TRUE);
+			ipAddress.Draw();
+			portNumber.Draw();
+			saveIpAddress.Draw();
 			switch (state)
 			{
 				case State.Start:
@@ -305,6 +326,16 @@ namespace SugorokuClient.Scene
 		/// <param name="playerName"></param>
 		private void JoinMatch(string roomName, string playerName)
 		{
+			if (IPAddress.TryParse(ipAddress.Text, out _)
+					&& int.TryParse(portNumber.Text, out _))
+			{
+				SocketManager.SetAddress(ipAddress.Text, int.Parse(portNumber.Text));
+			}
+			else
+			{
+				isWaitJoin = false;
+				return;
+			}
 			isWaitJoin = true;
 			var cpmsg = new CreatePlayerMessage(playerName, roomName);
 			var json = JsonConvert.SerializeObject(cpmsg);

@@ -22,6 +22,8 @@ namespace SugorokuClient
 			DX.SetDoubleStartValidFlag(DX.TRUE);
 			DX.SetMainWindowClassName("すごろくゲーム start at " + DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
 			DX.SetMainWindowText("すごろくゲーム");
+			DX.SetUseDirect3DVersion(DX.DX_DIRECT3D_9EX);
+			DX.SetMultiThreadFlag(DX.TRUE);
 			DX.DxLib_Init();
 
 			// 描画先を裏画面に変更

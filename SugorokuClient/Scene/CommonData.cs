@@ -18,7 +18,8 @@ namespace SugorokuClient.Scene
 	{
 		public CommonData()
 		{
-			Address = "127.0.0.1";
+			Address = "10.127.72.183";
+			//Address = "127.0.0.1";
 			Port = 9500;
 			RoomName = string.Empty;
 			PlayerName = string.Empty;
