@@ -96,9 +96,11 @@ namespace SugorokuClient.Scene
 			playerNum = new TextBox(490, 710, 500, 50, textBoxFont);
 			playerNum.FrameColor = DX.GetColor(50, 50, 50);
 			playerNum.Text = "4";
-			ipAddress = new TextBox(0, 0, 200, 50, textBoxFont);
-			portNumber = new TextBox(0, 50, 200, 50, textBoxFont);
-			saveIpAddress = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 0, 100, 200, 50, "IPを反映する", DX.GetColor(222, 222, 222), buttonFont);
+			ipAddress = new TextBox(0, 0, 400, 50, textBoxFont);
+			ipAddress.Text = Data.Address;
+			portNumber = new TextBox(0, 50, 400, 50, textBoxFont);
+			portNumber.Text = Data.Port.ToString();
+			saveIpAddress = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 0, 100, 400, 50, "IPを反映する", DX.GetColor(222, 222, 222), buttonFont);
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
 			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;

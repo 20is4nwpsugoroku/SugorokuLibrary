@@ -27,6 +27,8 @@ namespace SugorokuClient.Scene
 			Player = new Player();
 			MatchInfo = new MatchInfo();
 			MatchManager = new MatchCommunicationManager();
+			PlayerEvents = new Queue<SugorokuEvent>();
+			Ranking = new List<int>();
 		}
 
 		public string Address { get; } = "127.0.0.1";
@@ -38,5 +40,8 @@ namespace SugorokuClient.Scene
 		public MatchInfo MatchInfo { get; set; } = new MatchInfo();
 		public MatchCore Match { get; set; }
 		public MatchCommunicationManager MatchManager { get; set; }
+		public Queue<SugorokuEvent> PlayerEvents { get; set; }
+		public List<int> Ranking { get; set; }
+
 	}
 }

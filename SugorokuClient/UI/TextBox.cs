@@ -63,7 +63,7 @@ namespace SugorokuClient.UI
 		}
 
 
-		public void Draw()
+		public new void Draw()
 		{
 			base.Draw();
 			DrawFrame();

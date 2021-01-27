@@ -24,8 +24,10 @@ namespace SugorokuClient.Scene
 		private static Timer PlayingEventTimer { get; set; }
 		private static State state { get; set; }
 		private static List<int> MyActionTurn { get; set; }
-		private static Queue<SugorokuEvent> PlayerEvents { get; set; }
-		private static List<int> Ranking { get; set; }
+		//private static Queue<SugorokuEvent> MyPlayerEvents { get; set; }
+		//private static Queue<SugorokuEvent> OtherPlayerEvents { get; set; }
+
+		//private static List<int> Ranking { get; set; }
 		private static CommonData Data { get; set; }
 		private static bool IsGoal { get; set; }
 		private TextureButton DiceButton { get; set; }
@@ -33,6 +35,7 @@ namespace SugorokuClient.Scene
 		private int UIFontTexture { get; set; }
 		private string MessageText { get; set; }
 		private static bool isProcessingPlayingEvent { get; set; }
+
 
 
 		enum State
@@ -62,8 +65,9 @@ namespace SugorokuClient.Scene
 			DiceButton = new TextureButton(handle, 1120, 800, 160, 160);
 			DiceTexture = new DiceTexture(960, 800, 160, 160);
 			SugorokuFrame = new SugorokuFrame();
-			PlayerEvents = new Queue<SugorokuEvent>();
-			Ranking = new List<int>();
+			//MyPlayerEvents = new Queue<SugorokuEvent>();
+			//OtherPlayerEvents = new Queue<SugorokuEvent>();
+			//Ranking = new List<int>();
 			MyActionTurn = new List<int>();
 			data.MatchManager = new MatchCommunicationManager(data.Player.PlayerID, data.RoomName);
 			PlayingEventTimer = new Timer();
@@ -79,10 +83,23 @@ namespace SugorokuClient.Scene
 
 
 		SugorokuEvent currentEvent;
-		bool SugorokuFrameNotInit = true;
+		//bool SugorokuFrameNotInit = true;
 
 		public void Update()
 		{
+			DiceTexture.Update();
+			SugorokuFrame.Update();
+			MessageText = (state) switch
+			{
+				State.WaitMatchStart => "試合の開始を待っています",
+				State.WaitOtherPlayer => "他のプレイヤーの行動を待っています",
+				State.WaitThrowDice => "さいころを振ってください",
+				State.Error => "エラーが発生しました",
+				State.Goal => "ゴールしました。",
+				_ => ""
+			};
+
+
 			if (state == State.SugorokuFrameInit)
 			{
 				SugorokuFrame.Init(Data.MatchInfo.Players);
@@ -91,9 +108,14 @@ namespace SugorokuClient.Scene
 				isProcessingPlayingEvent = false;
 			}
 
-			if (PlayerEvents.Count != 0 && !SugorokuFrame.IsProcessingEvent)
+			//if (OtherPlayerEvents.Count != 0 && !SugorokuFrame.IsProcessingEvent)
+			//{
+			//	SugorokuFrame.ProcessEvent(OtherPlayerEvents.Dequeue());
+			//}
+			/*else */if (Data.PlayerEvents.Count != 0 && !SugorokuFrame.IsProcessingEvent)
 			{
-				currentEvent = PlayerEvents.Peek();
+				currentEvent = Data.PlayerEvents.Peek();
+				//state = State.WaitThrowDice;
 				if (Data.Player.PlayerID == currentEvent.PlayerId)
 				{
 					state = State.WaitThrowDice;
@@ -101,7 +123,7 @@ namespace SugorokuClient.Scene
 				else
 				{
 					SugorokuFrame.ProcessEvent(currentEvent);
-					PlayerEvents.Dequeue();
+					Data.PlayerEvents.Dequeue();
 				}
 			}
 
@@ -111,7 +133,7 @@ namespace SugorokuClient.Scene
 				&& DiceTexture.AnimationFrame == 0)
 			{
 				SugorokuFrame.ProcessEvent(currentEvent);
-				PlayerEvents.Dequeue();
+				Data.PlayerEvents.Dequeue();
 				state = State.WaitOtherPlayer;
 			}
 			else if (state == State.WaitThrowDice 
@@ -124,18 +146,6 @@ namespace SugorokuClient.Scene
 			{
 				// まだターンじゃない表示
 			}
-
-			DiceTexture.Update();
-			SugorokuFrame.Update();
-			MessageText = (state) switch
-			{
-				State.WaitMatchStart => "試合の開始を待っています",
-				State.WaitOtherPlayer => "他のプレイヤーの行動を待っています",
-				State.WaitThrowDice => "さいころを振ってください",
-				State.Error => "エラーが発生しました",
-				State.Goal => "ゴールしました。",
-				_ => ""
-			};
 		}
 
 		public void Draw()
@@ -211,7 +221,7 @@ namespace SugorokuClient.Scene
 		//}
 
 
-		private static void PlayingMatchTask(object source, ElapsedEventArgs e, CommonData data)
+		private static void PlayingMatchTask(object _source, ElapsedEventArgs _e, CommonData data)
 		{
 			//DX.putsDx("..............");
 			//var (temp_r, temp_match) = data.MatchManager.GetMatch(data.RoomName);
@@ -229,13 +239,13 @@ namespace SugorokuClient.Scene
 
 			if (match.NextPlayerID == data.Player.PlayerID)
 			{	
-				Task.Delay(10000);
+				Task.Delay(4000);
 				var (status, dice, start, end, rank) = data.MatchManager.ThrowDice();
 				switch (status)
 				{
 					case ReflectionStatus.NextSuccess:
 					case ReflectionStatus.PrevDiceSuccess:
-						PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
+						data.PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
 						MyActionTurn.Add(match.Turn);
 						data.MatchInfo = match;
 						//if (end == 7 || end == 17 || end == 21 || end == 26 || end == 28)
@@ -258,26 +268,28 @@ namespace SugorokuClient.Scene
 
 					case ReflectionStatus.AlreadyFinished:
 						IsGoal = true;
-						Ranking = new List<int>(rank);
+						data.Ranking = new List<int>(rank);
 						state = State.Goal;
 						break;
 
 					case ReflectionStatus.NotYourTurn:
+						break;
+
 					default:
+						state = State.Error;
 						break;
 				}
 			}
 			else
 			{
 				//if (match.Turn == data.MatchInfo.Turn) return;
-				var eventList = ReverseEvent(data.MatchInfo, match, Data.Player.PlayerID);
+				var eventList = data.MatchManager.ReverseEvent(data.MatchInfo, match, data.Player.PlayerID);
 				for (var i = 0; i < eventList.Count; i++)
 				{
-					PlayerEvents.Enqueue(eventList[i]);
+					data.PlayerEvents.Enqueue(eventList[i]);
 				}
 				data.MatchInfo = match;
 			}
-			isProcessingPlayingEvent = false;
 
 			foreach (var player in data.MatchInfo.Players)
 			{
@@ -288,14 +300,25 @@ namespace SugorokuClient.Scene
 				}
 			}
 
-			if (state == State.Goal || state == State.Error || IsGoal)
+			if (state == State.Goal || state == State.Error|| IsGoal)
 			{
 				PlayingEventTimer.Stop();
-				var (_, _, _, _, rank) = data.MatchManager.ThrowDice();
-				Ranking = new List<int>(rank);
+				var (ret, rank) = data.MatchManager.GetRanking();
+				if (ret)
+				{
+					DX.putsDx("GOOOOOOOOOOOOOOOOOOOOOOOOOOOAL");
+					data.Ranking = new List<int>(rank);
+				}
+				else
+				{
+					state = State.Error;
+				}
 				PlayingEventTimer.Enabled = false;
+				isProcessingPlayingEvent = false;
 				PlayingEventTimer.Dispose();
 			}
+
+			isProcessingPlayingEvent = false;
 		}
 
 
@@ -336,7 +359,7 @@ namespace SugorokuClient.Scene
 		//}
 
 
-		private static void WaitStartMatchTask(object source, ElapsedEventArgs e, bool isHost, CommonData data)
+		private static void WaitStartMatchTask(object _source, ElapsedEventArgs _e, bool isHost, CommonData data)
 		{
 			DX.putsDx("Wait Start Match Task" + isHost.ToString());
 			var matchKey = data.RoomName;
@@ -424,6 +447,7 @@ namespace SugorokuClient.Scene
 						eventList.Add(new SugorokuEvent(prevPos, nowPos, actionPlayer, dice));
 						DX.putsDx(JsonConvert.SerializeObject(eventList[^1]));
 						DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
+						break;
 					}
 				}
 			}

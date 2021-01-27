@@ -8,6 +8,7 @@ using SugorokuLibrary;
 using SugorokuLibrary.ClientToServer;
 using SugorokuLibrary.ServerToClient;
 using SugorokuLibrary.Match;
+using SugorokuClient.Scene;
 
 namespace SugorokuClient.Util
 {
@@ -225,6 +226,12 @@ namespace SugorokuClient.Util
 		}
 
 
+		public (bool, IEnumerable<int>) GetRanking()
+		{
+			return GetRanking(MatchKey);
+		}
+
+
 		public (bool, IEnumerable<int>) GetRanking(string matchKey)
 		{
 			var sendMsg = new GetRankingMessage(matchKey);
@@ -233,6 +240,40 @@ namespace SugorokuClient.Util
 			return (r)
 				? (r, JsonConvert.DeserializeObject<RankingMessage>(recvJson).Ranking)
 				: (r, new List<int>());
+		}
+
+
+		public List<SugorokuEvent> ReverseEvent(MatchInfo prev, MatchInfo now, int myPlayerID)
+		{
+			DX.putsDx("Start Reverse Event");
+			var eventList = new List<SugorokuEvent>();
+			var alreadyReversePlayer = new List<int>();
+
+			for (var i = 0; i < prev.Players.Count; i++)
+			{
+				int actionPlayer, nowPos, prevPos, dice;
+				DX.putsDx($"Reverse {prev.Players[i].PlayerID}");
+				if (prev.Players[i].PlayerID == myPlayerID) continue;
+
+				for (var j = 0; j < now.Players.Count; j++)
+				{
+					if (now.Players[j].PlayerID == prev.Players[i].PlayerID
+								&& now.Players[j].Position != prev.Players[i].Position)
+					{
+						actionPlayer = prev.Players[i].PlayerID;
+						if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+						nowPos = now.Players[j].Position;
+						prevPos = prev.Players[i].Position;
+						dice = nowPos - prevPos;
+						alreadyReversePlayer.Add(actionPlayer);
+						eventList.Add(new SugorokuEvent(prevPos, nowPos, actionPlayer, dice));
+						DX.putsDx(JsonConvert.SerializeObject(eventList[^1]));
+						DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
+						break;
+					}
+				}
+			}
+			return eventList;
 		}
 	}
 }
