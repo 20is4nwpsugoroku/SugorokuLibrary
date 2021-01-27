@@ -177,7 +177,7 @@ namespace SugorokuServer
 				? (false, JsonConvert.SerializeObject(new FailedMessage("まだランキングは決まっていません")))
 				: (true, JsonConvert.SerializeObject(new RankingMessage(ranking)));
 		}
-
+    
 		private (bool, string) GetMatchView(GetMatchViewImageMessage message)
 		{
 			var imageString = ImageProvider.GenerateEncodedMapImage(_matches[message.MatchKey].Players);
