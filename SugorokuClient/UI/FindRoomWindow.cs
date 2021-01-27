@@ -19,7 +19,7 @@ namespace SugorokuClient.UI
 		private int y;
 		private int width;
 		private int height;
-		private int listButtonHeight = 50;
+		private int listButtonHeight { get; set; } = 50;
 		public bool isVisible = false;
 		private bool isHaveInfo = false;
 		private bool isReloading = false;
@@ -37,9 +37,9 @@ namespace SugorokuClient.UI
 		private int listButtonTexture = -1;
 		private int reloadButtonTexture = -1;
 		private int closeButtonTexture = -1;
-		private string listButtonPath = "E:\\workspace\\devs\\SugorokuLibrary\\dev\\haruto8631\\SugorokuClient\\images\\Image1.png";
-		private string reloadButtonPath = "E:\\workspace\\devs\\SugorokuLibrary\\dev\\haruto8631\\SugorokuClient\\images\\Image1.png";
-		private string closeButtonPath = "E:\\workspace\\devs\\SugorokuLibrary\\dev\\haruto8631\\SugorokuClient\\images\\Image1.png";
+		private string listButtonPath = "../../../images/FindRoomListButton.png";
+		private string reloadButtonPath = "../../../images/Reload.png";
+		private string closeButtonPath = "../../../images/Close.png";
 
 		private Dictionary<string, MatchInfo> matches { get; set; }
 		private List<TextureButton> matchesListButtons { get; set; }
@@ -66,7 +66,7 @@ namespace SugorokuClient.UI
 			this.height = (height > 110) ? height : 110;
 			reloadButton = new TextureButton(reloadButtonTexture, x + width - 110, y + 5, 50, 50);
 			closeButton = new TextureButton(closeButtonTexture, x + width - 55, y + 5, 50, 50);
-			textFont = FontAsset.Register("FindRoomWindowFont", size: listButtonHeight);
+			textFont = FontAsset.Register("FindRoomWindowFont", size: 40);
 			matchesListButtons = new List<TextureButton>();
 			Task.Run(() => Reload());
 		}
@@ -108,14 +108,14 @@ namespace SugorokuClient.UI
 			closeButton.Draw();
 			if (!isHaveInfo)
 			{
-				FontAsset.Draw(textFont, "Error",
-					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error") / 2,
-					y + 60, DX.GetColor(255, 0, 0)
-					);
+				//FontAsset.Draw(textFont, "Error",
+				//	x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Error") / 2,
+				//	y + 60, DX.GetColor(200, 0, 0)
+				//	);
 			}
 			else if (isReloading)
 			{
-				FontAsset.Draw(textFont, "Loading",
+				FontAsset.Draw(textFont, "Loading...",
 					x + width / 2 - FontAsset.GetDrawTextWidth(textFont, "Loading") / 2,
 					y + 60, textColor
 					);
@@ -166,7 +166,7 @@ namespace SugorokuClient.UI
 					new TextureButton(listButtonTexture, x, listButtonPosY, width, listButtonHeight,
 					match.Key, textColor, textFont)
 				);
-				DX.putsDx(match.Key);
+				// // // // // //DX.putsDx(match.Key);
 			}
 			isReloading = false;
 		}

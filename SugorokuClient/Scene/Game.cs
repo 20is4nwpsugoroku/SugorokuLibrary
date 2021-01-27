@@ -23,7 +23,6 @@ namespace SugorokuClient.Scene
 		private static Timer WaitEventTimer { get; set; }
 		private static Timer PlayingEventTimer { get; set; }
 		private static State state { get; set; }
-		private static List<int> MyActionTurn { get; set; }
 		//private static Queue<SugorokuEvent> MyPlayerEvents { get; set; }
 		//private static Queue<SugorokuEvent> OtherPlayerEvents { get; set; }
 
@@ -58,17 +57,17 @@ namespace SugorokuClient.Scene
 
 		public void Init(CommonData data)
 		{
-			UIFontTexture = FontAsset.Register("GameSceneUI", size: 80);
+			UIFontTexture = FontAsset.Register("GameSceneUI", size: 40);
+			var dicefont = FontAsset.Register("sugorokuDiceButton", size: 20);
 			DX.SetBackgroundColor(255, 255, 255);
 			var handle = TextureAsset.Register("Dice1",
-				"../../../images/saikoro_1.png");
-			DiceButton = new TextureButton(handle, 1120, 800, 160, 160);
-			DiceTexture = new DiceTexture(960, 800, 160, 160);
+				"../../../images/hutabutton.png");
+			DiceButton = new TextureButton(handle, 960, 800, 320, 160, "サイコロを振る", DX.GetColor(0, 103, 167), dicefont);
+			DiceTexture = new DiceTexture(800, 800, 160, 160);
 			SugorokuFrame = new SugorokuFrame();
 			//MyPlayerEvents = new Queue<SugorokuEvent>();
 			//OtherPlayerEvents = new Queue<SugorokuEvent>();
 			//Ranking = new List<int>();
-			MyActionTurn = new List<int>();
 			data.MatchManager = new MatchCommunicationManager(data.Player.PlayerID, data.RoomName);
 			PlayingEventTimer = new Timer();
 			WaitEventTimer = new Timer();
@@ -78,7 +77,7 @@ namespace SugorokuClient.Scene
 			WaitEventTimer.Enabled = true;
 			WaitEventTimer.Start();
 			Data = data;
-			DX.putsDx(data.PlayerName);
+			// // ////DX.putsDx(data.PlayerName);
 		}
 
 
@@ -87,18 +86,12 @@ namespace SugorokuClient.Scene
 
 		public void Update()
 		{
-			DiceTexture.Update();
-			SugorokuFrame.Update();
-			MessageText = (state) switch
-			{
-				State.WaitMatchStart => "試合の開始を待っています",
-				State.WaitOtherPlayer => "他のプレイヤーの行動を待っています",
-				State.WaitThrowDice => "さいころを振ってください",
-				State.Error => "エラーが発生しました",
-				State.Goal => "ゴールしました。",
-				_ => ""
-			};
 
+			if (state == State.Goal || InputManager.MouseR_Down())
+			{
+				state = State.Goal;
+				SugorokuFrame.DrawRanking(Data.Ranking);
+			}
 
 			if (state == State.SugorokuFrameInit)
 			{
@@ -114,15 +107,14 @@ namespace SugorokuClient.Scene
 			//}
 			/*else */if (Data.PlayerEvents.Count != 0 && !SugorokuFrame.IsProcessingEvent)
 			{
-				currentEvent = Data.PlayerEvents.Peek();
 				//state = State.WaitThrowDice;
-				if (Data.Player.PlayerID == currentEvent.PlayerId)
+				if (Data.Player.PlayerID == Data.PlayerEvents.Peek().PlayerId)
 				{
 					state = State.WaitThrowDice;
 				}
 				else
 				{
-					SugorokuFrame.ProcessEvent(currentEvent);
+					SugorokuFrame.ProcessEvent(Data.PlayerEvents.Peek());
 					Data.PlayerEvents.Dequeue();
 				}
 			}
@@ -132,7 +124,7 @@ namespace SugorokuClient.Scene
 				&& !SugorokuFrame.IsProcessingEvent
 				&& DiceTexture.AnimationFrame == 0)
 			{
-				SugorokuFrame.ProcessEvent(currentEvent);
+				SugorokuFrame.ProcessEvent(Data.PlayerEvents.Peek());
 				Data.PlayerEvents.Dequeue();
 				state = State.WaitOtherPlayer;
 			}
@@ -140,12 +132,24 @@ namespace SugorokuClient.Scene
 				&& DiceButton.LeftClicked()
 				&& !SugorokuFrame.IsProcessingEvent)
 			{
-				DiceTexture.AnimationStart(currentEvent.Dice);
+				DiceTexture.AnimationStart(Data.PlayerEvents.Peek().Dice);
 			}
 			else if (DiceButton.LeftClicked())
 			{
 				// まだターンじゃない表示
 			}
+
+			DiceTexture.Update();
+			SugorokuFrame.Update();
+			MessageText = (state) switch
+			{
+				State.WaitMatchStart => "試合の開始を待っています",
+				State.WaitOtherPlayer => "他のプレイヤーの行動を待っています",
+				State.WaitThrowDice => "さいころを振ってください",
+				State.Error => "エラーが発生しました",
+				State.Goal => "ゴールしました。",
+				_ => ""
+			};
 		}
 
 		public void Draw()
@@ -155,6 +159,10 @@ namespace SugorokuClient.Scene
 			DiceButton.MouseOverDraw();
 			DiceTexture.Draw();
 			FontAsset.Draw(UIFontTexture, MessageText, 0, 800, DX.GetColor(50, 50, 50));
+			if (state == State.Goal)
+			{
+				SugorokuFrame.Draw();
+			}
 		}
 
 
@@ -162,7 +170,7 @@ namespace SugorokuClient.Scene
 		//{
 		//	var (r, match) = GetMatch(data.RoomName);
 		//	if (!r) return;
-		//	DX.putsDx("Playering Match Task Start");
+		//	// // ////DX.putsDx("Playering Match Task Start");
 
 		//	if (match.MatchInfo.NextPlayerID == data.Player.PlayerID)
 		//	{
@@ -223,31 +231,34 @@ namespace SugorokuClient.Scene
 
 		private static void PlayingMatchTask(object _source, ElapsedEventArgs _e, CommonData data)
 		{
-			//DX.putsDx("..............");
+			//// // ////DX.putsDx("..............");
 			//var (temp_r, temp_match) = data.MatchManager.GetMatch(data.RoomName);
-			//if (!temp_r) DX.putsDx("fffffffffffff");
-			//if (temp_match == null) DX.putsDx("NNNNNNNNNNNNNNN");
-			//DX.putsDx("..............");
+			//if (!temp_r) // // ////DX.putsDx("fffffffffffff");
+			//if (temp_match == null) // // ////DX.putsDx("NNNNNNNNNNNNNNN");
+			//// // ////DX.putsDx("..............");
 			if (isProcessingPlayingEvent) return;
 
-			var (r, match) = data.MatchManager.GetMatch();
+			var (r, matchStr) = data.MatchManager.GetMatchString();
 			if (!r) return;
 			isProcessingPlayingEvent = true;
-			DX.putsDx("Playering Match Task Start");
-			DX.putsDx("MyID ; " + data.Player.PlayerID.ToString());
-			DX.putsDx("NextPlayerID" + match.NextPlayerID.ToString());
+			// // ////DX.putsDx("Playering Match Task Start");
+			// // ////DX.putsDx("MyID ; " + data.Player.PlayerID.ToString());
+			// // ////DX.putsDx("NextPlayerID" + JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID.ToString());
 
-			if (match.NextPlayerID == data.Player.PlayerID)
+			////DX.putsDx(JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr).Turn.ToString() + " -> " + JsonConvert.DeserializeObject<MatchInfo>(matchStr).Turn.ToString());
+			////DX.putsDx(JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr).NextPlayerID.ToString() + " -> " + JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID.ToString());
+
+
+			if (JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID == data.Player.PlayerID)
 			{	
-				Task.Delay(4000);
 				var (status, dice, start, end, rank) = data.MatchManager.ThrowDice();
 				switch (status)
 				{
 					case ReflectionStatus.NextSuccess:
 					case ReflectionStatus.PrevDiceSuccess:
-						data.PlayerEvents.Enqueue(new SugorokuEvent(start, end, match.NextPlayerID, dice));
-						MyActionTurn.Add(match.Turn);
-						data.MatchInfo = match;
+						data.PlayerEvents.Enqueue(new SugorokuEvent(start, end, JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID, dice));
+						//MyActionTurn.Add(match.Turn);
+						data.MatchInfoStr = "" + matchStr;
 						//if (end == 7 || end == 17 || end == 21 || end == 26 || end == 28)
 						//{
 						//	(r, match) = data.MatchManager.GetMatch();
@@ -273,25 +284,49 @@ namespace SugorokuClient.Scene
 						break;
 
 					case ReflectionStatus.NotYourTurn:
+						////DX.putsDx("NotYourTurn");
 						break;
 
 					default:
 						state = State.Error;
 						break;
 				}
+				//var (_, info) = data.MatchManager.GetMatch();
+				//var eventList = data.MatchManager.ReverseEvent(data.MatchInfo, info, data.Player.PlayerID);
+				//for (var i = 0; i < eventList.Count; i++)
+				//{
+				//	data.PlayerEvents.Enqueue(eventList[i]);
+				//}
+				data.MatchInfoStr = "" + matchStr;
+				data.MatchInfo = JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr);
 			}
 			else
 			{
 				//if (match.Turn == data.MatchInfo.Turn) return;
-				var eventList = data.MatchManager.ReverseEvent(data.MatchInfo, match, data.Player.PlayerID);
+				//////DX.putsDx("Reeeeeeeeeeeeeeeeeeeeevese");
+				//////DX.putsDx("Prev");
+				//////DX.putsDx(JsonConvert.SerializeObject(data.MatchInfo));
+				//////DX.putsDx("Next");
+				//////DX.putsDx(JsonConvert.SerializeObject(match));
+				//////DX.putsDx("\n\n");
+				if (data.MatchInfoStr == matchStr)
+				{
+					////DX.putsDx("同じ");
+				}
+				else
+				{
+					////DX.putsDx("違う");
+				}
+				var eventList = data.MatchManager.ReverseEvent(JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr), JsonConvert.DeserializeObject<MatchInfo>(matchStr), data.Player.PlayerID);
 				for (var i = 0; i < eventList.Count; i++)
 				{
 					data.PlayerEvents.Enqueue(eventList[i]);
 				}
-				data.MatchInfo = match;
+				data.MatchInfoStr = "" + matchStr;
+				data.MatchInfo = JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr);
 			}
 
-			foreach (var player in data.MatchInfo.Players)
+			foreach (var player in JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr).Players)
 			{
 				if (player.Position == 30)
 				{
@@ -306,7 +341,7 @@ namespace SugorokuClient.Scene
 				var (ret, rank) = data.MatchManager.GetRanking();
 				if (ret)
 				{
-					DX.putsDx("GOOOOOOOOOOOOOOOOOOOOOOOOOOOAL");
+					// // ////DX.putsDx("GOOOOOOOOOOOOOOOOOOOOOOOOOOOAL");
 					data.Ranking = new List<int>(rank);
 				}
 				else
@@ -324,7 +359,7 @@ namespace SugorokuClient.Scene
 
 		//private static void WaitStartMatchTask(object source, ElapsedEventArgs e, bool isHost, CommonData data)
 		//{
-		//	DX.putsDx("Wait Start Match Task" + isHost.ToString());
+		//	// // ////DX.putsDx("Wait Start Match Task" + isHost.ToString());
 		//	var matchKey = data.RoomName;
 		//	if (isHost)
 		//	{
@@ -361,7 +396,7 @@ namespace SugorokuClient.Scene
 
 		private static void WaitStartMatchTask(object _source, ElapsedEventArgs _e, bool isHost, CommonData data)
 		{
-			DX.putsDx("Wait Start Match Task" + isHost.ToString());
+			// // ////DX.putsDx("Wait Start Match Task" + isHost.ToString());
 			var matchKey = data.RoomName;
 			if (isHost)
 			{
@@ -377,11 +412,13 @@ namespace SugorokuClient.Scene
 			if (state == State.SugorokuFrameInitBefore)
 			{
 				WaitEventTimer.Stop();
-				var (r, match) = data.MatchManager.GetMatch();
+				var (r, matchStr) = data.MatchManager.GetMatchInfoString();
+				data.MatchInfoStr = "" + matchStr;
 				for (int i = 0; !r; i++)
 				{
 					Task.Delay(5000);
-					(r, match) = data.MatchManager.GetMatch();
+					(r, matchStr) = data.MatchManager.GetMatchInfoString();
+					data.MatchInfoStr = "" + matchStr;
 					if (i > 5)
 					{
 						state = State.Error;
@@ -389,7 +426,7 @@ namespace SugorokuClient.Scene
 					}
 				}
 				//data.Match = match;
-				data.MatchInfo = match;
+				data.MatchInfo = JsonConvert.DeserializeObject<MatchInfo>(matchStr);
 				PlayingEventTimer.Interval = 4000;
 				PlayingEventTimer.AutoReset = true;
 				PlayingEventTimer.Enabled = true;
@@ -402,7 +439,7 @@ namespace SugorokuClient.Scene
 
 		//private static IEnumerable<SugorokuEvent> ReverseEvent(MatchCore prev, MatchCore now)
 		//{
-		//	DX.putsDx("Start Reverse Event");
+		//	// // ////DX.putsDx("Start Reverse Event");
 		//	var eventList = new List<SugorokuEvent>();
 		//	var alreadyReversePlayer = new List<int>();
 		//	if (now.MatchInfo.Turn == prev.MatchInfo.Turn) return eventList;
@@ -421,36 +458,36 @@ namespace SugorokuClient.Scene
 		//}
 
 
-		private static List<SugorokuEvent> ReverseEvent(MatchInfo prev, MatchInfo now, int myPlayerID)
-		{
-			DX.putsDx("Start Reverse Event");
-			var eventList = new List<SugorokuEvent>();
-			var alreadyReversePlayer = new List<int>();
+		//private static List<SugorokuEvent> ReverseEvent(MatchInfo prev, MatchInfo now, int myPlayerID)
+		//{
+		//	// // ////DX.putsDx("Start Reverse Event");
+		//	var eventList = new List<SugorokuEvent>();
+		//	var alreadyReversePlayer = new List<int>();
 
-			for (var i = 0; i < prev.Players.Count; i++)
-			{
-				int actionPlayer, nowPos, prevPos, dice;
-				DX.putsDx($"Reverse {prev.Players[i].PlayerID}");
-				if (prev.Players[i].PlayerID == myPlayerID) continue;
+		//	for (var i = 0; i < prev.Players.Count; i++)
+		//	{
+		//		int actionPlayer, nowPos, prevPos, dice;
+		//		// // ////DX.putsDx($"Reverse {prev.Players[i].PlayerID}");
+		//		if (prev.Players[i].PlayerID == myPlayerID) continue;
 
-				for (var j = 0; j < now.Players.Count; j++)
-				{
-					if (now.Players[j].PlayerID == prev.Players[i].PlayerID
-								&& now.Players[j].Position != prev.Players[i].Position)
-					{
-						actionPlayer = prev.Players[i].PlayerID;
-						if (alreadyReversePlayer.Contains(actionPlayer)) continue;
-						nowPos = now.Players[actionPlayer].Position;
-						prevPos = prev.Players[actionPlayer].Position;
-						dice = nowPos - prevPos;
-						alreadyReversePlayer.Add(actionPlayer);
-						eventList.Add(new SugorokuEvent(prevPos, nowPos, actionPlayer, dice));
-						DX.putsDx(JsonConvert.SerializeObject(eventList[^1]));
-						DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
-						break;
-					}
-				}
-			}
+		//		for (var j = 0; j < now.Players.Count; j++)
+		//		{
+		//			if (now.Players[j].PlayerID == prev.Players[i].PlayerID
+		//						&& now.Players[j].Position != prev.Players[i].Position)
+		//			{
+		//				actionPlayer = prev.Players[i].PlayerID;
+		//				if (alreadyReversePlayer.Contains(actionPlayer)) continue;
+		//				nowPos = now.Players[actionPlayer].Position;
+		//				prevPos = prev.Players[actionPlayer].Position;
+		//				dice = nowPos - prevPos;
+		//				alreadyReversePlayer.Add(actionPlayer);
+		//				eventList.Add(new SugorokuEvent(prevPos, nowPos, actionPlayer, dice));
+		//				// // ////DX.putsDx(JsonConvert.SerializeObject(eventList[^1]));
+		//				// // ////DX.putsDx($"End Reverse {prev.Players[i].PlayerID}");
+		//				break;
+		//			}
+		//		}
+		//	}
 
 
 			//for (var i = prev.Turn; i < now.Turn; i++)
@@ -478,7 +515,7 @@ namespace SugorokuClient.Scene
 			//		}
 			//	}
 			//}
-			return eventList;
-		}
+		//	return eventList;
+		//}
 	}
 }

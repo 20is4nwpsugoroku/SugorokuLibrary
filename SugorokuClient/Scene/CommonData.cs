@@ -18,8 +18,8 @@ namespace SugorokuClient.Scene
 	{
 		public CommonData()
 		{
-			Address = "10.127.72.183";
-			//Address = "127.0.0.1";
+			//Address = "10.127.72.183";
+			Address = "127.0.0.1";
 			Port = 9500;
 			RoomName = string.Empty;
 			PlayerName = string.Empty;
@@ -38,7 +38,9 @@ namespace SugorokuClient.Scene
 		public int PlayerNum { get; set; } = 4;
 		public Player Player { get; set; } = new Player();
 		public MatchInfo MatchInfo { get; set; } = new MatchInfo();
+		public string MatchInfoStr { get; set; } = "";
 		public MatchCore Match { get; set; }
+		//public MatchCore MatchStr { get; set; }
 		public MatchCommunicationManager MatchManager { get; set; }
 		public Queue<SugorokuEvent> PlayerEvents { get; set; }
 		public List<int> Ranking { get; set; }

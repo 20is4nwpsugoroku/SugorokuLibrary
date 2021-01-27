@@ -10,7 +10,7 @@ namespace SugorokuLibrary.Protocol
 
 		public static (int, bool, string) Receive(Socket partnerSocket)
 		{
-			var buf = new byte[2048];
+			var buf = new byte[16_777_216];
 			var receivedSize = partnerSocket.Receive(buf, 0, MaxSize, SocketFlags.None);
 			var headerBytes = buf.TakeWhile(b => b != '\n').ToList();
 			var (bodySize, _) = HeaderProtocol.AnalyzeHeader(Encoding.UTF8.GetString(headerBytes.ToArray()));
