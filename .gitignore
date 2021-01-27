@@ -4,6 +4,7 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 
+.vs/
 .idea/
 .ipynb_checkpoints/
 .DS_Store
