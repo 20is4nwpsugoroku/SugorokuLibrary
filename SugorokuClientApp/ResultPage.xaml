@@ -13,7 +13,8 @@
                     <DataTemplate>
                         <ImageCell Text="{Binding PlayerName}"
                                    Detail="{Binding RankText}" x:DataType="sugorokuClientApp:ResultPageViewModel"
-                                   ImageSource="{Binding ImageSource}" />
+                                   ImageSource="{Binding ImageSource}"
+                                   TextColor="#1E2AD5" DetailColor="#707070" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
