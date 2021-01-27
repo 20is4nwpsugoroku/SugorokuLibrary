@@ -80,16 +80,16 @@ namespace SugorokuClient.Scene
 			LogoImageHandle = TextureAsset.Register("Logo", "../../../images/TitleLogo.png");
 			var buttonFont = FontAsset.Register("Default", size: 40);
 			var textBoxFont = FontAsset.Register("TextBox", size: 20);
-			startButton = new TextureButton(TextureAsset.Register("button1Base", "../../../images/StartButton.png"), 540, 500, 200, 50, "はじめる", DX.GetColor(222, 222, 222), buttonFont);
-			endButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 570, 200, 50, "終わる", DX.GetColor(222, 222, 222), buttonFont);
-			backButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 500, 200, 50, "戻る", DX.GetColor(222, 222, 222), buttonFont);
-			makeRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 570, 300, 50, "部屋を作る", DX.GetColor(222, 222, 222), buttonFont);
-			joinRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 490, 640, 300, 50, "部屋に参加する", DX.GetColor(222, 222, 222), buttonFont);
-			findRoomButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 1000, 570, 100, 50, "探す", DX.GetColor(222, 222, 222), buttonFont);
-			submitButton = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 540, 780, 200, 50, "確定", DX.GetColor(222, 222, 222), buttonFont);
+			startButton = new TextureButton(TextureAsset.Register("ButtonBase1", "../../../images/ButtonBase1.png"), 440, 500, 400, 50, "はじめる", DX.GetColor(0, 103, 167), buttonFont);
+			endButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 440, 570, 400, 50, "終わる", DX.GetColor(0, 103, 167), buttonFont);
+			backButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 440, 500, 400, 50, "戻る", DX.GetColor(0, 103, 167), buttonFont);
+			makeRoomButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 440, 570, 400, 50, "部屋を作る", DX.GetColor(0, 103, 167), buttonFont);
+			joinRoomButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 440, 640, 400, 50, "部屋に参加する", DX.GetColor(0, 103, 167), buttonFont);
+			findRoomButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 1000, 570, 100, 50, "探す", DX.GetColor(0, 103, 167), buttonFont);
+			submitButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 490, 780, 300, 50, "確定", DX.GetColor(0, 103, 167), buttonFont);
 			roomName = new TextBox(490, 570, 500, 50, textBoxFont);
 			roomName.FrameColor = DX.GetColor(50, 50, 50);
-			//roomName.Text = $"Room{rand.Next(100, 100000)}";
+			roomName.Text = $"Room{rand.Next(100, 100000)}";
 			playerName = new TextBox(490, 640, 500, 50, textBoxFont);
 			playerName.FrameColor = DX.GetColor(50, 50, 50);
 			playerName.Text = $"Player{rand.Next(100, 100000)}";
@@ -100,9 +100,9 @@ namespace SugorokuClient.Scene
 			ipAddress.Text = Data.Address;
 			portNumber = new TextBox(0, 50, 400, 50, textBoxFont);
 			portNumber.Text = Data.Port.ToString();
-			saveIpAddress = new TextureButton(TextureAsset.GetTextureHandle("button1Base"), 0, 100, 400, 50, "IPを反映する", DX.GetColor(222, 222, 222), buttonFont);
+			saveIpAddress = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"), 0, 100, 400, 50, "IPを反映する", DX.GetColor(0, 103, 167), buttonFont);
 			findRoomWindow = new FindRoomWindow(340, 180, 600, 610);
-			loadTexture = new TextureFade(TextureAsset.GetTextureHandle("button1Base"), 590, 600, 100, 100, 60, 60, 1);
+			loadTexture = new TextureFade(TextureAsset.Register("LoadImage", "../../../images/TitleLoad.png"), 590, 600, 100, 100, 60, 60, 1);
 			isWaitJoin = false;
 			//SocketManager.Connect(Data.Address, Data.Port);
 			//SocketManager.SetAddress(Data.Address, Data.Port);
@@ -151,6 +151,7 @@ namespace SugorokuClient.Scene
 					if (joinRoomButton.LeftClicked())
 					{
 						state = State.FindRoom;
+						roomName.Text = "";
 					}
 					break;
 
@@ -345,8 +346,8 @@ namespace SugorokuClient.Scene
 			if (result)
 			{
 				Data.Player = JsonConvert.DeserializeObject<Player>(msg);
-				DX.putsDx(json);
-				DX.putsDx(msg);
+				// // //DX.putsDx(json);
+				// // //DX.putsDx(msg);
 				state = State.ChangeGameScene;
 			}
 			else

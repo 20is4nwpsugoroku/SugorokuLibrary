@@ -53,7 +53,7 @@ namespace SugorokuClient.UI
 		}
 
 
-		public void Draw()
+		public new void Draw()
 		{
 			TextureAsset.Draw(CurrentTexture, x1, y1, x2 - x1, y2 - y1, DX.TRUE);
 		}
