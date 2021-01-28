@@ -9,15 +9,42 @@ using SugorokuClient.Util;
 
 namespace SugorokuClient.UI
 {
+	/// <summary>
+	/// すごろくのマスのフレーム
+	/// </summary>
 	public class SugorokuSquareFrame
 	{
+		/// <summary>
+		/// クリックされたかどうか
+		/// </summary>
 		public bool IsFirstClicked { get; set; }
+
+		/// <summary>
+		/// マスのボタン
+		/// </summary>
 		private TextureButton SquareButton { get; set; }
+
+		/// <summary>
+		/// マスのイベントの説明分
+		/// </summary>
 		public TextureFade DescriptionMessage { get; private set; }
+
+		/// <summary>
+		/// マスのイベント
+		/// </summary>
 		public SquareEvent Square { get; private set; }
+
+		/// <summary>
+		/// マスの中央の座標
+		/// </summary>
 		public (int, int) CenterPos { get; private set; }
 
 
+		/// <summary>
+		/// デフォルトコンストラクタ
+		/// </summary>
+		/// <param name="square">マスのイベント</param>
+		/// <param name="index">マスの場所</param>
 		public SugorokuSquareFrame(SquareEvent square, int index)
 		{
 			(this.CenterPos, this.SquareButton) = GenerateSquareButton(index);
@@ -31,6 +58,9 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 更新処理
+		/// </summary>
 		public void Update()
 		{
 			if (DescriptionMessage.Text == string.Empty) return;
@@ -43,6 +73,9 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 描画処理
+		/// </summary>
 		public void Draw()
 		{
 			SquareButton.MouseOverDraw();
@@ -50,6 +83,9 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// メッセージボックスの処理を開始する
+		/// </summary>
 		public void MessageBoxStart()
 		{
 			IsFirstClicked = true;
@@ -57,6 +93,11 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// マス用のテクスチャと中央の座標を生成する
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns>(int, int)は中央の座標</returns>
 		private static ((int, int), TextureButton) GenerateSquareButton(int index)
 		{
 			var squareImageHandle = TextureAsset.Register("squareImage", "../../../images/toumei.png");
@@ -138,6 +179,11 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 長方形のマスの場所を取得する
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns>左上のX座標とY座標</returns>
 		private static (int, int) GetRectSquarePos(int index)
 		{
 			switch (index)
@@ -179,6 +225,16 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// メッセージボックスのテクスチャを取得する
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="centerPos"></param>
+		/// <param name="textureHandle"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
 		private static void GetMessageBoxTextureInfo(int index,
 			(int, int) centerPos, out int textureHandle,
 			out int x, out int y, out int width, out int height)
@@ -214,6 +270,11 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// イベントのメッセージを取得する
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		private static string GetMessageBoxText(int index)
 		{
 			return index switch

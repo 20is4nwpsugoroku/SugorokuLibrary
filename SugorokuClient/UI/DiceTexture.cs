@@ -7,17 +7,44 @@ using SugorokuClient.Util;
 
 namespace SugorokuClient.UI
 {
+	/// <summary>
+	/// さいころ用のテクスチャ
+	/// </summary>
 	public class DiceTexture : Button
 	{
+		/// <summary>
+		/// 現在表示されているさいころのテクスチャ
+		/// </summary>
 		private int CurrentTexture { get; set; }
+
+		/// <summary>
+		/// 1~6までのさいころのテクスチャ
+		/// </summary>
 		private List<int> DiceTexturelist { get; set; }
+
+		/// <summary>
+		/// 乱数の生成に使うクラス
+		/// </summary>
 		private Random Rand { get; set; }
+
+		/// <summary>
+		/// アニメーションが処理されるフレーム数
+		/// </summary>
 		public int AnimationFrame { get; private set; }
+
+		/// <summary>
+		/// 出た目の数
+		/// </summary>
 		private int Dice { get; set; }
 
 
-
-
+		/// <summary>
+		/// デフォルトコンストラクタ
+		/// </summary>
+		/// <param name="x">左上のX座標</param>
+		/// <param name="y">左上のY座標</param>
+		/// <param name="width">テクスチャの幅</param>
+		/// <param name="height">テクスチャの高さ</param>
 		public DiceTexture(int x, int y, int width, int height)
 			: base(x, y, width, height)
 		{
@@ -30,11 +57,14 @@ namespace SugorokuClient.UI
 			DiceTexturelist.Add(TextureAsset.Register("dice6texture", "../../../images/saikoro_6.png"));
 			CurrentTexture = DiceTexturelist[0];
 			Dice = 1;
-			AnimationFrame = 60;
+			AnimationFrame = -1;
 			Rand = new Random();
 		}
 
 
+		/// <summary>
+		/// 更新処理
+		/// </summary>
 		public void Update()
 		{
 			if (AnimationFrame > 0)
@@ -54,12 +84,19 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 描画処理
+		/// </summary>
 		public new void Draw()
 		{
 			TextureAsset.Draw(CurrentTexture, x1, y1, x2 - x1, y2 - y1, DX.TRUE);
 		}
 
 
+		/// <summary>
+		/// さいころのアニメーションを開始する
+		/// </summary>
+		/// <param name="dice">最終的な目の数</param>
 		public void AnimationStart(int dice)
 		{
 			Dice = dice;

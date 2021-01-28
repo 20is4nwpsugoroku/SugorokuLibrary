@@ -71,8 +71,7 @@ namespace SugorokuClient.Util
 		/// <param name="color">描画する文字列の色</param>
 		public static void Draw(string assetName, string text, int x, int y, uint color)
 		{
-			Draw(GetFontHandle(assetName), text, x, y, color);
-			
+			Draw(GetFontHandle(assetName), text, x, y, color);	
 		}
 
 

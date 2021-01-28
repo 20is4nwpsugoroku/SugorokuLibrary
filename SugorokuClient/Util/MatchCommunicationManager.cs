@@ -22,7 +22,9 @@ namespace SugorokuClient.Util
 		public string MatchKey { get; private set; }
 		public MatchInfo LastMatchInfo { get; set; }
 
-
+		/// <summary>
+		/// デフォルトコンストラクタ
+		/// </summary>
 		public MatchCommunicationManager()
 		{
 			MyPlayerId = 0;
@@ -30,6 +32,11 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="myPlayerId"></param>
+		/// <param name="matchKey"></param>
 		public MatchCommunicationManager(int myPlayerId, string matchKey)
 		{
 			MyPlayerId = myPlayerId;
@@ -38,11 +45,21 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 試合が開始しているかどうか
+		/// </summary>
+		/// <returns></returns>
 		public bool IsMatchStarted()
 		{
 			return IsMatchStarted(MatchKey);
 		}
 
+
+		/// <summary>
+		/// 試合が開始しているかどうか
+		/// </summary>
+		/// <param name="matchKey">試合の部屋名</param>
+		/// <returns></returns>
 		public bool IsMatchStarted(string matchKey)
 		{
 			var getInfo = new GetStartedMatchMessage(matchKey);
@@ -52,12 +69,23 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 試合を開始できるかどうか
+		/// </summary>
+		/// <param name="playerNum">プレイヤーの人数</param>
+		/// <returns></returns>
 		public bool CanStartMatch(int playerNum)
 		{
 			return CanStartMatch(MatchKey, playerNum);
 		}
 
 
+		/// <summary>
+		/// 試合を開始できるかどうか
+		/// </summary>
+		/// <param name="matchKey">部屋名</param>
+		/// <param name="playerNum">プレイヤーの人数</param>
+		/// <returns></returns>
 		public bool CanStartMatch(string matchKey, int playerNum)
 		{
 			var (r, info) = GetMatch(matchKey);
@@ -69,12 +97,19 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 試合への参加ができないようにする
+		/// </summary>
 		public void CloseJoinMatch()
 		{
 			CloseJoinMatch(MatchKey);
 		}
 
 
+		/// <summary>
+		/// 試合への参加ができないようにする
+		/// </summary>
+		/// <param name="matchKey">部屋名</param>
 		public void CloseJoinMatch(string matchKey)
 		{
 			var sendMsg = new CloseCreateMessage(matchKey);
@@ -89,12 +124,21 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 試合情報の取得
+		/// </summary>
+		/// <returns>試合情報</returns>
 		public (bool, MatchInfo) GetMatchInfo()
 		{
 			return GetMatchInfo(MatchKey);
 		}
 
 
+		/// <summary>
+		/// 試合情報の取得
+		/// </summary>
+		/// <param name="matchKey">部屋名</param>
+		/// <returns>試合情報</returns>
 		public (bool, MatchInfo) GetMatchInfo(string matchKey)
 		{
 			var sendMsg = new GetMatchInfoMessage(matchKey);
@@ -106,6 +150,10 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 試合情報の文字列を取得
+		/// </summary>
+		/// <returns></returns>
 		public (bool, string) GetMatchInfoString()
 		{
 			return GetMatchInfoString(MatchKey);
@@ -123,12 +171,21 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 開始した試合情報を取得する
+		/// </summary>
+		/// <returns></returns>
 		public (bool, MatchInfo) GetMatch()
 		{
 			return GetMatch(MatchKey);
 		}
 
 
+		/// <summary>
+		/// 開始した試合情報を取得する
+		/// </summary>
+		/// <param name="matchKey">部屋名</param>
+		/// <returns></returns>
 		public (bool, MatchInfo) GetMatch(string matchKey)
 		{
 			var sendJson = JsonConvert.SerializeObject(new GetStartedMatchMessage(matchKey));
@@ -139,12 +196,21 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 開始した試合情報の文字列を取得する
+		/// </summary>
+		/// <returns></returns>
 		public (bool, string) GetMatchString()
 		{
 			return GetMatchString(MatchKey);
 		}
 
 
+		/// <summary>
+		/// 開始した試合情報の文字列を取得する
+		/// </summary>
+		/// <param name="matchKey"></param>
+		/// <returns></returns>
 		public (bool, string) GetMatchString(string matchKey)
 		{
 			var sendJson = JsonConvert.SerializeObject(new GetStartedMatchMessage(matchKey));
@@ -157,12 +223,22 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// ダイス投げた結果を取得する
+		/// </summary>
+		/// <returns></returns>
 		public (ReflectionStatus, int, int, int, IEnumerable<int>) ThrowDice()
 		{
 			return ThrowDice(MatchKey, MyPlayerId);
 		}
 
 
+		/// <summary>
+		/// ダイスを投げた結果を取得する
+		/// </summary>
+		/// <param name="matchKey"></param>
+		/// <param name="playerId"></param>
+		/// <returns></returns>
 		public (ReflectionStatus, int, int, int, IEnumerable<int>) ThrowDice(string matchKey, int playerId)
 		{
 			var ranking = new List<int>();
@@ -199,12 +275,21 @@ namespace SugorokuClient.Util
 		}
 
 
+		/// <summary>
+		/// 順位を取得する
+		/// </summary>
+		/// <returns></returns>
 		public (bool, IEnumerable<int>) GetRanking()
 		{
 			return GetRanking(MatchKey);
 		}
 
 
+		/// <summary>
+		/// 順位を取得する
+		/// </summary>
+		/// <param name="matchKey"></param>
+		/// <returns></returns>
 		public (bool, IEnumerable<int>) GetRanking(string matchKey)
 		{
 			var sendMsg = new GetRankingMessage(matchKey);
@@ -216,11 +301,18 @@ namespace SugorokuClient.Util
 		}
 
 
-		public List<PlayerMoveEvent> ReverseEvent(string prev, string now, int myPlayerID)
+		/// <summary>
+		/// prevとnowから差分を取得する
+		/// </summary>
+		/// <param name="prevMatchInfoStr"></param>
+		/// <param name="nowMatchInfoStr"></param>
+		/// <param name="myPlayerID">自分のプレイヤーのID(もしくは除外するプレイヤーのID)</param>
+		/// <returns></returns>
+		public List<PlayerMoveEvent> ReverseEvent(string prevMatchInfoStr, string nowMatchInfoStr, int myPlayerID)
 		{
 			var eventList = new List<PlayerMoveEvent>();
-			var Prev = JsonConvert.DeserializeObject<MatchInfo>(prev);
-			var Now = JsonConvert.DeserializeObject<MatchInfo>(now);
+			var Prev = JsonConvert.DeserializeObject<MatchInfo>(prevMatchInfoStr);
+			var Now = JsonConvert.DeserializeObject<MatchInfo>(nowMatchInfoStr);
 
 			for (var i = 0; i < Prev.Players.Count; i++)
 			{

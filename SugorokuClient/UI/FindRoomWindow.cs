@@ -13,32 +13,120 @@ using SugorokuClient.Util;
 
 namespace SugorokuClient.UI
 {
+	/// <summary>
+	/// 部屋を探すポップアップ画面のパーツ
+	/// </summary>
 	public class FindRoomWindow
 	{
-		private int X { get; set; }
-		private int Y { get; set; }
-		private int Width { get; set; }
-		private int Height { get; set; }
-		private int ListButtonHeight { get; set; }
+		/// <summary>
+		/// 部屋の情報を持っているかどうか
+		/// </summary>
 		private bool IsHaveInfo { get; set; }
+
+		/// <summary>
+		/// リロード処理を行っているかどうか
+		/// </summary>
 		private bool IsReloading { get; set; }
+
+		/// <summary>
+		/// 部屋の情報が選択されたかどうか
+		/// </summary>
 		public bool IsSelectedInfo { get; private set; }
+
+		/// <summary>
+		/// 描画されているかどうか
+		/// </summary>
 		public bool IsVisible { get; set; }
+
+		// <summary>
+		/// 左上のX座標
+		/// </summary>
+		private int X { get; set; }
+
+		/// <summary>
+		/// 左上のY座標
+		/// </summary>
+		private int Y { get; set; }
+
+		/// <summary>
+		/// 幅
+		/// </summary>
+		private int Width { get; set; }
+
+		/// <summary>
+		/// 高さ
+		/// </summary>
+		private int Height { get; set; }
+
+		/// <summary>
+		/// 各ボタンの高さ
+		/// </summary>
+		private int ListButtonHeight { get; set; }
+
+		/// <summary>
+		/// 背景色
+		/// </summary>
 		private uint WindowBaseColor { get; set; }
+
+		/// <summary>
+		/// 輪郭の色
+		/// </summary>
 		private uint WindowFrameColor { get; set; }
+
+		/// <summary>
+		/// テキストの色
+		/// </summary>
 		private uint TextColor { get; set; }
+
+		/// <summary>
+		/// フォントの識別子
+		/// </summary>
 		private int TextFont { get; set; }
+
+		/// <summary>
+		/// 各ボタンのテクスチャの識別子
+		/// </summary>
 		private int ListButtonTexture { get; set; }
+
+		/// <summary>
+		/// リロードボタンのテクスチャの識別子
+		/// </summary>
 		private int ReloadButtonTexture { get; set; }
+
+		/// <summary>
+		/// 閉じるボタンのテクスチャの識別子
+		/// </summary>
 		private int CloseButtonTexture { get; set; }
+
+		/// <summary>
+		/// 部屋の名前と試合情報の辞書
+		/// </summary>
 		private Dictionary<string, MatchInfo> Matches { get; set; }
+
+		/// <summary>
+		/// 一覧のボタン
+		/// </summary>
 		private List<TextureButton> MatchesListButtons { get; set; }
+
+		/// <summary>
+		/// リロードボタン
+		/// </summary>
 		private TextureButton ReloadButton { get; set; }
+
+		/// <summary>
+		/// 閉じるボタン
+		/// </summary>
 		private TextureButton CloseButton { get; set; }
+
+		/// <summary>
+		/// 選択された試合情報
+		/// </summary>
 		private MatchInfo SelectedMatch { get; set; }
 
 
-
+		/// <summary>
+		/// デフォルトコンストラクタ
+		/// </summary>
 		private FindRoomWindow()
 		{
 			IsVisible = false;
@@ -55,6 +143,13 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 描画位置を指定するコンストラクタ
+		/// </summary>
+		/// <param name="x">左上のX座標</param>
+		/// <param name="y">右上のY座標</param>
+		/// <param name="width">幅</param>
+		/// <param name="height">高さ</param>
 		public FindRoomWindow(int x, int y, int width, int height) : this()
 		{
 			X = x;
@@ -69,6 +164,9 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// 更新処理
+		/// </summary>
 		public void Update()
 		{
 			if (!IsVisible) return;
@@ -128,7 +226,10 @@ namespace SugorokuClient.UI
 		}
 
 
-
+		/// <summary>
+		/// サーバーからすべての試合情報を取得する
+		/// </summary>
+		/// <returns></returns>
 		private bool GetAllMatchInfo()
 		{
 			var getAll = new GetAllMatchesMessage();
@@ -142,6 +243,9 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// リロード処理
+		/// </summary>
 		private void Reload()
 		{
 			IsReloading = true;
@@ -168,6 +272,10 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// このUIで選択された試合情報を取得する関数
+		/// </summary>
+		/// <returns></returns>
 		public MatchInfo GetSelectedMatch()
 		{
 			if (IsSelectedInfo)

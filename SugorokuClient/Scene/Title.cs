@@ -180,7 +180,7 @@ namespace SugorokuClient.Scene
 			PortNumberText = new TextBox(0, 50, 400, 50, textBoxFont);
 			PortNumberText.Text = Data.Port.ToString();
 			SaveIpAddressButton = new TextureButton(TextureAsset.GetTextureHandle("ButtonBase1"),
-				0, 100, 400, 50, "IPを反映する", DX.GetColor(0, 103, 167), buttonFont);
+				0, 100, 400, 50, "設定を反映する", DX.GetColor(0, 103, 167), buttonFont);
 
 			IsWaitJoin = false;
 			LoadTexture = new TextureFade(TextureAsset.Register("LoadImage", "../../../images/TitleLoad.png"), 590, 600, 100, 100, 60, 60, 1);

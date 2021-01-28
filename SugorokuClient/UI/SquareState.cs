@@ -42,8 +42,13 @@ namespace SugorokuClient.Scene
 		public void ExistsControl (int playerId, bool exists)
 		{
 			PlayerExists[playerId] = exists;
-			PlayerNum += (exists) ? 1 : -1;
+			PlayerNum = 0;
+			foreach (var player in PlayerExists)
+			{
+				if (player.Value) PlayerNum++;
+			}
 		}
+
 
 		/// <summary>
 		/// マスの上のプレイヤーを描画するのに、
@@ -66,7 +71,7 @@ namespace SugorokuClient.Scene
 					break;
 				case 2:
 					posList.Enqueue((centerX - textureWidth, centerY - textureHeight / 2));
-					posList.Enqueue((centerX, centerY - centerY - textureHeight / 2));
+					posList.Enqueue((centerX, centerY - textureHeight / 2));
 					break;
 				case 3:
 					posList.Enqueue((centerX - textureWidth, centerY - textureHeight - merginHeight));
