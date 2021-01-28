@@ -146,7 +146,7 @@ namespace SugorokuClient.UI
 
 		public bool IsAnimationEndFrame()
 		{
-			return IsProcessingEvent && ProcessingAnimation.AnimationFrame == 0;
+			return IsProcessingEvent && ProcessingAnimation.AnimationFrame == 1;
 		}
 
 

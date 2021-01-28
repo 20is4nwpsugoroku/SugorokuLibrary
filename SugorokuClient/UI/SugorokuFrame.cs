@@ -26,7 +26,7 @@ namespace SugorokuClient.UI
 		private int hyosyoudaiY { get; set; }
 		private List<(int, int)> hyosyoudaiPos { get; set; }
 		private Dictionary<int, (int, int)> hyosyou { get; set; }
-		private bool isResult = false;
+		private bool isResult { get; set; }
 		private int kingTexture { get; set; }
 
 
@@ -101,18 +101,30 @@ namespace SugorokuClient.UI
 			
 		public void Update()
 		{
-			foreach(var square in SquareList)
-			{
-				square.Update();
-			}
 			foreach (var anime in PlayerAnimationTexture)
 			{
+				anime.Value.Update();
 				if (anime.Value.IsAnimationEndFrame())
 				{
 					SquareList[anime.Value.AnimationEndPos()].MessageBoxStart();
 				}
-				anime.Value.Update();
 			}
+			foreach (var square in SquareList)
+			{
+				square.Update();
+			}
+		}
+
+
+		public bool IsEndAllAnimation()
+		{
+			var target = PlayerAnimationTexture.Count;
+			var count = 0;
+			foreach (var anime in PlayerAnimationTexture)
+			{
+				count += (anime.Value.IsProcessingEvent) ? 1 : 0;
+			}
+			return count == target;
 		}
 
 
@@ -141,7 +153,7 @@ namespace SugorokuClient.UI
 		}
 
 
-		public void DrawRanking(List<int> ranking)
+		public void SetDrawRanking(List<int> ranking)
 		{
 			for (int i = 0; i < ranking.Count; i++)
 			{

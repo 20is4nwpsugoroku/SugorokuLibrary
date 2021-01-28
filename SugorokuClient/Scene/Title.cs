@@ -13,13 +13,44 @@ namespace SugorokuClient.Scene
 {
 	public class Title : IScene
 	{
+		/// <summary>
+		/// 開始ボタン
+		/// </summary>
 		private TextureButton startButton { get; set; }
+
+		/// <summary>
+		/// 終了ボタン
+		/// </summary>
 		private TextureButton endButton { get; set; }
+
+		/// <summary>
+		/// 戻るボタン
+		/// </summary>
 		private TextureButton backButton { get; set; }
+
+		/// <summary>
+		/// 確定ボタン
+		/// </summary>
 		private TextureButton submitButton { get; set; }
+
+		/// <summary>
+		/// 部屋を作成するボタン
+		/// </summary>
 		private TextureButton makeRoomButton { get; set; }
+
+		/// <summary>
+		/// 部屋に参加するボタン
+		/// </summary>
 		private TextureButton joinRoomButton { get; set; }
+
+		/// <summary>
+		/// 部屋を探すボタン
+		/// </summary>
 		private TextureButton findRoomButton { get; set; }
+
+		/// <summary>
+		/// IPアドレスを反映するボタン
+		/// </summary>
 		private TextureButton saveIpAddress { get; set; }
 		private TextBox roomName { get; set; }
 		private TextBox playerName { get; set; }
@@ -55,6 +86,7 @@ namespace SugorokuClient.Scene
 		/// <summary>
 		/// シーンの初期化処理
 		/// </summary>
+		/// <param name="data">各シーンで共用するクラス</param>
 		public void Init(CommonData data)
 		{
 			rand = new Random();
