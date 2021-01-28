@@ -156,6 +156,12 @@ namespace SugorokuClient.UI
 		}
 
 
+		public int GetScheduleNum()
+		{
+			return AnimationSchedule.Count;
+		}
+
+
 		public void AddChangePosition(int x, int y, int frame, int animationEndPosition)
 		{
 			double incrementX, incrementY, baseX, baseY, baseWidth, baseHeight;
@@ -240,7 +246,7 @@ namespace SugorokuClient.UI
 		{
 			IsProcessingEvent = true;
 			IsStopped = false;
-			if (AnimationSchedule.Count != 0)
+			if (AnimationSchedule.Count != 0 && ProcessingAnimation.AnimationFrame == 0)
 			{
 				ProcessingAnimation = AnimationSchedule.Dequeue();
 			}

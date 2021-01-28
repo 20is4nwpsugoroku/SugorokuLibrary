@@ -171,6 +171,7 @@ namespace SugorokuClient.Scene
 
 			ProcessPlayerEvent();
 			SugorokuFrame.Update();
+
 			MessageText = (state) switch
 			{
 				State.WaitMatchStart => "試合の開始を待っています",
@@ -184,7 +185,7 @@ namespace SugorokuClient.Scene
 
 
 		/// <summary>
-		/// プレイヤーイベントの処理を行う関数(Updateの処理を移動したもの)
+		/// プレイヤーイベントの処理を行う関数(Update関数中の処理を移動したもの)
 		/// </summary>
 		private void ProcessPlayerEvent()
 		{
@@ -246,6 +247,7 @@ namespace SugorokuClient.Scene
 		{
 			if (isProcessingPlayingEvent) return;
 			var (r, matchStr) = data.MatchManager.GetMatchString();
+			data.MatchInfoStr = matchStr + "";
 			if (!r) return;
 			isProcessingPlayingEvent = true;
 
@@ -253,14 +255,14 @@ namespace SugorokuClient.Scene
 			if (JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID == data.Player.PlayerID)
 			{
 				PlayingEventTimer.Stop();
-				Task.Delay(8000);
+				Task.Delay(4000);
 				PlayingEventTimer.Start();
 				var (status, dice, start, end, rank) = data.MatchManager.ThrowDice();
 				switch (status)
 				{
 					case ReflectionStatus.NextSuccess:
 					case ReflectionStatus.PrevDiceSuccess:
-						data.PlayerEvents.Enqueue(new SugorokuEvent(start, end,
+						data.PlayerEvents.Enqueue(new PlayerMoveEvent(start, end,
 							JsonConvert.DeserializeObject<MatchInfo>(matchStr).NextPlayerID, dice));
 						break;
 					case ReflectionStatus.AlreadyFinished:
@@ -277,23 +279,24 @@ namespace SugorokuClient.Scene
 			}
 
 			var infoStr = data.MatchManager.GetMatchString();
-			if (infoStr.Item1)
-			{ 
-				var eventList = data.MatchManager.ReverseEvent(JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr),
-					JsonConvert.DeserializeObject<MatchInfo>(infoStr.Item2), data.Player.PlayerID);
+			if (infoStr.Item1 && !infoStr.Item2.Equals(matchStr))
+			{
+				var eventList = data.MatchManager.ReverseEvent(matchStr,
+					infoStr.Item2, data.Player.PlayerID);
 				for (var i = 0; i < eventList.Count; i++)
 				{
 					data.PlayerEvents.Enqueue(eventList[i]);
 				}
-				data.MatchInfoStr = "" + infoStr.Item2;
+				data.MatchInfoStr = infoStr.Item2 + "";
 				data.MatchInfo = JsonConvert.DeserializeObject<MatchInfo>(data.MatchInfoStr);
 			}
+
 			foreach (var player in JsonConvert.DeserializeObject<MatchInfo>(infoStr.Item2).Players)
 			{
 				if (player.Position == 30)
 				{
 					IsGoal = true;
-					break;
+					state = State.Goal;
 				}
 			}
 

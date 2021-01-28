@@ -10,14 +10,31 @@ using DxLibDLL;
 
 namespace SugorokuClient.UI
 {
+	/// <summary>
+	/// テキストボックスのクラス
+	/// </summary>
 	public class TextBox : Button
 	{
+		/// <summary>
+		/// キーボードからの文字入力用の識別子
+		/// </summary>
 		public int KeyInputHandle { get; private set; } = -1;
 
 
-		public bool isInputActive { get; private set; } = false;
+		/// <summary>
+		/// このテキストボックスに対して文字の入力を行っているかどうか
+		/// </summary>
+		public bool IsInputActive { get; private set; } = false;
 
 
+		/// <summary>
+		/// デフォルトコンストラクタ
+		/// </summary>
+		/// <param name="x">左上のX座標</param>
+		/// <param name="y">左上のY座標</param>
+		/// <param name="width">テキストボックスの幅</param>
+		/// <param name="height">テキストボックスの高さ</param>
+		/// <param name="fontHandle">テキストボックスで利用するフォントの識別子</param>
 		public TextBox(int x, int y, int width, int height, int fontHandle) 
 			: base(x, y, width, height, DX.GetColor(255, 255, 255), string.Empty, DX.GetColor(50, 50, 50), fontHandle)
 		{
@@ -26,15 +43,18 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// テキストボックスの更新
+		/// </summary>
 		public void Update()
 		{
-			
-			if (isInputActive)
+			// キー入力が有効な場合
+			if (IsInputActive)
 			{
 				int ret = DX.CheckKeyInput(KeyInputHandle);
 				if (ret == 1 || ret == 2)
 				{
-					isInputActive = false;
+					IsInputActive = false;
 					StringBuilder stringBuilder = new StringBuilder();
 					DX.GetKeyInputString(stringBuilder, KeyInputHandle);
 					Text = stringBuilder.ToString();
@@ -42,17 +62,18 @@ namespace SugorokuClient.UI
 				}
 				else if (ret == -1)
 				{
-					isInputActive = false;
+					IsInputActive = false;
 				}
 				else if (ret == 0)
 				{
-					isInputActive = !(InputManager.MouseL_Down() && (!MouseOver()));
+					IsInputActive = !(InputManager.MouseL_Down() && (!MouseOver()));
 				}
 			}
 			else
 			{
-				isInputActive = LeftClicked();
-				if (isInputActive)
+				// テキストボックスがクリックされたら入力を有効にする
+				IsInputActive = LeftClicked();
+				if (IsInputActive)
 				{
 					DX.DeleteKeyInput(KeyInputHandle);
 					DX.SetActiveKeyInput(KeyInputHandle);
@@ -63,11 +84,14 @@ namespace SugorokuClient.UI
 		}
 
 
+		/// <summary>
+		/// テキストボックスの描画を行う
+		/// </summary>
 		public new void Draw()
 		{
 			base.Draw();
 			DrawFrame();
-			if (isInputActive)
+			if (IsInputActive)
 			{
 				DX.DrawKeyInputString(TextPosX, TextPosY, KeyInputHandle);
 			}

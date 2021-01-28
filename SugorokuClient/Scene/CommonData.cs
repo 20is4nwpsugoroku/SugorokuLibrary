@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net.Sockets;
+﻿using SugorokuClient.Util;
 using SugorokuLibrary;
 using SugorokuLibrary.Match;
-using SugorokuClient.Scene;
-using SugorokuClient.Util;
-
+using System.Collections.Generic;
 
 
 namespace SugorokuClient.Scene
@@ -69,7 +64,7 @@ namespace SugorokuClient.Scene
 		/// <summary>
 		/// すべてのプレイヤーの未処理の行動情報が格納される
 		/// </summary>
-		public Queue<SugorokuEvent> PlayerEvents { get; set; }
+		public Queue<PlayerMoveEvent> PlayerEvents { get; set; }
 
 		/// <summary>
 		/// ゲーム終了時の順位を格納する
@@ -92,7 +87,7 @@ namespace SugorokuClient.Scene
 			MatchInfo = new MatchInfo();
 			MatchInfoStr = string.Empty;
 			MatchManager = new MatchCommunicationManager();
-			PlayerEvents = new Queue<SugorokuEvent>();
+			PlayerEvents = new Queue<PlayerMoveEvent>();
 			Ranking = new List<int>();
 		}
 	}

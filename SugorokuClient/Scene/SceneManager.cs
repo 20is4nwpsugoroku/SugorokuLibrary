@@ -28,6 +28,8 @@ namespace SugorokuClient.Scene
 
 		/// <value> 描画タイミングの調整をするクラス </value>
 		private static FPSAdjuster FpsAdjuster { get; set; }
+
+		/// <value> 各シーンで共用するクラス </value>
 		private static CommonData Data { get; set; }
 
 
@@ -97,7 +99,7 @@ namespace SugorokuClient.Scene
 		}
 
 
-		// <summary>
+		/// <summary>
 		/// シーンの初期化を行わずに指定したシーンに遷移する
 		/// </summary>
 		/// <param name="sceneName">AddSceneで指定したシーンの名前</param>

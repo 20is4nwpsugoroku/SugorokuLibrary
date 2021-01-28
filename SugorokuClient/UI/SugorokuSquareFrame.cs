@@ -196,7 +196,7 @@ namespace SugorokuClient.UI
 			else if (index >= 20 && index <= 22)
 			{
 				textureHandle = TextureAsset.Register("LeftDirectionMessageBox",
-					"../../../images/RigntDirectionMessageBox.png");
+					"../../../images/LeftDirectionMessageBox.png");
 				x = centerPos.Item1 + 35;
 				y = centerPos.Item2 - 60;
 				width = 320;
@@ -205,7 +205,7 @@ namespace SugorokuClient.UI
 			else
 			{
 				textureHandle = TextureAsset.Register("DownDirectionMessageBox",
-					"../../../images/RigntDirectionMessageBox.png");
+					"../../../images/DownDirectionMessageBox.png");
 				x = centerPos.Item1 - 130;
 				y = centerPos.Item2 - 180 - 35;
 				width = 260;
@@ -218,21 +218,21 @@ namespace SugorokuClient.UI
 		{
 			return index switch
 			{
-				1 => "初任給で\n車を買う",
-				5 => "GOTOトラベルで\nアメリカへ",
-				6 => "ステイホーム！家で過ごそう",
-				7 => "昼寝のつもりが\n次の日の朝まで寝てた",
-				10 => "リモート授業に\n繋がらない",
-				12 => "腹筋を割り切れないまま\n海へ",
-				15 => "Blackout Tuesday\n今こそ前に進もう",
-				17 => "食欲が収まらず\nついに破産",
-				19 => "握手会に行くため\n欠席",
-				21 => "これが噂の\n無限くら寿司",
-				24 => "ランサムウェア\nに感染",
-				25 => "ワクチン開発に\n時間がかかる",
-				26 => "届いたのは\nザ・ノースフォイスだった！",
-				28 => "１社目の内定に\n落ちた",
-				29 => "脱サラして\n焼き芋屋を開店",
+				1 => "初任給で\n車を買う\n2マス進む",
+				5 => "GOTOトラベルで\nアメリカへ\n3マス進む",
+				6 => "ステイホーム！家で過ごそう\nスタートに戻る",
+				7 => "昼寝のつもりが\n次の日の朝まで寝てた\nもう一度サイコロを振る",
+				10 => "リモート授業に\n繋がらない\n1回休み",
+				12 => "腹筋を割り切れないまま\n海へ\n2マス戻る",
+				15 => "Blackout Tuesday\n今こそ前に進もう\n3マス進む",
+				17 => "食欲が収まらず\nついに破産\nもう一度サイコロを振り\n出た目の数戻る",
+				19 => "握手会に行くため\n欠席\n一回休み",
+				21 => "これが噂の\n無限くら寿司\nもう一度サイコロを振る",
+				24 => "ランサムウェア\nに感染\n4マス戻る",
+				25 => "ワクチン開発に\n時間がかかる\n一回休み",
+				26 => "届いたのは\nザ・ノースフォイスだった！\nもう一度サイコロを振り\n出た目の数戻る",
+				28 => "１社目の内定に\n落ちた\nもう一度サイコロを振る",
+				29 => "脱サラして\n焼き芋屋を開店\nスタートに戻る",
 				30 => "ゴール",
 				_ => string.Empty
 			};
